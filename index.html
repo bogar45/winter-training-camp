@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Winter Training Camp</title>
+
+<!-- PWA: iOS home screen support -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Training Camp" />
+<meta name="theme-color" content="#0f1724" />
+
+<!-- PWA: Android home screen support -->
+<meta name="mobile-web-app-capable" content="yes" />
+
+<!-- App Icon (PNG embedded as data URI for iOS compatibility) -->
+<link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAJnklEQVR42u3dWXIURxDGcW7gDSTQhiRAyDYSYDZj38WX8NW4gg/lJzs0o2V6uvbK6sqs+T/kK4QifpFR05X15aPv9l/+V16v7ut7Vz0N1YWzfkipZ6+j9aO3LsN1MK2fJvVzcT0+/KWifr2vJ646CtUbZ+2l1PFVtPa9dR2uk2k9ndTb4noEZjCPgvnZ83eloMEMZn2YC0GDGcw6MReABjOY9WLOBA1mMOvGnAEazEtjfiyE+cmgmJ86MCeCBjOdWX9nTgQNZjDbwRwBDWYw28IcAA3msTG/MYi5GDSY6cz2OrMHNJjBbBfzFmgwg9k25g3QvTBfVGB+XYH5sgKzDOh8zL92OjNfVWC+bn5mdoCmM9OZZTrzfuNLkyzQYAaz1WPGQ71fgwYzmEfAvAINZjCPgtkNGsxgNor5YAYazGA2jHkKGsxgNo75ATSYwTwA5jVoMIN5EMwR0GDuiVnqpcneoJidoE+9oME8dme+Moj5XbAz32D2gAYzxwxbx4w7zA7QYAazXcxboMEMZtuYN0CDGcz2Md+CBjOYx8DsBQ1mRZiPDGI+6YP54PS3OWgwg9kq5hnoYTEfgHmReK6TtpcmMcwT0HRmzswWz8ybmO9B7zrmf//eA/MAmFegdwXzDdrSArMNzGmgDWOuQezFDWa1mA+joA1iboE4DTeYe2MOgwZzBmowa8DsB20Mcwq8wA/Cb3fl+wGYBtsS5muDmN9HMbtBG8JcA9kFOvY1IxU2nXn5zuwGPQjmnO/MQdCBH4Ch/1/TS5P9QTHHQe8g5iDohK8ZRajpzE068xR0N8yXYphLbwGdoDNTQJNR71AKaM6zqZoz8xz0AJ255jp7BrrwO3MUNZ25aWdOBj0y5hnoyksTL2owL4L58OxDGPTomNNBp39nLkENZhnMQdDavzNLTc3FQedfmuSABrMcZi/oXcEcB11+A5iCGsyymJ2gtV9nS88z+0HXX2eHQINZHvMMtIXZDOnhfDdomdkMX5fe37F4LqlLkxjmCehdxOwGLTto5Po76MzynXkCWuM88xKY56DbTM3FQYNZAvMKtJXh/FZvAGOgJQaNwqDBLIU5AFrfS5NWD1pDoKWm5vzHDt2L4HVhjoM+coPu/wZwKcwh0NIjoHPQdGbJznzkBq3zQWvLqAEX6BbzzFmgwVyEeQv07mF2gW45nJ+EGszFmDdA68nNSActk5uxCbr1S5MoaDBXYb4FrSsEJg20XAhMFujKqbkgaIWL4DVjLgPdIdEoDlo20SgZtMAIqBc0nbm6M6/rYwB0p3iuMGj5eK4k0ELzzE7QYBbD7AfdMWvOD7pN1lwUtOBw/gw0mEUxu0ErCE7cqm8DlRc0mOsxz0Hrwzw06DvUYJbBPAWtJJ951zo0mOUwP4BWFDY+P0O3zWeenaEbPmjd/tvALIt5DVpZcn40m1k4n3kCuvHrbD9oMEtgnoHWsAZi6bDxHNC1L03coMeP55K6NIlhPjrfAK1lp0kQdIOw8VTQEs+m5qB1L4LX1Zk/RDHfg9a0oMcLulFyfgpoqTeAUqA5Zrgxr0Br2zblBN1wDUQMtOSDVgnQYPZj3gKtZ3Va+l4TkagBL2gw28J8/ABa1x7ANNBiUQNO0NJRA7WgwRzHfAta31LLJRf0uEC3xpwLGsxpmKtAt97Q6gctnpsxAd0iBKYK8wmYUzEfn38qA73EuuGltk1tgm6VaFQKGsx5mItAL7U7O2XTlFAITAS0LOZU0Bwz8jFng156EXwMtVAITAA0mC1hzgK9NGb/0UM8BMYDuj43A8zLYk4G3QuzbyGP5OtsN2h5zCmgazGf//PXTmNOAt0Tc2jLlGCi0RZo/Zhv4ObWLmCOgtaAOWttWlmi0QboNphjoFtCDsMeC3MQtBbMWagL5pmTQXfELAF5Dns8zF7Q2jDvpewCLI/nioPWifkyo5JQ68ZcCFor5tpdgPuloPVhvqwoL2rrndkJWjvmGGof7Eg8lx90wXfmhpgvBWvybx8qeGniB/2pDLQVzLmoE+K53KDHxZyP2kBnnoC2hnljOD9aCfFcc9AZU3NGMaejNoR5Bdoq5tjKBz/s6zDohOH8Vt+ZF8YcR20McyVoHZhzYUuX5HV2B8wz1JYxn7z4XApaH+YeqBti7gZ6hdoo5kLQejHHEvOXQixwnX3ZoZJBa8VcANoO5ljYeCvEQrMZXUGHUGvGnAnaLuaURKOewYkKMCd1ae2YM0CPi1lDPrMF0NowHzswJ4IGc+vX2dpBW+jMiaDBvETUgGbQljBHQIN5qdwMraCtYQ6ABnMnzGpA35QuzMWgwbx0opFG0NY6swc0mHvEc9kArR/zFmgw98qa0w/aBuYN0L0wv6nAfFWB+boC81vx5HzToAWeTdWcmR2g6cy9U0D1grbTmWegwdwv0UjjLIdFzCcvvqxBg7l/PJcm0FYxr0CDWUfWnKZ5aKuY3aDB3C04UQNoy5ifz0CDuWsKqIY3hZYxT0GDWUWkbc9X39YxP4AGs6p85h65HCNgXoMGs8qw8SWTk0bBHAEN5t6L4JfItrOK2Qn6pRc0mLWsgWiZPmoL8+dgZ77B7AENZm07TVrkQ490zLjD7AANZs0LeppCHgDzFmgwW9k2JQ55EMwboME8wuo0yy9NJDDfggYzewDHwOwFDWYwW8T8/OXvc9BgBrNVzDPQYAazZcwT0GAGs3XM96DBDOYRMK9AgxnMo2BOAw1mMBvBfBoFDWYwG8IcBg1mMBvD7AcN5sExfzSI+UsUsxs0mOnMBjuzGzSY1WDWsAheM+Y4aDDTmQ135iloMIN5AMxr0GAG8yCYk0CDGcxWMJ+++hoGDWYwW8IcBA1mMFvD7AUNZjBbxOwEDWYwW8U8Aw1mMLeI55K6NIlhnoAGM5gtd+YJaDCDeQTMK9BgBvMomAOgwQxme5jP3KDBDGabmB2gwQxmu5i3QIMZzLYxb4AGM5jtY74FDWYwj4E5DhrMYDaE+ezVHwHQYAazMcx+0GAGs0HMbtBgBrNRzHPQYAazYcxT0GAGs3HMD6DBDOYBMM9BgxnMg2CegQYzmHu9NJHAfHaxARrMu4T5s8HO/DWK+R40mOnMlo8Zd5hXoMEM5lEwb4EGM5htYz5/AA1mMNvHfAsazGAeA3MVaDCDWRvm84s/y0CDGcwaMReBBjOYtWLOBg1mMGvGnAUazGDWjjkZNJjBbAFzEmgwg9kK5ihoMIPZEuYgaDCD2RpmL2gwj475i0HMhaDBTGe22JmdoMEMZsuYJ6DBDGbrmO9BgxnMI2C+qf8BFZUEQZJusZwAAAAASUVORK5CYII=" />
+
+<script>
+// Dynamically create and register PWA manifest
+const manifest = {
+  name: "Winter Training Camp",
+  short_name: "Training Camp",
+  description: "12-Week Indoor Basketball & Baseball Skills Program",
+  start_url: location.href,
+  display: "standalone",
+  background_color: "#0f1724",
+  theme_color: "#0f1724",
+  orientation: "portrait",
+  icons: [{
+    src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%231a2332'/%3E%3Cstop offset='100%25' stop-color='%23243044'/%3E%3C/linearGradient%3E%3ClinearGradient id='ac' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%233b82f6'/%3E%3Cstop offset='100%25' stop-color='%238b5cf6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='100' fill='url(%23bg)'/%3E%3Ccircle cx='200' cy='200' r='65' fill='none' stroke='%23f97316' stroke-width='8'/%3E%3Cpath d='M170 200 h60 M200 170 v60' stroke='%23f97316' stroke-width='5'/%3E%3Ccircle cx='320' cy='300' r='35' fill='%2322c55e'/%3E%3Cpath d='M300 300 q20-25 40 0' stroke='white' stroke-width='5' fill='none'/%3E%3Ctext x='256' y='430' text-anchor='middle' fill='%23e2e8f0' font-family='system-ui' font-size='48' font-weight='800'%3ETRAINING%3C/text%3E%3Ctext x='256' y='478' text-anchor='middle' fill='url(%23ac)' font-family='system-ui' font-size='40' font-weight='700'%3ECAMP%3C/text%3E%3C/svg%3E",
+    sizes: "512x512",
+    type: "image/svg+xml",
+    purpose: "any maskable"
+  }]
+};
+const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+const manifestURL = URL.createObjectURL(blob);
+const link = document.createElement('link');
+link.rel = 'manifest';
+link.href = manifestURL;
+document.head.appendChild(link);
+
+// Register a minimal service worker for offline caching (if served over HTTPS)
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  const swCode = `
+    const CACHE = 'training-camp-v1';
+    const URLS = ['/'];
+    self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(URLS))));
+    self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
+  `;
+  const swBlob = new Blob([swCode], {type: 'application/javascript'});
+  const swURL = URL.createObjectURL(swBlob);
+  navigator.serviceWorker.register(swURL).catch(() => {});
+}
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<style>
+:root {
+  --bg: #0f1724;
+  --surface: #1a2332;
+  --surface2: #243044;
+  --accent: #3b82f6;
+  --accent2: #8b5cf6;
+  --gold: #f59e0b;
+  --green: #10b981;
+  --red: #ef4444;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --border: #334155;
+  --basketball: #f97316;
+  --baseball: #22c55e;
+  --crosssport: #a855f7;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+button { cursor:pointer; border:none; font-family:inherit; }
+input, select { font-family:inherit; }
+
+/* Animations */
+@keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+@keyframes pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.05); } }
+@keyframes confetti { 0% { opacity:1; transform:translateY(0) rotate(0deg); } 100% { opacity:0; transform:translateY(-100px) rotate(720deg); } }
+@keyframes badgeUnlock { 0% { transform:scale(0) rotate(-180deg); opacity:0; } 50% { transform:scale(1.3) rotate(10deg); opacity:1; } 100% { transform:scale(1) rotate(0deg); opacity:1; } }
+@keyframes xpFloat { 0% { opacity:1; transform:translateY(0); } 100% { opacity:0; transform:translateY(-40px); } }
+@keyframes shimmer { 0% { background-position:-200% center; } 100% { background-position:200% center; } }
+.slide-up { animation: slideUp 0.3s ease-out; }
+.pulse { animation: pulse 0.6s ease-in-out; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+
+/* Layout */
+.app { max-width:480px; margin:0 auto; min-height:100vh; position:relative; padding-bottom:80px; }
+.header {
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  position:sticky; top:0; z-index:50;
+}
+.header-top { display:flex; align-items:center; justify-content:space-between; }
+.header h1 { font-size:18px; font-weight:700; letter-spacing:-0.5px; }
+.header-subtitle { font-size:12px; color:var(--text2); margin-top:2px; }
+.xp-bar-container { margin-top:10px; }
+.xp-bar-label { display:flex; justify-content:space-between; font-size:11px; color:var(--text2); margin-bottom:4px; }
+.xp-bar { height:8px; background:var(--surface); border-radius:4px; overflow:hidden; }
+.xp-bar-fill { height:100%; border-radius:4px; transition:width 0.6s ease; background:linear-gradient(90deg, var(--accent), var(--accent2)); }
+.level-badge {
+  background:linear-gradient(135deg, var(--gold), #d97706);
+  color:#000; font-size:12px; font-weight:800;
+  padding:4px 10px; border-radius:12px;
+  display:inline-flex; align-items:center; gap:4px;
+}
+
+/* Navigation */
+.nav {
+  display:flex; position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+  width:100%; max-width:480px;
+  background:var(--surface); border-top:1px solid var(--border);
+  z-index:100; padding:6px 0 env(safe-area-inset-bottom, 6px);
+}
+.nav button {
+  flex:1; display:flex; flex-direction:column; align-items:center;
+  padding:8px 4px; background:none; color:var(--text2);
+  font-size:10px; gap:4px; transition:color 0.2s;
+}
+.nav button.active { color:var(--accent); }
+.nav button svg { width:22px; height:22px; }
+
+/* Cards */
+.card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:12px; padding:16px; margin:12px 16px;
+}
+.card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+
+/* Tab bars */
+.tab-bar {
+  display:flex; gap:4px; padding:8px 16px; overflow-x:auto;
+  -webkit-overflow-scrolling:touch; scrollbar-width:none;
+}
+.tab-bar::-webkit-scrollbar { display:none; }
+.tab-btn {
+  padding:8px 16px; border-radius:20px; font-size:13px; font-weight:600;
+  white-space:nowrap; background:var(--surface); color:var(--text2);
+  border:1px solid var(--border); transition:all 0.2s;
+}
+.tab-btn.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+/* Drill Cards */
+.drill-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:12px; margin:8px 16px; overflow:hidden;
+  transition:all 0.2s;
+}
+.drill-card:active { transform:scale(0.98); }
+.drill-card-top { padding:14px 16px; display:flex; align-items:flex-start; gap:12px; cursor:pointer; }
+.drill-sport-dot {
+  width:10px; height:10px; border-radius:50%; margin-top:5px; flex-shrink:0;
+}
+.drill-sport-dot.basketball { background:var(--basketball); }
+.drill-sport-dot.baseball { background:var(--baseball); }
+.drill-sport-dot.cross-sport { background:var(--crosssport); }
+.drill-info { flex:1; }
+.drill-name { font-size:15px; font-weight:600; margin-bottom:3px; }
+.drill-meta { display:flex; gap:8px; font-size:12px; color:var(--text2); flex-wrap:wrap; }
+.drill-meta span { display:flex; align-items:center; gap:3px; }
+.drill-tier-badge {
+  font-size:11px; font-weight:700; padding:2px 8px; border-radius:10px;
+  display:inline-block;
+}
+.tier-rookie { background:#1e3a5f; color:#60a5fa; }
+.tier-starter { background:#1a3d2e; color:#4ade80; }
+.tier-allstar { background:#3b2460; color:#c084fc; }
+.tier-mvp { background:#422006; color:#fbbf24; }
+
+.drill-expanded { padding:0 16px 14px; border-top:1px solid var(--border); }
+.drill-description { font-size:13px; color:var(--text2); line-height:1.5; margin:12px 0; }
+.drill-equipment { font-size:12px; color:var(--text2); margin-bottom:12px; }
+.tier-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+.tier-item {
+  padding:10px; border-radius:8px; background:var(--bg);
+  border:1px solid var(--border); cursor:pointer;
+  transition:all 0.2s;
+}
+.tier-item:hover { border-color:var(--accent); }
+.tier-item.completed { border-color:var(--green); background:rgba(16,185,129,0.08); }
+.tier-item .tier-label { font-size:11px; font-weight:700; margin-bottom:4px; }
+.tier-item .tier-criteria { font-size:11px; color:var(--text2); line-height:1.3; }
+.tier-item .tier-xp { font-size:11px; color:var(--gold); margin-top:4px; font-weight:600; }
+
+/* Log button */
+.log-btn {
+  width:100%; padding:12px; border-radius:10px; font-size:14px; font-weight:700;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  color:#fff; transition:all 0.2s;
+}
+.log-btn:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(59,130,246,0.3); }
+.log-btn:disabled { opacity:0.5; transform:none; }
+
+/* Stats / Progress */
+.stat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.stat-box {
+  background:var(--bg); border:1px solid var(--border);
+  border-radius:10px; padding:12px; text-align:center;
+}
+.stat-value { font-size:22px; font-weight:800; }
+.stat-label { font-size:11px; color:var(--text2); margin-top:2px; }
+
+/* Badges */
+.badge-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; padding:16px; }
+.badge-item { text-align:center; }
+.badge-icon {
+  width:64px; height:64px; border-radius:50%; margin:0 auto 6px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:28px; border:3px solid var(--border);
+  background:var(--surface);
+}
+.badge-icon.unlocked {
+  border-color:var(--gold);
+  background:linear-gradient(135deg, #422006, #78350f);
+  animation:badgeUnlock 0.6s ease-out;
+}
+.badge-icon.locked { opacity:0.3; filter:grayscale(1); }
+.badge-name { font-size:11px; font-weight:600; margin-bottom:2px; }
+.badge-desc { font-size:10px; color:var(--text2); }
+
+/* Weekly missions */
+.mission-card {
+  background:var(--bg); border:1px solid var(--border);
+  border-radius:10px; padding:14px; margin-bottom:8px;
+}
+.mission-card.completed { border-color:var(--green); background:rgba(16,185,129,0.05); }
+.mission-title { font-size:14px; font-weight:600; margin-bottom:4px; }
+.mission-desc { font-size:12px; color:var(--text2); line-height:1.4; }
+.mission-progress { margin-top:8px; }
+.mission-progress-bar { height:6px; background:var(--surface2); border-radius:3px; overflow:hidden; margin-top:4px; }
+.mission-progress-fill { height:100%; background:var(--green); border-radius:3px; transition:width 0.3s; }
+
+/* Schedule */
+.week-day {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 16px; border-bottom:1px solid var(--border);
+}
+.week-day-name { width:36px; font-size:13px; font-weight:700; color:var(--text2); }
+.week-day-content { flex:1; font-size:13px; }
+.week-day-tag {
+  font-size:11px; padding:3px 8px; border-radius:8px;
+  font-weight:600; display:inline-block; margin-right:4px; margin-bottom:2px;
+}
+
+/* Log History */
+.log-item {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 16px; border-bottom:1px solid var(--border);
+}
+.log-item-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.log-item-info { flex:1; }
+.log-item-name { font-size:14px; font-weight:500; }
+.log-item-detail { font-size:12px; color:var(--text2); }
+.log-item-xp { font-size:13px; font-weight:700; color:var(--gold); }
+
+/* Competition tracker */
+.comp-scores { display:flex; align-items:center; gap:16px; justify-content:center; padding:16px; }
+.comp-player { text-align:center; flex:1; }
+.comp-player-label { font-size:13px; color:var(--text2); margin-bottom:4px; }
+.comp-player-score { font-size:36px; font-weight:800; }
+.comp-vs { font-size:18px; font-weight:800; color:var(--text2); }
+
+/* Week selector */
+.week-selector { display:flex; align-items:center; justify-content:center; gap:16px; padding:12px 16px; }
+.week-selector button { background:var(--surface2); color:var(--text); padding:8px 12px; border-radius:8px; font-size:14px; }
+.week-selector span { font-size:16px; font-weight:700; min-width:100px; text-align:center; }
+
+/* Toast / XP popup */
+.toast {
+  position:fixed; top:80px; left:50%; transform:translateX(-50%);
+  background:var(--green); color:#fff; padding:12px 24px;
+  border-radius:12px; font-size:14px; font-weight:700;
+  z-index:200; animation: slideUp 0.3s ease-out;
+  box-shadow:0 8px 24px rgba(0,0,0,0.3);
+}
+.xp-popup {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  font-size:32px; font-weight:900; color:var(--gold);
+  z-index:200; animation: xpFloat 1.5s ease-out forwards;
+  text-shadow: 0 2px 8px rgba(245,158,11,0.5);
+}
+
+/* Streak */
+.streak-bar {
+  display:flex; gap:4px; padding:8px 0;
+}
+.streak-day {
+  flex:1; height:24px; border-radius:4px; display:flex;
+  align-items:center; justify-content:center; font-size:10px;
+  font-weight:700;
+}
+.streak-day.done { background:var(--green); color:#fff; }
+.streak-day.today { background:var(--accent); color:#fff; }
+.streak-day.empty { background:var(--surface2); color:var(--text2); }
+
+/* Modal */
+.modal-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.7);
+  z-index:150; display:flex; align-items:center; justify-content:center;
+  padding:20px;
+}
+.modal {
+  background:var(--surface); border-radius:16px; padding:24px;
+  max-width:400px; width:100%; animation:slideUp 0.3s ease-out;
+  border:1px solid var(--border);
+}
+.modal h2 { font-size:18px; margin-bottom:12px; }
+.modal-actions { display:flex; gap:8px; margin-top:16px; }
+.modal-actions button { flex:1; padding:12px; border-radius:10px; font-size:14px; font-weight:600; }
+.btn-cancel { background:var(--surface2); color:var(--text); }
+.btn-confirm { background:var(--accent); color:#fff; }
+
+/* Notes input */
+.notes-input {
+  width:100%; background:var(--bg); border:1px solid var(--border);
+  border-radius:8px; padding:10px; color:var(--text); font-size:13px;
+  resize:none; outline:none; margin-top:8px;
+}
+.notes-input:focus { border-color:var(--accent); }
+
+/* Winner selector */
+.winner-btns { display:flex; gap:8px; margin:12px 0; }
+.winner-btn {
+  flex:1; padding:12px; border-radius:10px; font-size:14px; font-weight:600;
+  background:var(--surface2); color:var(--text); border:2px solid transparent;
+  transition:all 0.2s;
+}
+.winner-btn.selected { border-color:var(--gold); background:rgba(245,158,11,0.15); }
+
+/* Progress Chart */
+.chart-container { padding:16px; }
+.chart-bar-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.chart-label { width:60px; font-size:11px; color:var(--text2); text-align:right; }
+.chart-bar-bg { flex:1; height:16px; background:var(--bg); border-radius:4px; overflow:hidden; }
+.chart-bar-fill { height:100%; border-radius:4px; transition:width 0.4s ease; }
+.chart-value { width:40px; font-size:11px; color:var(--text2); }
+
+/* Settings */
+.setting-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 0; border-bottom:1px solid var(--border);
+}
+.setting-label { font-size:14px; }
+.setting-value { font-size:14px; color:var(--text2); }
+
+/* Empty state */
+.empty-state { text-align:center; padding:40px 20px; color:var(--text2); }
+.empty-state-icon { font-size:48px; margin-bottom:12px; }
+.empty-state-text { font-size:14px; line-height:1.5; }
+
+/* 12-week arc */
+.arc-week {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 16px; border-bottom:1px solid var(--border);
+  cursor:pointer;
+}
+.arc-week.current { background:rgba(59,130,246,0.1); border-left:3px solid var(--accent); }
+.arc-week-num {
+  width:32px; height:32px; border-radius:50%; display:flex;
+  align-items:center; justify-content:center; font-size:13px;
+  font-weight:700; background:var(--surface2); color:var(--text2);
+}
+.arc-week.current .arc-week-num { background:var(--accent); color:#fff; }
+.arc-week.completed .arc-week-num { background:var(--green); color:#fff; }
+.arc-week-info { flex:1; }
+.arc-week-title { font-size:14px; font-weight:600; }
+.arc-week-focus { font-size:12px; color:var(--text2); }
+
+/* Responsive */
+@media (max-width:360px) {
+  .stat-grid { grid-template-columns:repeat(2,1fr); }
+  .badge-grid { grid-template-columns:repeat(2,1fr); }
+  .tier-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback, useMemo } = React;
+
+// ===== DATA =====
+const DRILLS = [
+  {id:"bb-handle-01",name:"Stationary Pound Dribble",sport:"basketball",skillArea:"Ball Handling",description:"Stand in athletic stance and pound the ball hard into the floor with one hand. Focus on keeping the ball below waist height with fingertip control. Switch hands each set.",equipment:["basketball"],spaceNeeded:"minimal",type:"solo",estimatedMinutes:5,tiers:{Rookie:{criteria:"30 consecutive pounds per hand without losing control",xp:15},Starter:{criteria:"50 consecutive pounds per hand, eyes up",xp:30},"All-Star":{criteria:"75 consecutive pounds per hand, alternating speed",xp:60},MVP:{criteria:"100 consecutive pounds per hand, eyes closed for 20",xp:120}}},
+  {id:"bb-handle-02",name:"Figure-8 Dribble",sport:"basketball",skillArea:"Ball Handling",description:"Dribble the ball in a figure-8 pattern around your legs while staying in athletic stance. Keep your head up and work on quick hand switches without looking down.",equipment:["basketball"],spaceNeeded:"minimal",type:"solo",estimatedMinutes:6,tiers:{Rookie:{criteria:"5 complete figure-8 patterns without losing the ball",xp:15},Starter:{criteria:"10 complete figure-8 patterns, head up the entire time",xp:35},"All-Star":{criteria:"20 consecutive figure-8 patterns at moderate speed",xp:65},MVP:{criteria:"30 consecutive figure-8 patterns at high speed with perfect form",xp:130}}},
+  {id:"bb-handle-03",name:"Cone Weave Dribble",sport:"basketball",skillArea:"Ball Handling",description:"Set up 4-5 cones or objects in a line 3 feet apart. Dribble through using crossover dribbles to change direction. Stay low and tight with ball control.",equipment:["basketball","tape or cones"],spaceNeeded:"moderate",type:"solo",estimatedMinutes:8,tiers:{Rookie:{criteria:"Complete weave 3 times without losing the ball",xp:15},Starter:{criteria:"Complete weave 5 times, staying below waist height",xp:35},"All-Star":{criteria:"Complete weave 8 times in under 40 seconds",xp:70},MVP:{criteria:"Complete weave 10 times in under 30 seconds with crossover variations",xp:140}}},
+  {id:"bb-handle-04",name:"Speed Dribble Shuttle",sport:"basketball",skillArea:"Ball Handling",description:"Mark two lines 15 feet apart. Dribble at full speed from one line to the other, pushing the ball ahead. Builds conditioning and ball control at game speed.",equipment:["basketball","tape"],spaceNeeded:"full",type:"solo",estimatedMinutes:7,tiers:{Rookie:{criteria:"Complete 5 shuttles with ball control",xp:15},Starter:{criteria:"Complete 8 shuttles in under 35 seconds",xp:30},"All-Star":{criteria:"Complete 10 shuttles in under 28 seconds, both hands",xp:65},MVP:{criteria:"Complete 12 shuttles in under 24 seconds, eyes up",xp:125}}},
+  {id:"bb-handle-05",name:"Crossover Combo",sport:"basketball",skillArea:"Ball Handling",description:"Dribble forward using crossover moves every 2-3 dribbles, alternating right and left. Keep ball at knee level and stay in athletic stance for quick ball transfers.",equipment:["basketball"],spaceNeeded:"moderate",type:"solo",estimatedMinutes:6,tiers:{Rookie:{criteria:"15 consecutive crossover dribbles without losing control",xp:15},Starter:{criteria:"25 consecutive crossovers with clean footwork",xp:30},"All-Star":{criteria:"40 consecutive crossovers at moderate speed, eyes up",xp:60},MVP:{criteria:"50 consecutive crossovers at high speed with direction changes",xp:125}}},
+  {id:"bb-handle-06",name:"Behind-the-Back Dribble",sport:"basketball",skillArea:"Ball Handling",description:"Dribble the ball behind your back to switch hands without looking. Start stationary, then progress to moving. Teaches advanced ball control and spatial awareness.",equipment:["basketball"],spaceNeeded:"minimal",type:"solo",estimatedMinutes:7,tiers:{Rookie:{criteria:"5 successful behind-the-back switches",xp:15},Starter:{criteria:"10 consecutive switches while standing",xp:30},"All-Star":{criteria:"15 consecutive switches while moving slowly",xp:65},MVP:{criteria:"20 consecutive switches at various speeds with direction changes",xp:130}}},
+  {id:"bb-pass-01",name:"Target Wall Pass",sport:"basketball",skillArea:"Passing Accuracy",description:"Mark a target on the wall at chest height. Stand 10 feet away and make chest passes at the target. Count successful hits for accuracy.",equipment:["basketball","tape"],spaceNeeded:"moderate",type:"solo",estimatedMinutes:6,tiers:{Rookie:{criteria:"8 out of 15 passes hit the target",xp:15},Starter:{criteria:"12 out of 15 from 10 feet",xp:35},"All-Star":{criteria:"14 out of 15 from 12 feet",xp:65},MVP:{criteria:"15 out of 15, then 10 from 15 feet",xp:130}}},
+  {id:"bb-pass-02",name:"Partner Chest Pass Relay",sport:"basketball",skillArea:"Passing Accuracy",description:"Stand 10-12 feet apart and exchange rapid chest passes. Focus on quick release and accurate delivery to the chest. Work on speed and consistency.",equipment:["basketball"],spaceNeeded:"moderate",type:"partner",estimatedMinutes:6,tiers:{Rookie:{criteria:"20 consecutive accurate passes",xp:20},Starter:{criteria:"40 consecutive passes at moderate speed",xp:40},"All-Star":{criteria:"60 consecutive passes at high speed, partner cuts",xp:75},MVP:{criteria:"80 consecutive passes at game speed with movement",xp:140}}},
+  {id:"bb-shoot-01",name:"Form Shooting Close Range",sport:"basketball",skillArea:"Shooting Form",description:"Stand 5-8 feet from wall or mini-net. Focus on shooting form: aligned feet, bent knees, shooting pocket at shoulder, and high release. Hit the wall target.",equipment:["basketball"],spaceNeeded:"moderate",type:"solo",estimatedMinutes:8,tiers:{Rookie:{criteria:"6 out of 10 shots on target from 5 feet",xp:15},Starter:{criteria:"8 out of 10 from 6 feet with proper form",xp:35},"All-Star":{criteria:"8 out of 10 from 7 feet, consistent release",xp:65},MVP:{criteria:"9 out of 10 from 8 feet with follow-through hold",xp:130}}},
+  {id:"bb-shoot-02",name:"Partner Catch & Shoot",sport:"basketball",skillArea:"Shooting Form",description:"Partner passes chest pass to shooter who catches and immediately shoots from 8-10 feet. Works on shooting off the catch and quick release.",equipment:["basketball"],spaceNeeded:"moderate",type:"partner",estimatedMinutes:8,tiers:{Rookie:{criteria:"5 out of 10 catch-and-shoot from 8 feet",xp:20},Starter:{criteria:"7 out of 10 from 9 feet",xp:40},"All-Star":{criteria:"8 out of 10 from 10 feet, quick release",xp:75},MVP:{criteria:"9 out of 10 from 10 feet, 5 consecutive makes",xp:140}}},
+  {id:"bb-foot-01",name:"Defensive Slide Drill",sport:"basketball",skillArea:"Footwork",description:"Mark two lines 12-15 feet apart. Shuffle side-to-side in defensive stance staying low, then backpedal and shuffle back. Quick feet, athletic position.",equipment:["tape"],spaceNeeded:"full",type:"solo",estimatedMinutes:6,tiers:{Rookie:{criteria:"Complete 5 sets without losing stance",xp:15},Starter:{criteria:"Complete 8 sets in under 40 seconds each",xp:35},"All-Star":{criteria:"Complete 10 sets in under 35 seconds, staying low",xp:65},MVP:{criteria:"Complete 12 sets in under 30 seconds at game speed",xp:130}}},
+  {id:"bb-foot-02",name:"Jump Stop to Pivot",sport:"basketball",skillArea:"Footwork",description:"Sprint forward, execute a jump stop landing on both feet. Practice pivoting on each foot. Work on balance and control after stopping.",equipment:["basketball"],spaceNeeded:"moderate",type:"solo",estimatedMinutes:5,tiers:{Rookie:{criteria:"10 jump stops with proper form, stable pivot",xp:15},Starter:{criteria:"15 jump stops, pivot 360 degrees each side",xp:30},"All-Star":{criteria:"20 jump stops at game speed with quick 180 pivots",xp:60},MVP:{criteria:"25 jump stops continuous with spin moves",xp:120}}},
+  {id:"bb-vision-01",name:"Wall Pass & Cut",sport:"basketball",skillArea:"Court Vision",description:"Pass at the wall, sprint to a new position, and receive the bounce-back. Simulates court vision and movement. Angle passes to arrive in stride.",equipment:["basketball","tape"],spaceNeeded:"moderate",type:"solo",estimatedMinutes:7,tiers:{Rookie:{criteria:"8 successful pass-and-cut cycles",xp:15},Starter:{criteria:"12 cycles with clean angles, quick movement",xp:35},"All-Star":{criteria:"15 cycles at high speed, left and right cuts",xp:65},MVP:{criteria:"20 cycles rapid fire with angle and bounce passes",xp:130}}},
+  {id:"bb-vision-02",name:"Partner No-Look Passing",sport:"basketball",skillArea:"Court Vision",description:"Partners stand 10-12 feet apart. Passer looks one direction but passes the opposite way. Receiver must stay ready. Builds peripheral vision and deception.",equipment:["basketball"],spaceNeeded:"moderate",type:"partner",estimatedMinutes:8,tiers:{Rookie:{criteria:"10 consecutive no-look passes between partners",xp:20},Starter:{criteria:"15 consecutive passes, smooth movement",xp:40},"All-Star":{criteria:"20 consecutive passes rapid fire, one partner moving",xp:75},MVP:{criteria:"30 consecutive passes at game speed, counter-passes",xp:140}}},
+  {id:"ba-throw-01",name:"Four-Seam Grip & Release",sport:"baseball",skillArea:"Throwing Mechanics",description:"Practice proper four-seam grip on foam baseball. Throw against wall from 20 feet, focusing on finger placement, release point, and follow-through.",equipment:["foam baseball","tape"],spaceNeeded:"moderate",type:"solo",estimatedMinutes:8,tiers:{Rookie:{criteria:"10 throws with correct grip and release",xp:15},Starter:{criteria:"15 throws with consistent release and follow-through",xp:35},"All-Star":{criteria:"20 throws with tight spiral and controlled follow-through",xp:70},MVP:{criteria:"25 throws rapid-fire with perfect mechanics and backspin",xp:135}}},
+  {id:"ba-throw-02",name:"Hip Rotation & Stride",sport:"baseball",skillArea:"Throwing Mechanics",description:"Focus on proper footwork and hip rotation. Step with opposite foot forward, rotating hips before shoulders. Practice in place, then with stride.",equipment:["foam baseball"],spaceNeeded:"minimal",type:"solo",estimatedMinutes:8,tiers:{Rookie:{criteria:"10 throws with visible hip rotation",xp:15},Starter:{criteria:"15 throws with hip-shoulder separation",xp:35},"All-Star":{criteria:"20 throws with clear hip-to-shoulder progression",xp:70},MVP:{criteria:"25 throws with explosive hip rotation, balanced finish",xp:135}}},
+  {id:"ba-throw-03",name:"Accuracy Target Throws",sport:"baseball",skillArea:"Throwing Mechanics",description:"Set up target zones on wall at different heights. Throw foam baseball at targets from 25-35 feet. Work on accuracy and consistency at each level.",equipment:["foam baseball","tape"],spaceNeeded:"full",type:"solo",estimatedMinutes:10,tiers:{Rookie:{criteria:"5 out of 15 throws hit target from 25 feet",xp:15},Starter:{criteria:"8 out of 15 from 30 feet, mix of levels",xp:35},"All-Star":{criteria:"10 out of 15 from 35 feet, 4 different zones",xp:70},MVP:{criteria:"12 out of 15 from 35 feet at all three levels",xp:135}}},
+  {id:"ba-catch-01",name:"Soft Hands Wall Catch",sport:"baseball",skillArea:"Catching / Soft Hands",description:"Throw foam baseball against wall from 8-10 feet and catch cleanly. Focus on soft hands, giving with the ball on impact, eyes locked on it.",equipment:["foam baseball"],spaceNeeded:"moderate",type:"solo",estimatedMinutes:6,tiers:{Rookie:{criteria:"10 consecutive two-handed catches",xp:15},Starter:{criteria:"15 consecutive with soft hands, giving on impact",xp:30},"All-Star":{criteria:"20 consecutive, mix of one and two-handed",xp:65},MVP:{criteria:"25 consecutive rapid-fire with one-handed catches",xp:130}}},
+  {id:"ba-catch-02",name:"Partner Throw & Catch",sport:"baseball",skillArea:"Catching / Soft Hands",description:"Stand 30-35 feet apart and throw foam baseballs back and forth. Focus on gentle catch mechanics and soft hands. Increase distance gradually.",equipment:["foam baseball"],spaceNeeded:"full",type:"partner",estimatedMinutes:8,tiers:{Rookie:{criteria:"15 consecutive catches from 30 feet",xp:20},Starter:{criteria:"25 consecutive from 35 feet, clean exchanges",xp:40},"All-Star":{criteria:"35 consecutive from 40 feet, one-handed options",xp:75},MVP:{criteria:"50 consecutive with rapid exchanges",xp:140}}},
+  {id:"ba-catch-03",name:"Bounce Ball Reaction Catch",sport:"baseball",skillArea:"Catching / Soft Hands",description:"Parent bounces foam baseball toward child from 15-20 feet, creating unpredictable hops. Child reacts, positions feet, and catches cleanly.",equipment:["foam baseball"],spaceNeeded:"moderate",type:"partner",estimatedMinutes:7,tiers:{Rookie:{criteria:"8 out of 12 bounced balls caught",xp:20},Starter:{criteria:"10 out of 12 with quick footwork",xp:40},"All-Star":{criteria:"11 out of 12 with lateral movement",xp:70},MVP:{criteria:"12 out of 12 rapid fire",xp:135}}},
+  {id:"ba-bat-01",name:"Batting Stance & Load",sport:"baseball",skillArea:"Batting Stance & Swing",description:"Practice proper batting stance: feet shoulder-width, knees bent, hands in power position at shoulder height. Hold and transition while parent checks alignment.",equipment:[],spaceNeeded:"moderate",type:"partner",estimatedMinutes:6,tiers:{Rookie:{criteria:"10 correct stance holds with feet shoulder-width",xp:15},Starter:{criteria:"15 stances with proper knee bend and balance",xp:35},"All-Star":{criteria:"20 stances with loaded hips, hands in power position",xp:65},MVP:{criteria:"25 consecutive with quick transitions",xp:130}}},
+  {id:"ba-bat-02",name:"Tee Work - Level Swing",sport:"baseball",skillArea:"Batting Stance & Swing",description:"Set foam baseball on tee or bucket. Swing focusing on level plane through the ball, quick hands, and full rotation. Start slow, progress to game speed.",equipment:["foam baseball","tee or bucket"],spaceNeeded:"full",type:"solo",estimatedMinutes:10,tiers:{Rookie:{criteria:"8 out of 15 swings with level contact",xp:15},Starter:{criteria:"10 out of 15 with complete rotation and follow-through",xp:35},"All-Star":{criteria:"12 out of 15 at moderate speed with power",xp:70},MVP:{criteria:"13 out of 15 at game speed with consistent mechanics",xp:135}}},
+  {id:"ba-bat-03",name:"Soft Toss Hitting",sport:"baseball",skillArea:"Batting Stance & Swing",description:"Parent tosses foam baseball underhand from 25-30 feet. Child focuses on recognizing location and making contact with good swing mechanics.",equipment:["foam baseball"],spaceNeeded:"full",type:"partner",estimatedMinutes:10,tiers:{Rookie:{criteria:"6 out of 12 solid contacts with level swing",xp:20},Starter:{criteria:"8 out of 12 with good follow-through",xp:40},"All-Star":{criteria:"10 out of 12 at increased speed with power",xp:75},MVP:{criteria:"11 out of 12 with quick hands and direction control",xp:140}}},
+  {id:"ba-hec-01",name:"Rapid Eye Tracking",sport:"baseball",skillArea:"Hand-Eye Coordination",description:"Parent tosses foam balls at different heights and speeds from 15 feet. Child tracks ball visually from release through contact. Focus and reaction.",equipment:["foam baseball"],spaceNeeded:"moderate",type:"partner",estimatedMinutes:6,tiers:{Rookie:{criteria:"Track 10 consecutive tosses, eyes on ball at contact",xp:15},Starter:{criteria:"Track 15 tosses with mixed speeds and heights",xp:30},"All-Star":{criteria:"Track 20 tosses at varying speeds, no head loss",xp:65},MVP:{criteria:"Track 25 consecutive at game-speed variations",xp:130}}},
+  {id:"ba-hec-02",name:"Ball Drop Sprint Catch",sport:"baseball",skillArea:"Hand-Eye Coordination",description:"Parent drops foam ball from waist height while child stands 2-5 feet away. Child reacts and catches before second bounce. Tests reaction and hand-eye sync.",equipment:["foam baseball"],spaceNeeded:"minimal",type:"partner",estimatedMinutes:5,tiers:{Rookie:{criteria:"8 out of 10 catches from 2 feet",xp:15},Starter:{criteria:"8 out of 10 from 3 feet with lateral movement",xp:30},"All-Star":{criteria:"9 out of 10 from 4 feet with quick hands",xp:60},MVP:{criteria:"10 out of 10 from 5 feet with one-hand catches",xp:120}}},
+  {id:"ba-field-01",name:"Ground Ball Reaction",sport:"baseball",skillArea:"Fielding Footwork",description:"Parent rolls foam baseball toward child from 20 feet. Child practices getting feet set, staying low with bent knees, and positioning body in front of ball.",equipment:["foam baseball"],spaceNeeded:"moderate",type:"partner",estimatedMinutes:7,tiers:{Rookie:{criteria:"Field 8 out of 10 grounders with ready position",xp:20},Starter:{criteria:"Field 9 out of 10 with quick first step",xp:40},"All-Star":{criteria:"Field 10 out of 10 with smooth footwork",xp:75},MVP:{criteria:"Field 12 out of 12 rapid fire with range",xp:140}}},
+  {id:"ba-field-02",name:"Crossover Step Lateral",sport:"baseball",skillArea:"Fielding Footwork",description:"Set up two marks 12 feet apart. Practice crossover steps moving left and right in athletic position. Quick feet, maintain balance for fielding.",equipment:["tape or cones"],spaceNeeded:"moderate",type:"solo",estimatedMinutes:6,tiers:{Rookie:{criteria:"10 sets of crossover steps, 5 each direction",xp:15},Starter:{criteria:"15 sets staying low with balance",xp:30},"All-Star":{criteria:"20 sets at game speed, explosive starts",xp:65},MVP:{criteria:"25 consecutive rapid-fire at various angles",xp:130}}},
+  {id:"cs-agility-01",name:"Ladder Shuffle",sport:"cross-sport",skillArea:"Agility",description:"Use tape to create ladder pattern on floor (4 rungs, 18 inches wide). Shuffle through with feet in each box. Builds foot speed and coordination.",equipment:["tape"],spaceNeeded:"moderate",type:"solo",estimatedMinutes:6,tiers:{Rookie:{criteria:"Complete ladder 4 times with feet in each box",xp:15},Starter:{criteria:"Complete 6 times with alternating foot patterns",xp:30},"All-Star":{criteria:"Complete 8 times in under 30 seconds total",xp:60},MVP:{criteria:"Complete 10 times rapid-fire in under 25 seconds",xp:120}}},
+  {id:"cs-agility-02",name:"Star Burst Sprint",sport:"cross-sport",skillArea:"Agility",description:"Mark center point and four directions (forward, back, left, right) at 10 feet each. Sprint to each direction and back to center on command.",equipment:["tape"],spaceNeeded:"full",type:"solo",estimatedMinutes:8,tiers:{Rookie:{criteria:"Complete 2 full stars (8 sprints)",xp:15},Starter:{criteria:"Complete 3 full stars in under 45 seconds",xp:35},"All-Star":{criteria:"Complete 4 stars in under 40 seconds, tight turns",xp:70},MVP:{criteria:"Complete 5 stars in under 35 seconds, max speed",xp:135}}},
+  {id:"cs-react-01",name:"Color Call Reaction",sport:"cross-sport",skillArea:"Reaction Time",description:"Mark floor with three zones (different tape colors). Parent calls a color and child sprints to correct zone. Quick decision-making and acceleration.",equipment:["tape"],spaceNeeded:"moderate",type:"partner",estimatedMinutes:6,tiers:{Rookie:{criteria:"8 out of 10 correct responses",xp:20},Starter:{criteria:"10 out of 10 with fast reaction",xp:40},"All-Star":{criteria:"10 out of 10 with explosive starts and cuts",xp:70},MVP:{criteria:"12 out of 12 rapid-fire with minimal hesitation",xp:135}}},
+  {id:"cs-react-02",name:"Tennis Ball Drop Sprint",sport:"cross-sport",skillArea:"Reaction Time",description:"Child faces away from parent at 10 feet. Parent drops tennis ball and child turns, locates, and sprints to catch before second bounce.",equipment:["tennis ball"],spaceNeeded:"moderate",type:"partner",estimatedMinutes:6,tiers:{Rookie:{criteria:"6 out of 10 catches before second bounce",xp:20},Starter:{criteria:"8 out of 10 from varied drop locations",xp:40},"All-Star":{criteria:"9 out of 10 with max effort",xp:70},MVP:{criteria:"10 out of 10 with sideways and backward movement",xp:135}}},
+  {id:"cs-balance-01",name:"Single-Leg Balance Hold",sport:"cross-sport",skillArea:"Balance",description:"Stand on one leg with arms out. Hold position focusing on a wall point. Progress by closing eyes or increasing time. Essential for strength and injury prevention.",equipment:[],spaceNeeded:"minimal",type:"solo",estimatedMinutes:5,tiers:{Rookie:{criteria:"Hold 20 seconds each leg",xp:15},Starter:{criteria:"Hold 30 seconds each leg, eyes open",xp:30},"All-Star":{criteria:"Hold 40 seconds, eyes closed last 10 seconds",xp:60},MVP:{criteria:"Hold 50 seconds with head turns and arm movements",xp:120}}},
+  {id:"cs-balance-02",name:"Tandem Walk Balance Line",sport:"cross-sport",skillArea:"Balance",description:"Walk heel-to-toe along a taped line for 20 feet, arms out. Builds core stability and body awareness essential for all sports.",equipment:["tape"],spaceNeeded:"moderate",type:"solo",estimatedMinutes:5,tiers:{Rookie:{criteria:"Complete 3 walks with only one foot off line",xp:15},Starter:{criteria:"Complete 5 walks with perfect balance",xp:30},"All-Star":{criteria:"Complete 7 walks, eyes closed for 5 feet",xp:60},MVP:{criteria:"Complete 10 walks rapid fire, backward included",xp:120}}},
+  {id:"cs-core-01",name:"Plank Hold",sport:"cross-sport",skillArea:"Core Strength",description:"Assume plank position: straight body line, engaged core, shoulders over hands. Hold while breathing steadily. Progress by adding arm/leg lifts.",equipment:[],spaceNeeded:"minimal",type:"solo",estimatedMinutes:5,tiers:{Rookie:{criteria:"Hold plank 20 seconds with proper form",xp:15},Starter:{criteria:"Hold 35 seconds without sagging hips",xp:30},"All-Star":{criteria:"Hold 50 seconds with alternate arm lifts",xp:65},MVP:{criteria:"Hold 60 seconds with alternating arm and leg lifts",xp:130}}},
+  {id:"cs-core-02",name:"Sit-Up & Reach",sport:"cross-sport",skillArea:"Core Strength",description:"Lie on back with knees bent. Perform sit-ups reaching toward toes, engaging core. Keep movements controlled and progress speed and reps.",equipment:[],spaceNeeded:"minimal",type:"solo",estimatedMinutes:6,tiers:{Rookie:{criteria:"Complete 10 controlled sit-ups with reach",xp:15},Starter:{criteria:"Complete 20 with good form and full range",xp:30},"All-Star":{criteria:"Complete 30 at moderate speed, core engaged",xp:65},MVP:{criteria:"Complete 40 rapid-fire with explosive activation",xp:130}}}
+];
+
+const TIER_ORDER = ["Rookie", "Starter", "All-Star", "MVP"];
+const TIER_COLORS = { Rookie:"tier-rookie", Starter:"tier-starter", "All-Star":"tier-allstar", MVP:"tier-mvp" };
+
+const BADGES = [
+  {id:"first-drill",name:"First Rep",icon:"1",desc:"Complete your first drill",check:s=>s.totalDrills>=1},
+  {id:"streak-3",name:"On Fire",icon:"\u{1F525}",desc:"3-day training streak",check:s=>s.streak>=3},
+  {id:"streak-7",name:"Week Warrior",icon:"\u26A1",desc:"7-day training streak",check:s=>s.streak>=7},
+  {id:"streak-14",name:"Iron Will",icon:"\u{1F6E1}",desc:"14-day training streak",check:s=>s.streak>=14},
+  {id:"xp-100",name:"Century Club",icon:"\u{1F4AF}",desc:"Earn 100 total XP",check:s=>s.totalXP>=100},
+  {id:"xp-500",name:"XP Machine",icon:"\u{1F3AF}",desc:"Earn 500 total XP",check:s=>s.totalXP>=500},
+  {id:"xp-1000",name:"XP Legend",icon:"\u{1F451}",desc:"Earn 1,000 total XP",check:s=>s.totalXP>=1000},
+  {id:"xp-2500",name:"XP Titan",icon:"\u{1F48E}",desc:"Earn 2,500 total XP",check:s=>s.totalXP>=2500},
+  {id:"bb-10",name:"Hoops Hustler",icon:"\u{1F3C0}",desc:"Complete 10 basketball drills",check:s=>s.sportCounts.basketball>=10},
+  {id:"ba-10",name:"Diamond Dog",icon:"\u26BE",desc:"Complete 10 baseball drills",check:s=>s.sportCounts.baseball>=10},
+  {id:"cs-10",name:"All-Around Athlete",icon:"\u{1F3CB}",desc:"Complete 10 cross-sport drills",check:s=>s.sportCounts["cross-sport"]>=10},
+  {id:"handles",name:"Handles",icon:"\u{1F44F}",desc:"Complete all Ball Handling drills at Starter+",check:s=>checkSkillMastery(s,"Ball Handling","Starter")},
+  {id:"iron-hands",name:"Iron Hands",icon:"\u{1F9E4}",desc:"50 consecutive catches logged",check:s=>s.totalCatches>=50},
+  {id:"sniper",name:"Sniper",icon:"\u{1F3AF}",desc:"Complete all Shooting Form drills at All-Star",check:s=>checkSkillMastery(s,"Shooting Form","All-Star")},
+  {id:"dual-sport",name:"Dual-Sport Star",icon:"\u2B50",desc:"Complete drills in all 3 sport categories",check:s=>s.sportCounts.basketball>0&&s.sportCounts.baseball>0&&s.sportCounts["cross-sport"]>0},
+  {id:"partner-10",name:"Dynamic Duo",icon:"\u{1F91D}",desc:"Complete 10 partner drills",check:s=>s.partnerDrills>=10},
+  {id:"mvp-1",name:"First MVP",icon:"\u{1F3C6}",desc:"Complete any drill at MVP tier",check:s=>s.mvpCount>=1},
+  {id:"mvp-5",name:"MVP Collection",icon:"\u{1F48E}",desc:"Complete 5 drills at MVP tier",check:s=>s.mvpCount>=5},
+  {id:"comp-10",name:"Rivalry",icon:"\u{1F94A}",desc:"Log 10 parent-vs-kid competitions",check:s=>s.compCount>=10},
+  {id:"week-complete",name:"Full Send",icon:"\u{1F4AA}",desc:"Complete all missions in a week",check:s=>s.weekMissionsComplete>=1},
+  {id:"showcase",name:"Showcase Ready",icon:"\u{1F31F}",desc:"Complete the 12-week training arc",check:s=>s.weeksCompleted>=12},
+];
+
+function checkSkillMastery(stats, skillArea, minTier) {
+  const skillDrills = DRILLS.filter(d => d.skillArea === skillArea);
+  const tierIdx = TIER_ORDER.indexOf(minTier);
+  return skillDrills.every(d => {
+    const completed = stats.completedTiers[d.id] || [];
+    return completed.some(t => TIER_ORDER.indexOf(t) >= tierIdx);
+  });
+}
+
+const TWELVE_WEEK_ARC = [
+  {week:1,title:"Foundation Week",focus:"Stance, grip, and basic form across both sports",theme:"Building Blocks",sports:["basketball","baseball","cross-sport"]},
+  {week:2,title:"Control & Touch",focus:"Soft hands, fingertip dribbling, and controlled throws",theme:"Feel the Ball",sports:["basketball","baseball"]},
+  {week:3,title:"Footwork Focus",focus:"Defensive slides, fielding steps, agility ladder",theme:"Quick Feet",sports:["basketball","baseball","cross-sport"]},
+  {week:4,title:"Accuracy Week",focus:"Target passing, target throws, shooting form",theme:"Bullseye",sports:["basketball","baseball"]},
+  {week:5,title:"Speed & Reaction",focus:"Reaction drills, speed dribble, quick catches",theme:"Lightning Fast",sports:["cross-sport","basketball","baseball"]},
+  {week:6,title:"Partner Power",focus:"All partner drills, parent-vs-kid competitions",theme:"Dynamic Duo",sports:["basketball","baseball","cross-sport"]},
+  {week:7,title:"Combo Week",focus:"Chain drills together, multi-skill sequences",theme:"Combo Breaker",sports:["basketball","baseball"]},
+  {week:8,title:"Core & Balance",focus:"Core strength, balance challenges, mental focus",theme:"Inner Strength",sports:["cross-sport"]},
+  {week:9,title:"Advanced Handles",focus:"Behind-the-back, figure-8, crossover combos",theme:"Ankle Breaker",sports:["basketball"]},
+  {week:10,title:"Game Simulation",focus:"Soft toss hitting, catch & shoot, ground ball reaction",theme:"Game Day Prep",sports:["baseball","basketball"]},
+  {week:11,title:"Peak Performance",focus:"Time trials, personal bests, MVP tier attempts",theme:"Push the Limits",sports:["basketball","baseball","cross-sport"]},
+  {week:12,title:"Showcase Week",focus:"Skills showcase - demonstrate mastery across all areas",theme:"The Main Event",sports:["basketball","baseball","cross-sport"]},
+];
+
+const WEEKLY_SCHEDULE_TEMPLATE = [
+  {day:"Mon",label:"Basketball Focus",tags:["basketball"],desc:"Ball handling + shooting drills"},
+  {day:"Tue",label:"Baseball Focus",tags:["baseball"],desc:"Throwing + catching drills"},
+  {day:"Wed",label:"Cross-Sport Day",tags:["cross-sport"],desc:"Agility, balance, core work"},
+  {day:"Thu",label:"Partner Challenge",tags:["basketball","baseball"],desc:"Partner drills + competition"},
+  {day:"Fri",label:"Mix It Up",tags:["basketball","baseball","cross-sport"],desc:"Pick any 3 drills, try new tiers"},
+  {day:"Sat",label:"Competition Day",tags:["basketball","baseball"],desc:"Parent vs. kid challenges!"},
+  {day:"Sun",label:"Active Recovery",tags:[],desc:"Stretch, watch film, visualize"},
+];
+
+function generateWeeklyMissions(weekNum) {
+  const arc = TWELVE_WEEK_ARC[(weekNum - 1) % 12];
+  const missions = [
+    {id:`m-${weekNum}-1`,title:`Complete 4 ${arc.sports[0]} drills`,target:4,type:"sport",sport:arc.sports[0]},
+    {id:`m-${weekNum}-2`,title:"Log a personal best on any drill",target:1,type:"pb"},
+    {id:`m-${weekNum}-3`,title:"Complete 2 partner drills",target:2,type:"partner"},
+    {id:`m-${weekNum}-4`,title:"Train 5 days this week",target:5,type:"days"},
+    {id:`m-${weekNum}-5`,title:"Advance to a new tier on any drill",target:1,type:"tierUp"},
+  ];
+  return missions;
+}
+
+// === STATE MANAGEMENT ===
+function getInitialState() {
+  return {
+    totalXP: 0,
+    level: 1,
+    logs: [], // {id, drillId, tier, xp, date, notes, winner?, personalBest?}
+    completedTiers: {}, // drillId -> [tiers]
+    personalBests: {}, // drillId -> {value, date}
+    streak: 0,
+    lastTrainDate: null,
+    streakDays: [], // last 7 days
+    unlockedBadges: [],
+    parentWins: 0,
+    kidWins: 0,
+    compCount: 0,
+    currentWeek: 1,
+    childName: "",
+    parentName: "",
+    setupComplete: false,
+    missionProgress: {}, // missionId -> count
+    weekMissionsComplete: 0,
+  };
+}
+
+function computeStats(state) {
+  const sportCounts = { basketball:0, baseball:0, "cross-sport":0 };
+  let partnerDrills = 0;
+  let mvpCount = 0;
+  let totalCatches = 0;
+
+  state.logs.forEach(log => {
+    const drill = DRILLS.find(d => d.id === log.drillId);
+    if (drill) {
+      sportCounts[drill.sport] = (sportCounts[drill.sport] || 0) + 1;
+      if (drill.type === "partner") partnerDrills++;
+      if (drill.skillArea.includes("Catch") || drill.skillArea.includes("Soft Hands")) {
+        totalCatches += 10;
+      }
+    }
+    if (log.tier === "MVP") mvpCount++;
+  });
+
+  return {
+    totalXP: state.totalXP,
+    totalDrills: state.logs.length,
+    streak: state.streak,
+    sportCounts,
+    partnerDrills,
+    mvpCount,
+    totalCatches,
+    compCount: state.compCount,
+    completedTiers: state.completedTiers,
+    weekMissionsComplete: state.weekMissionsComplete,
+    weeksCompleted: Math.max(0, state.currentWeek - 1),
+  };
+}
+
+function xpForLevel(level) { return level * 100; }
+function getLevelFromXP(totalXP) {
+  let level = 1;
+  let xpNeeded = xpForLevel(level);
+  let remaining = totalXP;
+  while (remaining >= xpNeeded) {
+    remaining -= xpNeeded;
+    level++;
+    xpNeeded = xpForLevel(level);
+  }
+  return { level, currentXP: remaining, nextLevelXP: xpNeeded };
+}
+
+// === ICONS (SVG components) ===
+function IconDrills({active}) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke={active?"#3b82f6":"currentColor"} strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>;
+}
+function IconStats({active}) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke={active?"#3b82f6":"currentColor"} strokeWidth="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>;
+}
+function IconBadges({active}) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke={active?"#3b82f6":"currentColor"} strokeWidth="2"><path d="M12 15l-3 3v4l3-2 3 2v-4l-3-3z"/><circle cx="12" cy="9" r="6"/></svg>;
+}
+function IconSchedule({active}) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke={active?"#3b82f6":"currentColor"} strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>;
+}
+function IconSettings({active}) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke={active?"#3b82f6":"currentColor"} strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4m0 14v4m-7.07-15.07l2.83 2.83m8.48 8.48l2.83 2.83M1 12h4m14 0h4m-15.07 7.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>;
+}
+
+// === PERSISTENCE ===
+const STORAGE_KEY = "winter-training-camp-v1";
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Merge with defaults so new fields added in updates are picked up
+      return { ...getInitialState(), ...parsed };
+    }
+  } catch (e) {
+    console.warn("Could not load saved progress:", e);
+  }
+  return getInitialState();
+}
+
+function saveState(state) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) {
+    console.warn("Could not save progress:", e);
+  }
+}
+
+// === MAIN APP ===
+function App() {
+  const [state, setState] = useState(loadState);
+  const [tab, setTab] = useState("drills");
+  const [toast, setToast] = useState(null);
+  const [xpPopup, setXpPopup] = useState(null);
+  const [newBadge, setNewBadge] = useState(null);
+
+  // Auto-save whenever state changes
+  useEffect(() => {
+    saveState(state);
+  }, [state]);
+
+  const showToast = useCallback((msg) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 2500);
+  }, []);
+
+  const showXPPopup = useCallback((xp) => {
+    setXpPopup(`+${xp} XP`);
+    setTimeout(() => setXpPopup(null), 1500);
+  }, []);
+
+  const logDrill = useCallback((drillId, tier, notes, winner, personalBest) => {
+    setState(prev => {
+      const drill = DRILLS.find(d => d.id === drillId);
+      if (!drill) return prev;
+      const xp = drill.tiers[tier].xp;
+      const today = new Date().toISOString().split('T')[0];
+      const log = {
+        id: Date.now().toString(),
+        drillId, tier, xp, date: today,
+        notes: notes || "",
+        winner: winner || null,
+        personalBest: personalBest || false,
+      };
+
+      const completedTiers = { ...prev.completedTiers };
+      if (!completedTiers[drillId]) completedTiers[drillId] = [];
+      if (!completedTiers[drillId].includes(tier)) {
+        completedTiers[drillId] = [...completedTiers[drillId], tier];
+      }
+
+      const isNewDay = prev.lastTrainDate !== today;
+      let streak = prev.streak;
+      if (isNewDay) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+        streak = (prev.lastTrainDate === yesterdayStr) ? prev.streak + 1 : 1;
+      }
+
+      // streak days for display
+      const streakDays = [...(prev.streakDays || [])];
+      if (!streakDays.includes(today)) streakDays.push(today);
+      if (streakDays.length > 7) streakDays.shift();
+
+      let parentWins = prev.parentWins;
+      let kidWins = prev.kidWins;
+      let compCount = prev.compCount;
+      if (winner === "parent") { parentWins++; compCount++; }
+      if (winner === "kid") { kidWins++; compCount++; }
+      if (winner === "tie") { compCount++; }
+
+      const personalBests = { ...prev.personalBests };
+      if (personalBest) {
+        personalBests[drillId] = { value: tier, date: today };
+      }
+
+      // mission progress
+      const missionProgress = { ...prev.missionProgress };
+      const weekMissions = generateWeeklyMissions(prev.currentWeek);
+      weekMissions.forEach(m => {
+        if (!missionProgress[m.id]) missionProgress[m.id] = 0;
+        if (m.type === "sport" && drill.sport === m.sport) missionProgress[m.id]++;
+        if (m.type === "partner" && drill.type === "partner") missionProgress[m.id]++;
+        if (m.type === "pb" && personalBest) missionProgress[m.id] = Math.min(missionProgress[m.id]+1, m.target);
+        if (m.type === "days" && isNewDay) missionProgress[m.id]++;
+        if (m.type === "tierUp") {
+          const prevTiers = prev.completedTiers[drillId] || [];
+          if (!prevTiers.includes(tier)) missionProgress[m.id]++;
+        }
+      });
+
+      let weekMissionsComplete = prev.weekMissionsComplete;
+      const allMissionsDone = weekMissions.every(m => (missionProgress[m.id]||0) >= m.target);
+      if (allMissionsDone && !prev.weekMissionsComplete) weekMissionsComplete = prev.weekMissionsComplete + 1;
+
+      return {
+        ...prev,
+        totalXP: prev.totalXP + xp,
+        logs: [log, ...prev.logs],
+        completedTiers,
+        personalBests,
+        streak,
+        lastTrainDate: today,
+        streakDays,
+        parentWins, kidWins, compCount,
+        missionProgress,
+        weekMissionsComplete,
+      };
+    });
+  }, []);
+
+  // check badges after state update
+  useEffect(() => {
+    const stats = computeStats(state);
+    BADGES.forEach(badge => {
+      if (!state.unlockedBadges.includes(badge.id) && badge.check(stats)) {
+        setState(prev => ({
+          ...prev,
+          unlockedBadges: [...prev.unlockedBadges, badge.id]
+        }));
+        setNewBadge(badge);
+        setTimeout(() => setNewBadge(null), 3000);
+      }
+    });
+  }, [state.totalXP, state.logs.length, state.streak, state.compCount]);
+
+  const levelInfo = getLevelFromXP(state.totalXP);
+
+  if (!state.setupComplete) {
+    return <SetupScreen state={state} setState={setState} />;
+  }
+
+  return (
+    <div className="app">
+      <header className="header">
+        <div className="header-top">
+          <div>
+            <h1>Winter Training Camp</h1>
+            <div className="header-subtitle">Week {state.currentWeek} of 12 &middot; {TWELVE_WEEK_ARC[(state.currentWeek-1)%12].title}</div>
+          </div>
+          <div className="level-badge">
+            <span>LV</span>
+            <span>{levelInfo.level}</span>
+          </div>
+        </div>
+        <div className="xp-bar-container">
+          <div className="xp-bar-label">
+            <span>{levelInfo.currentXP} / {levelInfo.nextLevelXP} XP</span>
+            <span>Total: {state.totalXP} XP</span>
+          </div>
+          <div className="xp-bar">
+            <div className="xp-bar-fill" style={{width:`${(levelInfo.currentXP/levelInfo.nextLevelXP)*100}%`}} />
+          </div>
+        </div>
+      </header>
+
+      {tab === "drills" && <DrillsTab state={state} logDrill={logDrill} showToast={showToast} showXPPopup={showXPPopup} />}
+      {tab === "stats" && <StatsTab state={state} />}
+      {tab === "badges" && <BadgesTab state={state} />}
+      {tab === "schedule" && <ScheduleTab state={state} setState={setState} />}
+      {tab === "settings" && <SettingsTab state={state} setState={setState} />}
+
+      <nav className="nav">
+        {[
+          {id:"drills",label:"Drills",Icon:IconDrills},
+          {id:"stats",label:"Stats",Icon:IconStats},
+          {id:"badges",label:"Badges",Icon:IconBadges},
+          {id:"schedule",label:"Schedule",Icon:IconSchedule},
+          {id:"settings",label:"More",Icon:IconSettings},
+        ].map(t => (
+          <button key={t.id} className={tab===t.id?"active":""} onClick={()=>setTab(t.id)}>
+            <t.Icon active={tab===t.id} />
+            {t.label}
+          </button>
+        ))}
+      </nav>
+
+      {toast && <div className="toast">{toast}</div>}
+      {xpPopup && <div className="xp-popup">{xpPopup}</div>}
+      {newBadge && (
+        <div className="modal-overlay" onClick={()=>setNewBadge(null)}>
+          <div className="modal" style={{textAlign:"center"}} onClick={e=>e.stopPropagation()}>
+            <div className="badge-icon unlocked" style={{width:80,height:80,fontSize:40,margin:"0 auto 12px"}}>
+              {newBadge.icon}
+            </div>
+            <h2>Badge Unlocked!</h2>
+            <p style={{fontSize:18,fontWeight:700,margin:"8px 0"}}>{newBadge.name}</p>
+            <p style={{color:"var(--text2)",fontSize:14}}>{newBadge.desc}</p>
+            <div className="modal-actions" style={{justifyContent:"center"}}>
+              <button className="btn-confirm" onClick={()=>setNewBadge(null)}>Awesome!</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// === SETUP SCREEN ===
+function SetupScreen({state, setState}) {
+  const [childName, setChildName] = useState("");
+  const [parentName, setParentName] = useState("");
+  return (
+    <div className="app" style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",minHeight:"100vh",padding:32}}>
+      <div style={{textAlign:"center",marginBottom:32}}>
+        <div style={{fontSize:48,marginBottom:8}}>{"\u{1F3C0}"}{"\u26BE"}</div>
+        <h1 style={{fontSize:28,fontWeight:800,marginBottom:4}}>Winter Training Camp</h1>
+        <p style={{color:"var(--text2)",fontSize:14}}>12-Week Indoor Skills Program</p>
+      </div>
+      <div style={{width:"100%",maxWidth:320}}>
+        <label style={{fontSize:13,color:"var(--text2)",display:"block",marginBottom:4}}>Child's Name</label>
+        <input
+          value={childName} onChange={e=>setChildName(e.target.value)}
+          placeholder="Enter name..."
+          style={{width:"100%",padding:12,borderRadius:10,border:"1px solid var(--border)",background:"var(--surface)",color:"var(--text)",fontSize:16,marginBottom:16,outline:"none"}}
+        />
+        <label style={{fontSize:13,color:"var(--text2)",display:"block",marginBottom:4}}>Parent's Name</label>
+        <input
+          value={parentName} onChange={e=>setParentName(e.target.value)}
+          placeholder="Enter name..."
+          style={{width:"100%",padding:12,borderRadius:10,border:"1px solid var(--border)",background:"var(--surface)",color:"var(--text)",fontSize:16,marginBottom:24,outline:"none"}}
+        />
+        <button
+          className="log-btn"
+          disabled={!childName.trim() || !parentName.trim()}
+          onClick={()=>setState(p=>({...p,childName:childName.trim(),parentName:parentName.trim(),setupComplete:true}))}
+        >
+          Start Training Camp
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// === DRILLS TAB ===
+function DrillsTab({state, logDrill, showToast, showXPPopup}) {
+  const [sportFilter, setSportFilter] = useState("all");
+  const [skillFilter, setSkillFilter] = useState("all");
+  const [expandedDrill, setExpandedDrill] = useState(null);
+  const [logModal, setLogModal] = useState(null); // {drillId, tier}
+
+  const skillAreas = useMemo(() => {
+    const areas = new Set();
+    DRILLS.forEach(d => {
+      if (sportFilter === "all" || d.sport === sportFilter) areas.add(d.skillArea);
+    });
+    return ["all", ...Array.from(areas).sort()];
+  }, [sportFilter]);
+
+  const filteredDrills = useMemo(() => {
+    return DRILLS.filter(d => {
+      if (sportFilter !== "all" && d.sport !== sportFilter) return false;
+      if (skillFilter !== "all" && d.skillArea !== skillFilter) return false;
+      return true;
+    });
+  }, [sportFilter, skillFilter]);
+
+  const getCurrentTier = (drillId) => {
+    const completed = state.completedTiers[drillId] || [];
+    let highest = -1;
+    completed.forEach(t => {
+      const idx = TIER_ORDER.indexOf(t);
+      if (idx > highest) highest = idx;
+    });
+    return highest >= 0 ? TIER_ORDER[highest] : null;
+  };
+
+  const getNextTier = (drillId) => {
+    const current = getCurrentTier(drillId);
+    if (!current) return TIER_ORDER[0];
+    const idx = TIER_ORDER.indexOf(current);
+    return idx < TIER_ORDER.length - 1 ? TIER_ORDER[idx + 1] : null;
+  };
+
+  return (
+    <div className="slide-up">
+      <div className="tab-bar">
+        {[
+          {id:"all",label:"All"},
+          {id:"basketball",label:"\u{1F3C0} Basketball"},
+          {id:"baseball",label:"\u26BE Baseball"},
+          {id:"cross-sport",label:"\u{1F3CB} Cross-Sport"},
+        ].map(t => (
+          <button key={t.id} className={`tab-btn ${sportFilter===t.id?"active":""}`} onClick={()=>{setSportFilter(t.id);setSkillFilter("all");}}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {skillAreas.length > 2 && (
+        <div className="tab-bar">
+          {skillAreas.map(s => (
+            <button key={s} className={`tab-btn ${skillFilter===s?"active":""}`} onClick={()=>setSkillFilter(s)}>
+              {s === "all" ? "All Skills" : s}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div style={{padding:"4px 0 20px"}}>
+        {filteredDrills.map(drill => {
+          const isExpanded = expandedDrill === drill.id;
+          const currentTier = getCurrentTier(drill.id);
+          const nextTier = getNextTier(drill.id);
+          const completedTiers = state.completedTiers[drill.id] || [];
+          const drillLogs = state.logs.filter(l => l.drillId === drill.id);
+
+          return (
+            <div key={drill.id} className="drill-card">
+              <div className="drill-card-top" onClick={()=>setExpandedDrill(isExpanded?null:drill.id)}>
+                <div className={`drill-sport-dot ${drill.sport}`} />
+                <div className="drill-info">
+                  <div className="drill-name">{drill.name}</div>
+                  <div className="drill-meta">
+                    <span>{drill.estimatedMinutes} min</span>
+                    <span>{drill.type === "partner" ? "\u{1F91D} Partner" : "\u{1F9CD} Solo"}</span>
+                    <span>{drill.spaceNeeded}</span>
+                    {currentTier && (
+                      <span className={`drill-tier-badge ${TIER_COLORS[currentTier]}`}>{currentTier}</span>
+                    )}
+                  </div>
+                </div>
+                <div style={{color:"var(--text2)",fontSize:12}}>{isExpanded ? "\u25B2" : "\u25BC"}</div>
+              </div>
+
+              {isExpanded && (
+                <div className="drill-expanded slide-up">
+                  <p className="drill-description">{drill.description}</p>
+                  {drill.equipment.length > 0 && (
+                    <p className="drill-equipment">Equipment: {drill.equipment.join(", ")}</p>
+                  )}
+
+                  <div className="tier-grid">
+                    {TIER_ORDER.map(tier => {
+                      const isCompleted = completedTiers.includes(tier);
+                      const tierData = drill.tiers[tier];
+                      return (
+                        <div
+                          key={tier}
+                          className={`tier-item ${isCompleted ? "completed" : ""}`}
+                          onClick={()=>setLogModal({drillId:drill.id,tier})}
+                        >
+                          <div className={`tier-label ${TIER_COLORS[tier]}`} style={{display:"inline-block",padding:"2px 6px",borderRadius:6}}>
+                            {tier} {isCompleted && "\u2713"}
+                          </div>
+                          <div className="tier-criteria">{tierData.criteria}</div>
+                          <div className="tier-xp">+{tierData.xp} XP</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {drillLogs.length > 0 && (
+                    <div style={{fontSize:12,color:"var(--text2)",marginBottom:8}}>
+                      Completed {drillLogs.length} time{drillLogs.length!==1?"s":""} &middot; Last: {drillLogs[0].date}
+                    </div>
+                  )}
+
+                  {nextTier ? (
+                    <button className="log-btn" onClick={()=>setLogModal({drillId:drill.id,tier:nextTier})}>
+                      Log {nextTier} Tier &middot; +{drill.tiers[nextTier].xp} XP
+                    </button>
+                  ) : (
+                    <button className="log-btn" onClick={()=>setLogModal({drillId:drill.id,tier:"MVP"})}>
+                      Log Again (MVP) &middot; +{drill.tiers.MVP.xp} XP
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {logModal && (
+        <LogModal
+          drill={DRILLS.find(d=>d.id===logModal.drillId)}
+          tier={logModal.tier}
+          state={state}
+          onLog={(tier, notes, winner, pb) => {
+            const drill = DRILLS.find(d=>d.id===logModal.drillId);
+            logDrill(logModal.drillId, tier, notes, winner, pb);
+            showXPPopup(drill.tiers[tier].xp);
+            showToast(`${drill.name} logged at ${tier}!`);
+            setLogModal(null);
+          }}
+          onClose={()=>setLogModal(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+// === LOG MODAL ===
+function LogModal({drill, tier, state, onLog, onClose}) {
+  const [selectedTier, setSelectedTier] = useState(tier);
+  const [notes, setNotes] = useState("");
+  const [winner, setWinner] = useState(null);
+  const [isPB, setIsPB] = useState(false);
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal slide-up" onClick={e=>e.stopPropagation()}>
+        <h2>Log: {drill.name}</h2>
+        <p style={{fontSize:13,color:"var(--text2)",marginBottom:12}}>{drill.tiers[selectedTier].criteria}</p>
+
+        <label style={{fontSize:12,color:"var(--text2)",display:"block",marginBottom:4}}>Tier Completed</label>
+        <div style={{display:"flex",gap:4,marginBottom:12}}>
+          {TIER_ORDER.map(t => (
+            <button
+              key={t}
+              className={`tab-btn ${selectedTier===t?"active":""}`}
+              style={{fontSize:12,padding:"6px 10px",flex:1}}
+              onClick={()=>setSelectedTier(t)}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+
+        {drill.type === "partner" && (
+          <>
+            <label style={{fontSize:12,color:"var(--text2)",display:"block",marginBottom:4}}>Competition Winner</label>
+            <div className="winner-btns">
+              <button className={`winner-btn ${winner==="kid"?"selected":""}`} onClick={()=>setWinner(winner==="kid"?null:"kid")}>
+                {state.childName || "Kid"} Wins
+              </button>
+              <button className={`winner-btn ${winner==="parent"?"selected":""}`} onClick={()=>setWinner(winner==="parent"?null:"parent")}>
+                {state.parentName || "Parent"} Wins
+              </button>
+              <button className={`winner-btn ${winner==="tie"?"selected":""}`} onClick={()=>setWinner(winner==="tie"?null:"tie")}>
+                Tie
+              </button>
+            </div>
+          </>
+        )}
+
+        <label style={{display:"flex",alignItems:"center",gap:8,fontSize:13,margin:"8px 0",cursor:"pointer"}}>
+          <input type="checkbox" checked={isPB} onChange={e=>setIsPB(e.target.checked)} style={{width:18,height:18}} />
+          Personal Best!
+        </label>
+
+        <textarea
+          className="notes-input"
+          placeholder="Notes (optional)..."
+          rows={2}
+          value={notes}
+          onChange={e=>setNotes(e.target.value)}
+        />
+
+        <div className="modal-actions">
+          <button className="btn-cancel" onClick={onClose}>Cancel</button>
+          <button className="btn-confirm" onClick={()=>onLog(selectedTier, notes, winner, isPB)}>
+            Log +{drill.tiers[selectedTier].xp} XP
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// === STATS TAB ===
+function StatsTab({state}) {
+  const stats = computeStats(state);
+  const levelInfo = getLevelFromXP(state.totalXP);
+
+  // Last 7 days for streak display
+  const last7 = [];
+  const dayNames = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+    const trained = state.logs.some(l => l.date === dateStr);
+    const isToday = i === 0;
+    last7.push({ day: dayNames[d.getDay()], dateStr, trained, isToday });
+  }
+
+  // Sport breakdown for chart
+  const sportData = [
+    {label:"\u{1F3C0} BBall",value:stats.sportCounts.basketball,color:"var(--basketball)"},
+    {label:"\u26BE Base",value:stats.sportCounts.baseball,color:"var(--baseball)"},
+    {label:"\u{1F3CB} Cross",value:stats.sportCounts["cross-sport"],color:"var(--crosssport)"},
+  ];
+  const maxSport = Math.max(...sportData.map(s=>s.value), 1);
+
+  // Tier breakdown
+  const tierCounts = {Rookie:0,Starter:0,"All-Star":0,MVP:0};
+  state.logs.forEach(l => { if (tierCounts[l.tier] !== undefined) tierCounts[l.tier]++; });
+
+  return (
+    <div className="slide-up" style={{padding:"8px 0 20px"}}>
+      {/* Streak */}
+      <div className="card">
+        <div className="card-header">
+          <span style={{fontSize:15,fontWeight:700}}>Training Streak</span>
+          <span style={{fontSize:22}}>{state.streak} {state.streak >= 7 ? "\u{1F525}" : state.streak >= 3 ? "\u26A1" : "\u{1F4AA}"}</span>
+        </div>
+        <div className="streak-bar">
+          {last7.map((d,i) => (
+            <div key={i} className={`streak-day ${d.trained?"done":d.isToday?"today":"empty"}`}>
+              {d.day}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Core Stats */}
+      <div className="card">
+        <div className="stat-grid">
+          <div className="stat-box">
+            <div className="stat-value" style={{color:"var(--gold)"}}>{state.totalXP}</div>
+            <div className="stat-label">Total XP</div>
+          </div>
+          <div className="stat-box">
+            <div className="stat-value" style={{color:"var(--accent)"}}>{state.logs.length}</div>
+            <div className="stat-label">Drills Done</div>
+          </div>
+          <div className="stat-box">
+            <div className="stat-value" style={{color:"var(--green)"}}>{levelInfo.level}</div>
+            <div className="stat-label">Level</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Competition Tracker */}
+      <div className="card">
+        <div className="card-header">
+          <span style={{fontSize:15,fontWeight:700}}>Parent vs. Kid</span>
+        </div>
+        <div className="comp-scores">
+          <div className="comp-player">
+            <div className="comp-player-label">{state.childName || "Kid"}</div>
+            <div className="comp-player-score" style={{color:"var(--accent)"}}>{state.kidWins}</div>
+          </div>
+          <div className="comp-vs">VS</div>
+          <div className="comp-player">
+            <div className="comp-player-label">{state.parentName || "Parent"}</div>
+            <div className="comp-player-score" style={{color:"var(--red)"}}>{state.parentWins}</div>
+          </div>
+        </div>
+        <div style={{textAlign:"center",fontSize:12,color:"var(--text2)"}}>{state.compCount} total competitions</div>
+      </div>
+
+      {/* Sport Breakdown */}
+      <div className="card">
+        <div className="card-header">
+          <span style={{fontSize:15,fontWeight:700}}>Drills by Sport</span>
+        </div>
+        <div className="chart-container" style={{padding:0}}>
+          {sportData.map((s,i) => (
+            <div key={i} className="chart-bar-row">
+              <div className="chart-label">{s.label}</div>
+              <div className="chart-bar-bg">
+                <div className="chart-bar-fill" style={{width:`${(s.value/maxSport)*100}%`,background:s.color}} />
+              </div>
+              <div className="chart-value">{s.value}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Tier Breakdown */}
+      <div className="card">
+        <div className="card-header">
+          <span style={{fontSize:15,fontWeight:700}}>Tier Breakdown</span>
+        </div>
+        <div className="chart-container" style={{padding:0}}>
+          {TIER_ORDER.map((tier,i) => {
+            const maxTier = Math.max(...Object.values(tierCounts), 1);
+            const colors = {"Rookie":"#60a5fa","Starter":"#4ade80","All-Star":"#c084fc","MVP":"#fbbf24"};
+            return (
+              <div key={tier} className="chart-bar-row">
+                <div className="chart-label">{tier}</div>
+                <div className="chart-bar-bg">
+                  <div className="chart-bar-fill" style={{width:`${(tierCounts[tier]/maxTier)*100}%`,background:colors[tier]}} />
+                </div>
+                <div className="chart-value">{tierCounts[tier]}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Recent Activity */}
+      <div className="card" style={{padding:0,overflow:"hidden"}}>
+        <div style={{padding:"16px 16px 8px",fontSize:15,fontWeight:700}}>Recent Activity</div>
+        {state.logs.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">{"\u{1F3C3}"}</div>
+            <div className="empty-state-text">No drills logged yet. Get started!</div>
+          </div>
+        ) : (
+          state.logs.slice(0, 15).map(log => {
+            const drill = DRILLS.find(d => d.id === log.drillId);
+            return (
+              <div key={log.id} className="log-item">
+                <div className={`log-item-dot`} style={{background: drill ? `var(--${drill.sport === "cross-sport" ? "crosssport" : drill.sport})` : "var(--text2)"}} />
+                <div className="log-item-info">
+                  <div className="log-item-name">
+                    {drill?.name || "Unknown"} {log.personalBest && "\u{1F31F}"}
+                    {log.winner && ` \u2022 ${log.winner === "kid" ? state.childName : log.winner === "parent" ? state.parentName : "Tie"} wins`}
+                  </div>
+                  <div className="log-item-detail">
+                    <span className={`drill-tier-badge ${TIER_COLORS[log.tier]}`}>{log.tier}</span>
+                    {" "}{log.date}
+                    {log.notes && ` \u2022 ${log.notes}`}
+                  </div>
+                </div>
+                <div className="log-item-xp">+{log.xp}</div>
+              </div>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
+}
+
+// === BADGES TAB ===
+function BadgesTab({state}) {
+  const stats = computeStats(state);
+  const unlocked = state.unlockedBadges.length;
+
+  return (
+    <div className="slide-up" style={{padding:"8px 0 20px"}}>
+      <div className="card">
+        <div style={{textAlign:"center"}}>
+          <div style={{fontSize:32,fontWeight:800,color:"var(--gold)"}}>{unlocked}</div>
+          <div style={{fontSize:13,color:"var(--text2)"}}>of {BADGES.length} badges unlocked</div>
+          <div className="xp-bar" style={{marginTop:8}}>
+            <div className="xp-bar-fill" style={{width:`${(unlocked/BADGES.length)*100}%`,background:"linear-gradient(90deg,var(--gold),#d97706)"}} />
+          </div>
+        </div>
+      </div>
+
+      <div className="badge-grid">
+        {BADGES.map(badge => {
+          const isUnlocked = state.unlockedBadges.includes(badge.id);
+          return (
+            <div key={badge.id} className="badge-item">
+              <div className={`badge-icon ${isUnlocked ? "unlocked" : "locked"}`}>
+                {badge.icon}
+              </div>
+              <div className="badge-name">{badge.name}</div>
+              <div className="badge-desc">{badge.desc}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// === SCHEDULE TAB ===
+function ScheduleTab({state, setState}) {
+  const [view, setView] = useState("weekly"); // weekly | arc | missions
+  const weekMissions = generateWeeklyMissions(state.currentWeek);
+  const arc = TWELVE_WEEK_ARC[(state.currentWeek - 1) % 12];
+
+  return (
+    <div className="slide-up" style={{padding:"8px 0 20px"}}>
+      <div className="tab-bar">
+        <button className={`tab-btn ${view==="weekly"?"active":""}`} onClick={()=>setView("weekly")}>This Week</button>
+        <button className={`tab-btn ${view==="missions"?"active":""}`} onClick={()=>setView("missions")}>Missions</button>
+        <button className={`tab-btn ${view==="arc"?"active":""}`} onClick={()=>setView("arc")}>12-Week Arc</button>
+      </div>
+
+      {view === "weekly" && (
+        <div>
+          <div className="card">
+            <div style={{textAlign:"center"}}>
+              <div style={{fontSize:11,color:"var(--text2)",textTransform:"uppercase",letterSpacing:1}}>Week {state.currentWeek} Theme</div>
+              <div style={{fontSize:20,fontWeight:800,margin:"4px 0"}}>{arc.theme}</div>
+              <div style={{fontSize:13,color:"var(--text2)"}}>{arc.focus}</div>
+            </div>
+          </div>
+
+          <div className="card" style={{padding:0,overflow:"hidden"}}>
+            {WEEKLY_SCHEDULE_TEMPLATE.map((day, i) => (
+              <div key={i} className="week-day">
+                <div className="week-day-name">{day.day}</div>
+                <div className="week-day-content">
+                  <div style={{fontWeight:600,marginBottom:2}}>{day.label}</div>
+                  <div style={{fontSize:12,color:"var(--text2)"}}>{day.desc}</div>
+                  <div style={{marginTop:4}}>
+                    {day.tags.map(tag => {
+                      const colors = {basketball:"var(--basketball)",baseball:"var(--baseball)","cross-sport":"var(--crosssport)"};
+                      return <span key={tag} className="week-day-tag" style={{background:`${colors[tag]}22`,color:colors[tag]}}>{tag}</span>;
+                    })}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="card" style={{background:"var(--surface2)"}}>
+            <div style={{fontSize:14,fontWeight:600,marginBottom:6}}>Sunday: Active Recovery Ideas</div>
+            <div style={{fontSize:13,color:"var(--text2)",lineHeight:1.6}}>
+              Stretch for 10 min, focusing on legs and shoulders. Watch highlight reels of favorite players. Practice visualization: close your eyes and picture yourself executing drills perfectly. Review the week's progress in the Stats tab.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {view === "missions" && (
+        <div style={{padding:"4px 16px"}}>
+          <div style={{fontSize:15,fontWeight:700,marginBottom:12}}>Week {state.currentWeek} Missions</div>
+          {weekMissions.map(mission => {
+            const progress = state.missionProgress[mission.id] || 0;
+            const pct = Math.min((progress / mission.target) * 100, 100);
+            const done = progress >= mission.target;
+            return (
+              <div key={mission.id} className={`mission-card ${done?"completed":""}`}>
+                <div className="mission-title">{done ? "\u2705 " : ""}{mission.title}</div>
+                <div className="mission-progress">
+                  <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:"var(--text2)"}}>
+                    <span>{progress} / {mission.target}</span>
+                    <span>{Math.round(pct)}%</span>
+                  </div>
+                  <div className="mission-progress-bar">
+                    <div className="mission-progress-fill" style={{width:`${pct}%`}} />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {view === "arc" && (
+        <div>
+          <div className="week-selector">
+            <button onClick={()=>setState(p=>({...p,currentWeek:Math.max(1,p.currentWeek-1)}))}>
+              &larr;
+            </button>
+            <span>Week {state.currentWeek}</span>
+            <button onClick={()=>setState(p=>({...p,currentWeek:Math.min(12,p.currentWeek+1)}))}>
+              &rarr;
+            </button>
+          </div>
+          <div className="card" style={{padding:0,overflow:"hidden"}}>
+            {TWELVE_WEEK_ARC.map(w => (
+              <div key={w.week} className={`arc-week ${w.week===state.currentWeek?"current":""} ${w.week<state.currentWeek?"completed":""}`}>
+                <div className="arc-week-num">{w.week}</div>
+                <div className="arc-week-info">
+                  <div className="arc-week-title">{w.title}</div>
+                  <div className="arc-week-focus">{w.focus}</div>
+                </div>
+                {w.week < state.currentWeek && <span style={{color:"var(--green)",fontSize:16}}>{"\u2713"}</span>}
+                {w.week === state.currentWeek && <span style={{color:"var(--accent)",fontSize:12,fontWeight:700}}>NOW</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// === SETTINGS TAB ===
+function SettingsTab({state, setState}) {
+  const [showReset, setShowReset] = useState(false);
+
+  return (
+    <div className="slide-up" style={{padding:"8px 0 20px"}}>
+      <div className="card">
+        <div style={{fontSize:15,fontWeight:700,marginBottom:12}}>Settings</div>
+        <div className="setting-row">
+          <span className="setting-label">Child's Name</span>
+          <span className="setting-value">{state.childName}</span>
+        </div>
+        <div className="setting-row">
+          <span className="setting-label">Parent's Name</span>
+          <span className="setting-value">{state.parentName}</span>
+        </div>
+        <div className="setting-row">
+          <span className="setting-label">Current Week</span>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <button
+              style={{background:"var(--surface2)",color:"var(--text)",padding:"4px 10px",borderRadius:6,fontSize:14}}
+              onClick={()=>setState(p=>({...p,currentWeek:Math.max(1,p.currentWeek-1)}))}
+            >-</button>
+            <span className="setting-value">{state.currentWeek}</span>
+            <button
+              style={{background:"var(--surface2)",color:"var(--text)",padding:"4px 10px",borderRadius:6,fontSize:14}}
+              onClick={()=>setState(p=>({...p,currentWeek:Math.min(12,p.currentWeek+1)}))}
+            >+</button>
+          </div>
+        </div>
+      </div>
+
+      <div className="card">
+        <div style={{fontSize:15,fontWeight:700,marginBottom:12}}>Fun Extras</div>
+        <div style={{fontSize:13,color:"var(--text2)",lineHeight:1.6}}>
+          <p style={{marginBottom:8}}><strong>Music Playlists:</strong> Search "Kids Sports Hype Mix" on your music app. Upbeat music makes drills 2x more fun.</p>
+          <p style={{marginBottom:8}}><strong>Trick Shot Challenge:</strong> After every session, each person gets 3 attempts at a creative trick shot. Vote on the best one!</p>
+          <p style={{marginBottom:8}}><strong>Film Study:</strong> On rest days, watch YouTube highlights of favorite players. Pause and discuss technique. Try "Basketball ball handling drills" or "MLB fielding highlights."</p>
+          <p><strong>Celebration Ritual:</strong> End every session with a special handshake. Make it increasingly elaborate as the weeks go on!</p>
+        </div>
+      </div>
+
+      <div className="card">
+        <div style={{fontSize:15,fontWeight:700,marginBottom:8,color:"var(--red)"}}>Danger Zone</div>
+        <button
+          style={{background:"rgba(239,68,68,0.15)",color:"var(--red)",padding:"12px 16px",borderRadius:10,width:"100%",fontSize:14,fontWeight:600}}
+          onClick={()=>setShowReset(true)}
+        >
+          Reset All Progress
+        </button>
+      </div>
+
+      {showReset && (
+        <div className="modal-overlay" onClick={()=>setShowReset(false)}>
+          <div className="modal" onClick={e=>e.stopPropagation()}>
+            <h2>Reset Everything?</h2>
+            <p style={{fontSize:14,color:"var(--text2)",margin:"8px 0"}}>This will delete all XP, badges, logs, and progress. This cannot be undone.</p>
+            <div className="modal-actions">
+              <button className="btn-cancel" onClick={()=>setShowReset(false)}>Cancel</button>
+              <button style={{background:"var(--red)",color:"#fff",borderRadius:10}} onClick={()=>{
+                const fresh = getInitialState();
+                setState(fresh);
+                saveState(fresh);
+                setShowReset(false);
+              }}>Yes, Reset</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
