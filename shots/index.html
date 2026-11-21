@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shot Tracker</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Shots">
+<meta name="theme-color" content="#0d1320">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+<style>
+:root{
+  --bg:#0d1320; --surface:#172033; --surface2:#212c44; --border:#2e3a55;
+  --text:#e8edf5; --text2:#93a0b8; --accent:#f97316; --make:#16a34a; --miss:#dc2626;
+  --court:#1c2740; --line:#5a6a8a;
+  --st:env(safe-area-inset-top); --sb:env(safe-area-inset-bottom);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--text);height:100%}
+body{font:16px/1.35 -apple-system,BlinkMacSystemFont,system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+  overscroll-behavior:none;-webkit-user-select:none;user-select:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;touch-action:manipulation}
+input{font:inherit;-webkit-user-select:text;user-select:text}
+#app{max-width:560px;margin:0 auto;padding:calc(var(--st) + 10px) 16px calc(var(--sb) + 24px);min-height:100%}
+.top{display:flex;align-items:center;gap:10px;min-height:44px;margin-bottom:12px}
+.top h1{font-size:24px;font-weight:800;flex:1;letter-spacing:-.3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top h2{font-size:18px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--surface);font-size:20px;flex:none}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:12px}
+.player{display:flex;align-items:center;gap:12px;width:100%;text-align:left}
+.av{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:19px;color:#fff;flex:none}
+.grow{flex:1;min-width:0}
+.name{font-weight:700;font-size:17px}
+.sub{color:var(--text2);font-size:13px}
+.live{background:var(--make);color:#fff;font-size:11px;font-weight:800;padding:3px 7px;border-radius:6px;letter-spacing:.5px}
+.btn{display:block;width:100%;padding:15px;border-radius:14px;font-weight:700;font-size:17px;text-align:center;background:var(--surface2);border:1px solid var(--border)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.danger{color:#f87171}
+.btn:active,.player:active,.icon:active{opacity:.7}
+.row{display:flex;gap:10px}
+.seg{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:3px;margin-bottom:12px}
+.seg button{flex:1;padding:8px 0;border-radius:9px;font-size:14px;font-weight:600;color:var(--text2)}
+.seg button.on{background:var(--surface2);color:var(--text)}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 6px;text-align:center}
+.tile b{display:block;font-size:20px;font-weight:800}
+.tile span{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.4px}
+.tile small{display:block;font-size:11px;color:var(--text2)}
+.sec{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.6px;margin:18px 2px 8px}
+.court{width:100%;display:block;border-radius:14px;background:var(--court);touch-action:manipulation}
+.court .z{stroke:var(--bg);stroke-width:2;cursor:pointer}
+.court .z.sel{stroke:#fff;stroke-width:4}
+.court text{fill:#fff;text-anchor:middle;pointer-events:none;font-weight:700}
+.court .lbl{font-size:15px}
+.court .cnt{font-size:14px;font-weight:600;opacity:.9}
+.court .ln{fill:none;stroke:var(--line);stroke-width:2;pointer-events:none}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{padding:8px 4px;text-align:right;border-bottom:1px solid var(--border)}
+th{color:var(--text2);font-weight:600;font-size:12px}
+td:first-child,th:first-child{text-align:left}
+tr:last-child td{border-bottom:0}
+tr.click:active{background:var(--surface2)}
+.pct{font-weight:700}
+.empty{color:var(--text2);text-align:center;padding:24px 8px;font-size:15px}
+.chartwrap svg{width:100%;display:block}
+.chips{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px}
+.chip{padding:7px 12px;border-radius:20px;background:var(--surface);border:1px solid var(--border);font-size:14px;font-weight:600;white-space:nowrap}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+/* live */
+.live-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.score{font-size:15px;color:var(--text2)}
+.score b{color:var(--text);font-size:20px}
+.zonebar{display:flex;align-items:center;justify-content:space-between;margin:12px 2px 10px;min-height:52px}
+.zonebar .zn{font-size:20px;font-weight:800}
+.zonebar .zs{font-size:28px;font-weight:800;text-align:right}
+.zonebar .zs small{display:block;font-size:13px;color:var(--text2);font-weight:600}
+.dots{display:flex;gap:5px;margin-top:4px;min-height:10px}
+.dot{width:10px;height:10px;border-radius:50%}
+.mm{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mm button{height:min(150px,22vh);min-height:96px;border-radius:20px;font-size:28px;font-weight:900;color:#fff;letter-spacing:1px;transition:transform .06s}
+.mm button:active{transform:scale(.97);filter:brightness(1.2)}
+.mm .miss{background:var(--miss)}
+.mm .make{background:var(--make)}
+.mm button[disabled]{opacity:.35}
+.undo{margin-top:12px;display:flex;gap:10px}
+.undo button{flex:1;padding:12px;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-weight:600;font-size:15px}
+.flash{position:fixed;inset:0;pointer-events:none;opacity:0}
+.flash.go{animation:fl .35s ease-out}
+@keyframes fl{0%{opacity:.28}100%{opacity:0}}
+.hint{color:var(--text2);font-size:14px;text-align:center;padding:8px}
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center;z-index:10}
+.sheet{background:var(--surface);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:20px 16px calc(var(--sb) + 20px)}
+.sheet h3{font-size:19px;margin-bottom:12px}
+.sheet input[type=text]{width:100%;padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:18px;margin-bottom:14px}
+.colors{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.colors button{width:38px;height:38px;border-radius:50%;border:3px solid transparent}
+.colors button.on{border-color:#fff}
+.stack>*+*{margin-top:10px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="flash" id="flash"></div>
+<input type="file" id="importFile" accept="application/json,.json" hidden>
+<script>
+'use strict';
+/* ---------- Court geometry (1 unit = 1 inch / 1.2; hoop at top) ---------- */
+const HX = 250, HY = 52.5, R3 = 197.5, RL = 70, CW = 500, CH = 360;
+// angle θ: 0 = straight out from hoop toward half court; negative = left side of screen
+const ZONES = [
+  {id:'ft',  name:'Free Throw',     short:'FT',     type:'ft', lx:250, ly:196},
+  {id:'lay', name:'Layup / Paint',  short:'Layup',  type:'2',  r:[0,RL],     lx:250, ly:96},
+  {id:'lb2', name:'Left Baseline',  short:'Base',   type:'2',  r:[RL,R3], a:[-180,-62], lx:112, ly:62},
+  {id:'le2', name:'Left Elbow',     short:'Elbow',  type:'2',  r:[RL,R3], a:[-62,-14],  lx:158, ly:168},
+  {id:'mid', name:'Middle',         short:'Mid',    type:'2',  r:[RL,R3], a:[-14,14],   lx:250, ly:236},
+  {id:'re2', name:'Right Elbow',    short:'Elbow',  type:'2',  r:[RL,R3], a:[14,62],    lx:342, ly:168},
+  {id:'rb2', name:'Right Baseline', short:'Base',   type:'2',  r:[RL,R3], a:[62,180],   lx:388, ly:62},
+  {id:'lc3', name:'Left Corner 3',  short:'Corner', type:'3',  r:[R3,800], a:[-180,-68], lx:27,  ly:62},
+  {id:'lw3', name:'Left Wing 3',    short:'Wing',   type:'3',  r:[R3,800], a:[-68,-22],  lx:80,  ly:250},
+  {id:'top3',name:'Top of Key 3',   short:'Top',    type:'3',  r:[R3,800], a:[-22,22],   lx:250, ly:300},
+  {id:'rw3', name:'Right Wing 3',   short:'Wing',   type:'3',  r:[R3,800], a:[22,68],    lx:420, ly:250},
+  {id:'rc3', name:'Right Corner 3', short:'Corner', type:'3',  r:[R3,800], a:[68,180],   lx:473, ly:62},
+];
+const ZMAP = Object.fromEntries(ZONES.map(z => [z.id, z]));
+const COLORS = ['#f97316','#3b82f6','#a855f7','#10b981','#ec4899','#eab308','#06b6d4','#ef4444'];
+
+const pt = (r, deg) => { const t = deg * Math.PI / 180; return [HX + r * Math.sin(t), HY + r * Math.cos(t)]; };
+const f1 = n => Math.round(n * 10) / 10;
+function zonePath(z) {
+  if (z.type === 'ft') return null;
+  if (!z.a) return null; // circle
+  const [r1, r2] = z.r, [a1, a2] = z.a;
+  const [ox1, oy1] = pt(r2, a1), [ox2, oy2] = pt(r2, a2), [ix2, iy2] = pt(r1, a2), [ix1, iy1] = pt(r1, a1);
+  return `M${f1(ox1)},${f1(oy1)}A${r2},${r2} 0 0 0 ${f1(ox2)},${f1(oy2)}L${f1(ix2)},${f1(iy2)}A${r1},${r1} 0 0 1 ${f1(ix1)},${f1(iy1)}Z`;
+}
+const PATHS = Object.fromEntries(ZONES.map(z => [z.id, zonePath(z)]));
+
+/* ---------- State ---------- */
+const KEY = 'shotTracker.v1';
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+if (!S || !S.players) S = {v:1, players:[], sessions:[], active:{}};
+S.active = S.active || {};
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { alert('Could not save: storage is full or blocked.'); } }
+if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const player = id => S.players.find(p => p.id === id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// shot = [zoneId, made(0|1), secondsFromStart]
+function agg(shots) {
+  const z = {}, t = {all:[0,0], ft:[0,0], '2':[0,0], '3':[0,0]};
+  for (const [id, m] of shots) {
+    const zz = z[id] || (z[id] = [0, 0]); zz[0] += m; zz[1]++;
+    const ty = ZMAP[id] ? ZMAP[id].type : '2';
+    t[ty][0] += m; t[ty][1]++;
+    if (ty !== 'ft') { t.all[0] += m; t.all[1]++; }
+  }
+  return {z, t};
+}
+const pct = (m, a) => a ? Math.round(100 * m / a) : null;
+const pctTxt = (m, a) => a ? pct(m, a) + '%' : '–';
+function heat(m, a) {
+  if (!a) return 'rgba(255,255,255,0.06)';
+  const p = m / a, h = Math.max(0, Math.min(130, (p - 0.2) / 0.5 * 130));
+  return `hsla(${h},70%,42%,0.9)`;
+}
+const fmtDate = t => new Date(t).toLocaleDateString(undefined, {month:'short', day:'numeric'});
+const fmtDateTime = t => new Date(t).toLocaleString(undefined, {weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'});
+function fmtDur(sec) { sec = Math.max(0, Math.round(sec)); const m = Math.floor(sec / 60), s = sec % 60; return m >= 60 ? `${Math.floor(m/60)}h ${m%60}m` : `${m}:${String(s).padStart(2,'0')}`; }
+
+/* ---------- Router ---------- */
+let route = {v:'home'};
+const ui = {range:'30', chartZone:null};
+function go(r) { route = r; render(); window.scrollTo(0, 0); }
+
+const app = document.getElementById('app');
+let timer = null;
+function render() {
+  clearInterval(timer); timer = null;
+  const v = route.v;
+  app.innerHTML = v === 'live' ? vLive() : v === 'player' ? vPlayer() : v === 'session' ? vSession() : v === 'settings' ? vSettings() : vHome();
+  if (v === 'live') timer = setInterval(tick, 1000);
+}
+
+/* ---------- Court SVG ---------- */
+function courtSVG({stats = {}, sel = null, mode = 'count'} = {}) {
+  let zs = '';
+  for (const z of ZONES) {
+    const s = stats[z.id] || [0, 0];
+    const fill = heat(s[0], s[1]);
+    const cls = 'z' + (sel === z.id ? ' sel' : '');
+    if (z.type === 'ft') continue;
+    zs += PATHS[z.id]
+      ? `<path class="${cls}" data-zone="${z.id}" d="${PATHS[z.id]}" fill="${fill}"/>`
+      : `<circle class="${cls}" data-zone="${z.id}" cx="${HX}" cy="${HY}" r="${RL}" fill="${fill}"/>`;
+  }
+  // court lines
+  const lines = `
+    <rect class="ln" x="190" y="0" width="120" height="190"/>
+    <circle class="ln" cx="250" cy="190" r="60"/>
+    <circle class="ln" cx="${HX}" cy="${HY}" r="${R3}"/>
+    <line class="ln" x1="220" y1="40" x2="280" y2="40" style="stroke:#cbd5e1;stroke-width:3"/>
+    <circle class="ln" cx="${HX}" cy="${HY}" r="9" style="stroke:#f97316;stroke-width:3"/>`;
+  const ft = ZMAP.ft, fs = stats.ft || [0, 0];
+  const ftEl = `<rect class="z${sel === 'ft' ? ' sel' : ''}" data-zone="ft" x="214" y="172" width="72" height="44" rx="14" fill="${fs[1] ? heat(fs[0], fs[1]) : '#334155'}"/>`;
+  let labels = '';
+  for (const z of ZONES) {
+    const s = stats[z.id] || [0, 0];
+    const val = mode === 'pct' ? (s[1] ? pct(s[0], s[1]) + '%' : '') : (s[1] ? `${s[0]}/${s[1]}` : '');
+    const ly = z.id === 'ft' ? 189 : z.ly;
+    labels += `<text class="lbl" x="${z.lx}" y="${ly}">${z.short}</text>`;
+    if (val) labels += `<text class="cnt" x="${z.lx}" y="${ly + 17}">${val}</text>`;
+    if (mode === 'pct' && s[1] && !['ft','mid','lay'].includes(z.id)) labels += `<text class="cnt" x="${z.lx}" y="${ly + 32}" style="font-size:11px;opacity:.7">${s[0]}/${s[1]}</text>`;
+  }
+  return `<svg class="court" viewBox="0 0 ${CW} ${CH}" xmlns="http://www.w3.org/2000/svg">
+    <defs><clipPath id="cc"><rect width="${CW}" height="${CH}" rx="14"/></clipPath></defs>
+    <g clip-path="url(#cc)">${zs}${lines}${ftEl}${labels}</g></svg>`;
+}
+
+/* ---------- Charts ---------- */
+function lineChart(pts) {
+  if (pts.length < 2) return `<div class="empty">${pts.length ? 'One session so far. The trend line appears after the next one.' : 'No shots in this range yet.'}</div>`;
+  const W = 340, H = 170, L = 30, R = 10, T = 10, B = 24;
+  const x = i => L + (W - L - R) * (pts.length === 1 ? 0.5 : i / (pts.length - 1));
+  const y = p => T + (H - T - B) * (1 - p / 100);
+  let g = '';
+  for (const v of [0, 25, 50, 75, 100]) g += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="#2e3a55" stroke-width="1"/><text x="${L - 6}" y="${y(v) + 4}" fill="#93a0b8" font-size="10" text-anchor="end">${v}</text>`;
+  const totM = pts.reduce((s, p) => s + p.m, 0), totA = pts.reduce((s, p) => s + p.a, 0), avg = 100 * totM / totA;
+  g += `<line x1="${L}" x2="${W - R}" y1="${y(avg)}" y2="${y(avg)}" stroke="#93a0b8" stroke-dasharray="4 4" stroke-width="1"/>`;
+  // rolling avg over last 3 sessions (attempt-weighted)
+  const roll = pts.map((_, i) => { let m = 0, a = 0; for (let j = Math.max(0, i - 2); j <= i; j++) { m += pts[j].m; a += pts[j].a; } return 100 * m / a; });
+  g += `<polyline points="${pts.map((p, i) => `${f1(x(i))},${f1(y(100 * p.m / p.a))}`).join(' ')}" fill="none" stroke="#f9731666" stroke-width="1.5"/>`;
+  g += `<polyline points="${roll.map((v, i) => `${f1(x(i))},${f1(y(v))}`).join(' ')}" fill="none" stroke="#f97316" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
+  pts.forEach((p, i) => { g += `<circle cx="${f1(x(i))}" cy="${f1(y(100 * p.m / p.a))}" r="${Math.min(6, 2.5 + Math.sqrt(p.a) / 3)}" fill="#f97316"/>`; });
+  g += `<text x="${L}" y="${H - 6}" fill="#93a0b8" font-size="10">${fmtDate(pts[0].t)}</text><text x="${W - R}" y="${H - 6}" fill="#93a0b8" font-size="10" text-anchor="end">${fmtDate(pts[pts.length - 1].t)}</text>`;
+  return `<div class="chartwrap"><svg viewBox="0 0 ${W} ${H}">${g}</svg></div>
+    <div class="sub" style="margin-top:6px">Dots are sessions (bigger means more shots). The bold line is a 3-session average and the dashed line is the average for the whole range (${Math.round(avg)}%).</div>`;
+}
+function spark(vals) {
+  if (vals.length < 2) return '';
+  const W = 64, H = 22, x = i => 2 + (W - 4) * i / (vals.length - 1), y = v => 2 + (H - 4) * (1 - v / 100);
+  return `<svg width="${W}" height="${H}" style="vertical-align:middle"><polyline points="${vals.map((v, i) => `${f1(x(i))},${f1(y(v))}`).join(' ')}" fill="none" stroke="#f97316" stroke-width="2" stroke-linejoin="round"/></svg>`;
+}
+
+/* ---------- Views ---------- */
+function vHome() {
+  const cards = S.players.map(p => {
+    const ss = S.sessions.filter(s => s.playerId === p.id);
+    const last = ss[ss.length - 1];
+    let sub = 'No sessions yet';
+    if (last) { const a = agg(last.shots).t; const m = a.all[0] + a.ft[0], n = a.all[1] + a.ft[1]; sub = `Last: ${fmtDate(last.start)} · ${m}/${n} (${pctTxt(m, n)}) · ${ss.length} session${ss.length === 1 ? '' : 's'}`; }
+    return `<div class="card"><button class="player" data-act="openPlayer" data-id="${p.id}">
+      <div class="av" style="background:${p.color}">${esc(p.name[0] || '?').toUpperCase()}</div>
+      <div class="grow"><div class="name">${esc(p.name)}</div><div class="sub">${sub}</div></div>
+      ${S.active[p.id] ? '<span class="live">LIVE</span>' : '<span class="sub">›</span>'}
+    </button></div>`;
+  }).join('');
+  return `<div class="top"><h1>🏀 Shot Tracker</h1><button class="icon" data-act="settings" aria-label="Settings">⚙︎</button></div>
+    ${cards || '<div class="empty">Add a player to get started.</div>'}
+    <button class="btn primary" data-act="addPlayer">+ Add player</button>`;
+}
+
+function rangeFilter(ss) {
+  if (ui.range === 'all') return ss;
+  const cut = Date.now() - (+ui.range) * 864e5;
+  return ss.filter(s => s.start >= cut);
+}
+
+function tilesHTML(t) {
+  const tile = (lbl, [m, a]) => `<div class="tile"><b>${pctTxt(m, a)}</b><span>${lbl}</span><small>${m}/${a}</small></div>`;
+  return `<div class="tiles">${tile('FG', t.all)}${tile('FT', t.ft)}${tile('2PT', t['2'])}${tile('3PT', t['3'])}</div>`;
+}
+
+function zoneTable(zstats, perSession) {
+  const rows = ZONES.filter(z => zstats[z.id]).map(z => {
+    const [m, a] = zstats[z.id];
+    const sp = perSession ? spark(perSession.map(s => s.z[z.id]).filter(Boolean).map(([mm, aa]) => 100 * mm / aa)) : '';
+    return `<tr><td>${z.name}</td>${perSession ? `<td>${sp}</td>` : ''}<td>${m}/${a}</td><td class="pct" style="color:${heat(m, a).replace('0.9', '1')}">${pctTxt(m, a)}</td></tr>`;
+  }).join('');
+  if (!rows) return '';
+  return `<div class="card" style="padding:6px 12px"><table><tr><th>Spot</th>${perSession ? '<th>Trend</th>' : ''}<th>Made</th><th>%</th></tr>${rows}</table></div>`;
+}
+
+function vPlayer() {
+  const p = player(route.id); if (!p) return vHome();
+  const all = S.sessions.filter(s => s.playerId === p.id);
+  const ss = rangeFilter(all);
+  const shots = ss.flatMap(s => s.shots);
+  const A = agg(shots);
+  const per = ss.map(s => ({start: s.start, ...agg(s.shots)}));
+  const cz = ui.chartZone && ZMAP[ui.chartZone] ? ui.chartZone : null;
+  const pts = per.map(s => { const [m, a] = cz ? (s.z[cz] || [0, 0]) : [s.t.all[0] + s.t.ft[0], s.t.all[1] + s.t.ft[1]]; return {t: s.start, m, a}; }).filter(x => x.a > 0);
+  const active = S.active[p.id];
+  const seg = [['7','7 days'],['30','30 days'],['90','90 days'],['all','All']].map(([k, l]) => `<button class="${ui.range === k ? 'on' : ''}" data-act="range" data-k="${k}">${l}</button>`).join('');
+  const sessList = all.slice().reverse().map(s => {
+    const t = agg(s.shots).t, m = t.all[0] + t.ft[0], n = t.all[1] + t.ft[1];
+    return `<tr class="click" data-act="openSession" data-id="${s.id}"><td>${fmtDateTime(s.start)}<div class="sub">${fmtDur((s.end - s.start) / 1000)}</div></td><td>${m}/${n}</td><td class="pct">${pctTxt(m, n)}</td></tr>`;
+  }).join('');
+  return `<div class="top"><button class="icon" data-act="home" aria-label="Back">‹</button><h2>${esc(p.name)}</h2><button class="icon" data-act="editPlayer" data-id="${p.id}" aria-label="Edit player">✎</button></div>
+    <button class="btn primary" data-act="start" data-id="${p.id}">${active ? `▶ Resume live session (${active.shots.length} shots)` : '▶ Start session'}</button>
+    <div class="sec">Trends</div>
+    <div class="seg">${seg}</div>
+    ${shots.length ? tilesHTML(A.t) : ''}
+    ${shots.length ? `<div class="card" style="padding:8px">${courtSVG({stats: A.z, mode: 'pct', sel: cz})}<div class="hint">Tap a spot to chart it over time${cz ? ' · <u data-act="chartZone" data-zone="">show all spots</u>' : ''}</div></div>` : ''}
+    <div class="card"><div class="name" style="margin-bottom:8px">${cz ? ZMAP[cz].name : 'All shots'} · % by session</div>${lineChart(pts)}</div>
+    ${zoneTable(A.z, per)}
+    <div class="sec">Sessions (${all.length})</div>
+    ${sessList ? `<div class="card" style="padding:6px 12px"><table>${sessList}</table></div>` : '<div class="empty">No sessions yet.</div>'}`;
+}
+
+function vSession() {
+  const s = S.sessions.find(x => x.id === route.id); if (!s) return vHome();
+  const p = player(s.playerId) || {name: '?'};
+  const A = agg(s.shots);
+  return `<div class="top"><button class="icon" data-act="openPlayer" data-id="${s.playerId}" aria-label="Back">‹</button><h2>${esc(p.name)} · ${fmtDate(s.start)}</h2></div>
+    <div class="sub" style="margin:-6px 2px 12px">${fmtDateTime(s.start)} · ${fmtDur((s.end - s.start) / 1000)} · ${s.shots.length} shots</div>
+    ${tilesHTML(A.t)}
+    <div class="card" style="padding:8px">${courtSVG({stats: A.z, mode: 'pct'})}</div>
+    ${zoneTable(A.z)}
+    <button class="btn danger" data-act="delSession" data-id="${s.id}" style="margin-top:20px">Delete session</button>`;
+}
+
+function liveCur() { return S.active[route.id]; }
+function vLive() {
+  const p = player(route.id), a = liveCur();
+  if (!p || !a) return vHome();
+  const A = agg(a.shots);
+  const tot = [A.t.all[0] + A.t.ft[0], A.t.all[1] + A.t.ft[1]];
+  const z = a.zone ? ZMAP[a.zone] : null, zs = (z && A.z[z.id]) || [0, 0];
+  const last = z ? a.shots.filter(s => s[0] === z.id).slice(-10) : [];
+  const others = Object.keys(S.active).filter(id => player(id));
+  const chips = others.length > 1 ? `<div class="chips">${others.map(id => `<button class="chip ${id === p.id ? 'on' : ''}" data-act="start" data-id="${id}">${esc(player(id).name)}</button>`).join('')}</div>` : '';
+  return `${chips}<div class="live-head">
+      <button class="icon" data-act="openPlayer" data-id="${p.id}" aria-label="Back">‹</button>
+      <div class="grow"><div class="name">${esc(p.name)} <span class="live">LIVE</span></div><div class="score"><b>${tot[0]}/${tot[1]}</b> ${pctTxt(tot[0], tot[1])} · <span id="clock">${fmtDur((Date.now() - a.start) / 1000)}</span></div></div>
+      <button class="btn" style="width:auto;padding:10px 16px;font-size:15px" data-act="end">End</button>
+    </div>
+    ${courtSVG({stats: A.z, sel: a.zone})}
+    <div class="zonebar">${z
+      ? `<div><div class="zn">${z.name}</div><div class="dots">${last.map(s => `<span class="dot" style="background:${s[1] ? 'var(--make)' : 'var(--miss)'}"></span>`).join('')}</div></div><div class="zs">${zs[0]}/${zs[1]}<small>${pctTxt(zs[0], zs[1])}</small></div>`
+      : '<div class="hint" style="width:100%">Tap the spot on the court where they are shooting from</div>'}</div>
+    <div class="mm"><button class="miss" data-act="shot" data-m="0" ${z ? '' : 'disabled'}>MISS</button><button class="make" data-act="shot" data-m="1" ${z ? '' : 'disabled'}>MAKE</button></div>
+    <div class="undo"><button data-act="undo" ${a.shots.length ? '' : 'disabled style="opacity:.4"'}>↶ Undo last</button></div>`;
+}
+function tick() { const a = liveCur(), el = document.getElementById('clock'); if (a && el) el.textContent = fmtDur((Date.now() - a.start) / 1000); }
+
+function vSettings() {
+  const n = S.sessions.reduce((s, x) => s + x.shots.length, 0);
+  return `<div class="top"><button class="icon" data-act="home" aria-label="Back">‹</button><h2>Settings & backup</h2></div>
+    <div class="card sub">Your data lives on this phone only (${S.players.length} players, ${S.sessions.length} sessions, ${n} shots). Export a backup now and then. You can import it on another phone, or after reinstalling.</div>
+    <div class="stack">
+      <button class="btn" data-act="export">Export backup</button>
+      <button class="btn" data-act="import">Import backup</button>
+    </div>`;
+}
+
+/* ---------- Sheet (add / edit player) ---------- */
+function playerSheet(p) {
+  const color = p ? p.color : COLORS[S.players.length % COLORS.length];
+  const el = document.createElement('div');
+  el.className = 'scrim';
+  el.innerHTML = `<div class="sheet"><h3>${p ? 'Edit player' : 'New player'}</h3>
+    <input type="text" id="pn" placeholder="Name" value="${p ? esc(p.name) : ''}" maxlength="30" autocomplete="off">
+    <div class="colors">${COLORS.map(c => `<button data-c="${c}" class="${c === color ? 'on' : ''}" style="background:${c}"></button>`).join('')}</div>
+    <div class="stack"><button class="btn primary" id="pSave">${p ? 'Save' : 'Add player'}</button>
+    ${p ? '<button class="btn danger" id="pDel">Delete player and all their sessions</button>' : ''}
+    <button class="btn" id="pCancel">Cancel</button></div></div>`;
+  document.body.appendChild(el);
+  let c = color;
+  const close = () => el.remove();
+  el.addEventListener('click', e => {
+    if (e.target === el || e.target.id === 'pCancel') return close();
+    if (e.target.dataset.c) { c = e.target.dataset.c; el.querySelectorAll('.colors button').forEach(b => b.classList.toggle('on', b === e.target)); }
+    if (e.target.id === 'pSave') {
+      const name = el.querySelector('#pn').value.trim(); if (!name) return el.querySelector('#pn').focus();
+      if (p) { p.name = name; p.color = c; } else S.players.push({id: uid(), name, color: c, created: Date.now()});
+      save(); close(); render();
+    }
+    if (e.target.id === 'pDel' && confirm(`Delete ${p.name} and all of their sessions? This can't be undone.`)) {
+      S.players = S.players.filter(x => x.id !== p.id); S.sessions = S.sessions.filter(x => x.playerId !== p.id); delete S.active[p.id];
+      save(); close(); go({v: 'home'});
+    }
+  });
+  setTimeout(() => el.querySelector('#pn').focus(), 50);
+}
+
+/* ---------- Actions ---------- */
+const flash = document.getElementById('flash');
+function doFlash(color) { flash.style.background = color; flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go'); }
+
+const ACT = {
+  home: () => go({v: 'home'}),
+  settings: () => go({v: 'settings'}),
+  addPlayer: () => playerSheet(null),
+  editPlayer: d => playerSheet(player(d.id)),
+  openPlayer: d => { ui.chartZone = null; go({v: 'player', id: d.id}); },
+  openSession: d => go({v: 'session', id: d.id}),
+  range: d => { ui.range = d.k; render(); },
+  chartZone: d => { ui.chartZone = d.zone || null; render(); },
+  start: d => {
+    if (!S.active[d.id]) { S.active[d.id] = {id: uid(), start: Date.now(), zone: null, shots: []}; save(); }
+    go({v: 'live', id: d.id});
+  },
+  zone: d => {
+    if (route.v === 'live') { liveCur().zone = d.zone; save(); render(); }
+    else if (route.v === 'player') { ui.chartZone = ui.chartZone === d.zone ? null : d.zone; render(); }
+  },
+  shot: d => {
+    const a = liveCur(); if (!a || !a.zone) return;
+    a.shots.push([a.zone, +d.m, Math.round((Date.now() - a.start) / 1000)]);
+    save(); render();
+    doFlash(d.m === '1' ? '#16a34a' : '#dc2626');
+  },
+  undo: () => { const a = liveCur(); if (!a || !a.shots.length) return; const s = a.shots.pop(); a.zone = s[0]; save(); render(); },
+  end: () => {
+    const a = liveCur(), pid = route.id;
+    if (!a.shots.length) { if (confirm('No shots logged. Discard this session?')) { delete S.active[pid]; save(); go({v: 'player', id: pid}); } return; }
+    if (!confirm(`End session? ${a.shots.length} shots will be saved.`)) return;
+    const last = a.shots[a.shots.length - 1][2];
+    const sess = {id: a.id, playerId: pid, start: a.start, end: Math.max(Date.now(), a.start + last * 1000), shots: a.shots};
+    S.sessions.push(sess); S.sessions.sort((x, y) => x.start - y.start);
+    delete S.active[pid]; save();
+    go({v: 'session', id: sess.id});
+  },
+  delSession: d => {
+    if (!confirm('Delete this session?')) return;
+    const s = S.sessions.find(x => x.id === d.id);
+    S.sessions = S.sessions.filter(x => x.id !== d.id); save(); go({v: 'player', id: s.playerId});
+  },
+  export: async () => {
+    const data = JSON.stringify(S);
+    const name = `shot-tracker-${new Date().toISOString().slice(0, 10)}.json`;
+    const file = new File([data], name, {type: 'application/json'});
+    if (navigator.canShare && navigator.canShare({files: [file]})) {
+      try { await navigator.share({files: [file], title: 'Shot Tracker backup'}); return; } catch (e) { if (e.name === 'AbortError') return; }
+    }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = name; a.click();
+  },
+  import: () => document.getElementById('importFile').click(),
+};
+
+document.getElementById('importFile').addEventListener('change', async e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  try {
+    const d = JSON.parse(await f.text());
+    if (!d.players || !d.sessions) throw new Error('bad');
+    const ids = new Set(S.sessions.map(s => s.id));
+    let addP = 0, addS = 0;
+    for (const p of d.players) if (!player(p.id)) { S.players.push(p); addP++; }
+    for (const s of d.sessions) if (!ids.has(s.id)) { S.sessions.push(s); addS++; }
+    S.sessions.sort((x, y) => x.start - y.start);
+    save(); alert(`Imported ${addP} players and ${addS} sessions.`); render();
+  } catch (err) { alert("That file doesn't look like a Shot Tracker backup."); }
+});
+
+document.addEventListener('click', e => {
+  const z = e.target.closest('[data-zone]');
+  if (z && z.closest('.court')) return ACT.zone({zone: z.dataset.zone});
+  const el = e.target.closest('[data-act]');
+  if (el && !el.disabled && ACT[el.dataset.act]) ACT[el.dataset.act](el.dataset);
+});
+
+// Reopen straight into a live session if one is in progress
+const liveIds = Object.keys(S.active).filter(id => player(id));
+if (liveIds.length) route = {v: 'live', id: liveIds[0]};
+render();
+document.addEventListener('visibilitychange', () => { if (!document.hidden && route.v === 'live') tick(); });
+
+if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
