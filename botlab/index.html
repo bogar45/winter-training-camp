@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--PWA-->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bot Lab">
+<meta name="theme-color" content="#0a2240">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+<!--/PWA-->
+<!--PAGE-->
+<title>Bot Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a robotics workshop on blueprint paper. Navy drafting grid, cyan linework, tangerine for anything you can press. */
+:root{
+  --bg:#0a2240; --bg-deep:#071a33; --panel:#0f3058; --panel-2:#143c6d; --panel-3:#1a4a84;
+  --grid:rgba(140,200,255,.07); --grid-major:rgba(140,200,255,.12);
+  --line:rgba(150,205,255,.22); --line-strong:rgba(150,205,255,.45);
+  --ink:#eaf4ff; --ink-dim:#a9c6e8; --ink-faint:#7193bd;
+  --accent:#ff8a3d; --accent-deep:#c95a12; --accent-ink:#2b1300;
+  --cyan:#7fd8ff; --good:#5be3a8; --good-deep:#1f8f62; --bad:#ff6b7a; --gold:#ffd166;
+  --cat:#ffb347; --dog:#7fd8ff;
+  --f-display:"Chakra Petch","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:14px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--bg);color:var(--ink)}
+body{margin:0;font-family:var(--f-body);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;
+  background-color:var(--bg);
+  background-image:linear-gradient(var(--grid-major) 1px,transparent 1px),linear-gradient(90deg,var(--grid-major) 1px,transparent 1px),linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:120px 120px,120px 120px,24px 24px,24px 24px;
+  -webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+input{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;margin:0;text-wrap:balance;letter-spacing:.01em}
+p{margin:0}
+b,strong{color:#fff}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.wrap{max-width:980px;margin:0 auto;padding-block:18px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.tag{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
+.dim{color:var(--ink-dim)}
+.card{background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);border-radius:var(--r);position:relative}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.spacer{flex:1}
+
+/* Buttons */
+.btn{--b:var(--panel-3);--s:#0b2747;--t:var(--ink);display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;
+  padding:12px 20px;font-family:var(--f-display);font-weight:700;font-size:17px;letter-spacing:.06em;text-transform:uppercase;
+  background:var(--b);color:var(--t);box-shadow:0 4px 0 var(--s);transition:transform .08s,box-shadow .08s,filter .15s;user-select:none;-webkit-user-select:none}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--s)}
+.btn:disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.4);transform:none;box-shadow:0 4px 0 var(--s)}
+.btn.primary{--b:var(--accent);--s:var(--accent-deep);--t:var(--accent-ink)}
+.btn.good{--b:var(--good);--s:var(--good-deep);--t:#04261a}
+.btn.ghost{--b:transparent;--s:transparent;border:1px solid var(--line-strong);color:var(--ink-dim)}
+.btn.sm{padding:8px 14px;font-size:14px}
+.btn.lg{padding:16px 28px;font-size:20px}
+.btn:focus-visible,.choice:focus-visible,.spot:focus-visible,input:focus-visible,.mcard:focus-visible,.side-card:focus-visible,.chip:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.btn.pulse:not(:disabled){animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 4px 0 var(--s),0 0 0 0 rgba(255,138,61,.55)}50%{box-shadow:0 4px 0 var(--s),0 0 0 10px rgba(255,138,61,0)}}
+
+/* Top bar */
+.topbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:38px;height:38px}
+.brand h1{font-size:24px;letter-spacing:.08em;text-transform:uppercase}
+.xpbox{display:flex;align-items:center;gap:12px;flex:1;min-width:220px;justify-content:flex-end}
+.rank{text-align:right;line-height:1.15}
+.rank .r-name{font-family:var(--f-display);font-weight:700;font-size:16px}
+.rank .r-xp{font-family:var(--f-mono);font-size:12px;color:var(--ink-dim)}
+.xpbar{width:140px;height:10px;border-radius:6px;background:var(--bg-deep);border:1px solid var(--line);overflow:hidden}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:6px;transition:width .6s}
+.streak{display:flex;align-items:center;gap:4px;font-family:var(--f-mono);font-weight:700;color:var(--gold)}
+
+/* Home */
+.hero{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:24px;align-items:center;padding:22px;margin-bottom:22px;overflow:hidden}
+.hero .robot-wrap{width:100%;max-width:280px;margin:0 auto}
+.hero h2{font-size:clamp(26px,4.2vw,40px);line-height:1.05}
+.hero .lead{font-size:18px;color:var(--ink-dim);margin-top:10px;max-width:52ch}
+.parts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px}
+.part{font-family:var(--f-mono);font-size:12px;padding:8px 10px;border-radius:10px;border:1px dashed var(--line);color:var(--ink-faint);display:flex;align-items:center;gap:8px;min-width:0}
+.part span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.part.on{border-style:solid;border-color:rgba(91,227,168,.5);color:var(--good);background:rgba(91,227,168,.07)}
+.part .dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.section-h{display:flex;align-items:baseline;gap:12px;margin:8px 0 12px}
+.section-h h3{font-size:20px;text-transform:uppercase;letter-spacing:.08em}
+.missions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.mcard{text-align:left;padding:16px;display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);background:linear-gradient(180deg,var(--panel-2),var(--panel));border-radius:var(--r);color:var(--ink);min-height:178px;transition:transform .15s,border-color .15s}
+.mcard:hover:not(.locked){transform:translateY(-3px);border-color:var(--accent)}
+.mcard .num{font-family:var(--f-mono);font-weight:700;font-size:13px;color:var(--accent);letter-spacing:.1em}
+.mcard h4{font-family:var(--f-display);font-size:22px;margin:0;line-height:1.1}
+.mcard .topic{font-family:var(--f-mono);font-size:12px;color:var(--cyan);letter-spacing:.04em}
+.mcard p{font-size:15px;color:var(--ink-dim)}
+.mcard .foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding-top:8px}
+.mcard.locked{opacity:.5;cursor:not-allowed}
+.mcard.next{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 10px 30px -12px rgba(255,138,61,.5)}
+.stars{display:inline-flex;gap:2px}
+.stars svg{width:18px;height:18px}
+.side{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px}
+.side-card{text-align:left;padding:16px;border:1px solid var(--line);border-radius:var(--r);background:linear-gradient(180deg,var(--panel-2),var(--panel));color:var(--ink);display:flex;flex-direction:column;gap:6px;transition:transform .15s,border-color .15s}
+.side-card:hover{transform:translateY(-3px);border-color:var(--cyan)}
+.side-card h4{font-family:var(--f-display);font-size:20px;margin:0}
+.side-card p{font-size:15px;color:var(--ink-dim)}
+.side-card .big{font-family:var(--f-mono);font-weight:700;font-size:15px;color:var(--gold);margin-top:auto}
+.badge-new{display:inline-block;background:var(--accent);color:var(--accent-ink);font-family:var(--f-mono);font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:.08em}
+
+/* Robot */
+.robot-wrap svg{width:100%;height:auto;display:block;overflow:visible}
+.bob{animation:bob 3.2s ease-in-out infinite;transform-origin:center}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.blink{animation:blink 4.5s infinite;transform-box:fill-box;transform-origin:center}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+.spin-slow{animation:spin 14s linear infinite;transform-box:fill-box;transform-origin:center}
+.spin-rev{animation:spin 9s linear infinite reverse;transform-box:fill-box;transform-origin:center}
+@keyframes spin{to{transform:rotate(360deg)}}
+.glow-pulse{animation:gp 1.8s ease-in-out infinite}
+@keyframes gp{0%,100%{opacity:.55}50%{opacity:1}}
+.talkbar{animation:tb .7s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center bottom}
+@keyframes tb{from{transform:scaleY(.35)}to{transform:scaleY(1)}}
+.install{animation:install 1.1s cubic-bezier(.2,1.4,.4,1) both;transform-box:fill-box;transform-origin:center}
+@keyframes install{0%{opacity:0;transform:scale(.2)}60%{opacity:1}100%{transform:scale(1)}}
+
+/* Mission screen */
+.m-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.m-title{flex:1;min-width:180px}
+.m-title h1{font-size:clamp(24px,3.6vw,32px);line-height:1.05}
+.pips{display:flex;gap:6px;flex-wrap:wrap}
+.pips i{width:22px;height:8px;border-radius:4px;background:var(--bg-deep);border:1px solid var(--line)}
+.pips i.done{background:var(--cyan);border-color:var(--cyan)}
+.pips i.cur{background:var(--accent);border-color:var(--accent)}
+.m-robot{display:flex;gap:14px;align-items:flex-end;margin-bottom:14px}
+.robot-sm{width:92px;flex:none}
+.bubble{position:relative;background:#eaf4ff;color:#0b223f;border-radius:16px;padding:14px 18px;font-size:18px;line-height:1.45;flex:1;min-width:0;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.bubble b,.bubble strong{color:#0b223f}
+.bubble:before{content:"";position:absolute;left:-10px;bottom:18px;border:10px solid transparent;border-right-color:#eaf4ff;border-left:0}
+.bubble .who{display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#3a6aa0;margin-bottom:2px}
+.bubble.fresh{animation:pop .35s ease-out}
+@keyframes pop{from{transform:translateY(6px);opacity:.2}to{transform:none;opacity:1}}
+.stage{padding:22px;min-height:200px}
+.stage-in{animation:stagein .35s ease-out}
+@keyframes stagein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.m-foot{display:flex;justify-content:flex-end;margin-top:16px;position:sticky;bottom:0;padding-block:12px calc(12px + env(safe-area-inset-bottom,0px));z-index:5}
+.m-foot:before{content:"";position:absolute;inset:0 -16px;background:linear-gradient(180deg,rgba(10,34,64,0),rgba(10,34,64,.85) 45%);z-index:-1}
+
+/* Generic content blocks */
+.callout{border-left:4px solid var(--accent);background:rgba(255,138,61,.08);padding:12px 16px;border-radius:0 10px 10px 0}
+.callout.cyan{border-color:var(--cyan);background:rgba(127,216,255,.07)}
+.formula{font-family:var(--f-mono);font-size:clamp(16px,2.6vw,22px);text-align:center;padding:16px;border:1px dashed var(--line-strong);border-radius:12px;background:var(--bg-deep)}
+.formula .hi{color:var(--accent)}
+.formula .hi2{color:var(--cyan)}
+.tbl{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.tbl th{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);text-align:right;padding:6px 8px;border-bottom:1px solid var(--line);font-weight:500}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl td{padding:8px;text-align:right;border-bottom:1px solid var(--line);font-family:var(--f-mono)}
+.tbl td:first-child{font-family:var(--f-body);font-weight:700}
+.tbl tr.best td{color:var(--good)}
+.scroll-x{overflow-x:auto;max-width:100%}
+.svgbox{width:100%;max-width:100%;display:block;touch-action:none;user-select:none;-webkit-user-select:none}
+.svgbox text{font-family:var(--f-mono)}
+.goal{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:14px;color:var(--ink-dim);padding:10px 14px;border-radius:10px;border:1px dashed var(--line-strong)}
+.goal.met{border-style:solid;border-color:var(--good);color:var(--good);background:rgba(91,227,168,.08)}
+.goal .chk{width:18px;height:18px;border-radius:50%;border:2px solid currentColor;flex:none;display:grid;place-items:center}
+.goal.met .chk{background:var(--good)}
+.goal.met .chk:after{content:"";width:5px;height:9px;border:solid #04261a;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.two-col{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:20px;align-items:start}
+.seg{display:inline-flex;border:1px solid var(--line-strong);border-radius:10px;overflow:hidden}
+.seg button{background:transparent;border:0;padding:8px 14px;font-family:var(--f-mono);font-size:13px;color:var(--ink-dim)}
+.seg button.on{background:var(--cyan);color:#062038}
+input[type=range]{width:100%;accent-color:var(--accent);height:32px}
+.big-num{font-family:var(--f-mono);font-weight:700;font-size:clamp(26px,5vw,40px);line-height:1.1}
+.label{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.kv > div{padding:12px;border-radius:10px;background:var(--bg-deep);border:1px solid var(--line)}
+.kv .v{font-family:var(--f-mono);font-weight:700;font-size:22px}
+
+/* Quiz */
+.q-text{font-size:clamp(19px,2.6vw,23px);line-height:1.45;max-width:60ch}
+.q-text .em{color:var(--accent);font-weight:700}
+.ans-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:18px}
+.ans{width:170px;max-width:100%;font-family:var(--f-mono);font-size:26px;font-weight:700;padding:10px 14px;border-radius:12px;border:2px solid var(--line-strong);background:var(--bg-deep);color:var(--ink);text-align:center}
+.ans:focus{border-color:var(--accent);outline:none}
+.unit{font-family:var(--f-mono);font-size:22px;color:var(--ink-dim)}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:18px}
+.choice{text-align:left;padding:14px 16px;border-radius:12px;border:2px solid var(--line-strong);background:var(--bg-deep);color:var(--ink);font-size:18px;transition:border-color .15s,background .15s}
+.choice:hover:not(:disabled){border-color:var(--accent)}
+.choice.right{border-color:var(--good);background:rgba(91,227,168,.12)}
+.choice.wrong{border-color:var(--bad);background:rgba(255,107,122,.1)}
+.choice:disabled{cursor:default}
+.feedback{margin-top:18px;padding:14px 16px;border-radius:12px;font-size:17px}
+.feedback.ok{background:rgba(91,227,168,.1);border:1px solid rgba(91,227,168,.5)}
+.feedback.hint{background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.45)}
+.feedback.reveal{background:rgba(127,216,255,.08);border:1px solid rgba(127,216,255,.45)}
+.feedback .fh{font-family:var(--f-display);font-weight:700;font-size:18px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.feedback.ok .fh{color:var(--good)}
+.feedback.hint .fh{color:var(--gold)}
+.feedback.reveal .fh{color:var(--cyan)}
+.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+/* Real-world cards */
+.real-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+.real{padding:16px;border-radius:12px;background:var(--bg-deep);border:1px solid var(--line)}
+.real .tag{color:var(--gold)}
+.real h4{font-family:var(--f-display);font-size:19px;margin:4px 0 6px}
+.real p{font-size:16px;color:var(--ink-dim)}
+
+/* Complete screen */
+.complete{text-align:center;padding:28px 22px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.complete .robot-wrap{width:220px}
+.complete h2{font-size:clamp(28px,5vw,44px)}
+.bigstars{display:flex;gap:10px}
+.bigstars svg{width:52px;height:52px}
+.bigstars svg.on{animation:starin .5s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes starin{from{transform:scale(0) rotate(-60deg)}to{transform:none}}
+.upgrade{font-family:var(--f-mono);color:var(--good);border:1px solid rgba(91,227,168,.5);background:rgba(91,227,168,.08);border-radius:10px;padding:10px 16px;letter-spacing:.06em}
+
+/* Speed round */
+.speed{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:20px;align-items:start}
+.sp-problem{font-family:var(--f-mono);font-weight:700;font-size:clamp(30px,7vw,56px);text-align:center;padding:26px 10px 8px;min-height:120px;line-height:1.15}
+.sp-answer{font-family:var(--f-mono);font-weight:700;font-size:40px;text-align:center;min-height:62px;color:var(--accent);border-bottom:2px dashed var(--line-strong);margin:0 auto;width:min(260px,100%)}
+.sp-hud{display:flex;justify-content:space-between;align-items:center;gap:10px;font-family:var(--f-mono)}
+.timer{height:10px;border-radius:6px;background:var(--bg-deep);overflow:hidden;border:1px solid var(--line);margin-top:12px}
+.timer i{display:block;height:100%;background:var(--cyan);transition:width .25s linear}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.keypad button{font-family:var(--f-mono);font-weight:700;font-size:26px;padding:14px 0;border-radius:12px;border:1px solid var(--line-strong);background:var(--panel-3);color:var(--ink);box-shadow:0 3px 0 #0b2747}
+.keypad button:active{transform:translateY(2px);box-shadow:0 1px 0 #0b2747}
+.keypad .enter{grid-column:span 3;background:var(--accent);color:var(--accent-ink);box-shadow:0 3px 0 var(--accent-deep);font-family:var(--f-display);text-transform:uppercase;letter-spacing:.1em;font-size:22px}
+.combo{font-family:var(--f-display);font-weight:700;color:var(--gold);font-size:22px}
+.flash-ok{animation:fok .35s}
+@keyframes fok{0%{color:var(--good);transform:scale(1.08)}100%{transform:none}}
+
+/* Fermi */
+.fermi-scale{margin-top:16px}
+.guess-readout{font-family:var(--f-mono);font-weight:700;font-size:clamp(26px,6vw,44px);color:var(--accent);text-align:center}
+.guess-words{text-align:center;color:var(--ink-dim);font-family:var(--f-mono)}
+
+/* Report */
+.bars{display:flex;align-items:flex-end;gap:6px;height:120px;padding-top:10px}
+.bars .b{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;min-width:0}
+.bars .b i{display:block;width:100%;background:var(--cyan);border-radius:4px 4px 0 0;min-height:2px}
+.bars .b span{font-family:var(--f-mono);font-size:10px;color:var(--ink-faint)}
+
+/* Onboarding */
+.onb{max-width:620px;margin:6vh auto 0;padding:28px;display:flex;flex-direction:column;gap:18px;align-items:stretch}
+.onb .robot-wrap{width:200px;margin:0 auto}
+.onb h2{font-size:clamp(28px,5vw,40px);text-align:center}
+.onb p{text-align:center;color:var(--ink-dim);font-size:18px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field input{font-size:22px;padding:12px 16px;border-radius:12px;border:2px solid var(--line-strong);background:var(--bg-deep);color:var(--ink)}
+.field input:focus{border-color:var(--accent);outline:none}
+.swatches{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.swatch{width:46px;height:46px;border-radius:50%;border:3px solid transparent;box-shadow:0 0 0 2px var(--line-strong)}
+.swatch.on{border-color:#fff;box-shadow:0 0 0 3px var(--accent)}
+
+/* Toast + confetti */
+#toast{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));z-index:50;display:flex;flex-direction:column;gap:8px;pointer-events:none;align-items:flex-end}
+.toast{font-family:var(--f-mono);font-weight:700;background:var(--gold);color:#2a1d00;padding:8px 14px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.3);animation:toast 1.8s ease forwards}
+.toast.rank{background:var(--accent);color:var(--accent-ink)}
+@keyframes toast{0%{opacity:0;transform:translateY(-10px)}12%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0;transform:translateY(-8px)}}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:40}
+
+/* Widgets */
+.court-floor{fill:#0c2a4c;stroke:var(--line-strong);stroke-width:2}
+.court-line{fill:none;stroke:rgba(150,205,255,.55);stroke-width:2}
+.spot{cursor:pointer}
+.spot circle.ring{fill:rgba(255,138,61,.12);stroke:var(--accent);stroke-width:2;stroke-dasharray:4 4}
+.spot.sel circle.ring{fill:rgba(255,138,61,.35);stroke-dasharray:none;stroke-width:3}
+.spot text{fill:var(--ink);font-size:13px;text-anchor:middle;pointer-events:none}
+.handle{cursor:grab;fill:var(--accent);stroke:#fff;stroke-width:3}
+.handle:active{cursor:grabbing}
+.axis text{fill:var(--ink-faint);font-size:11px}
+.axis line,.axis path{stroke:var(--line-strong)}
+.chip{font-family:var(--f-mono);font-size:15px;padding:7px 12px;border-radius:9px;border:1px solid var(--line-strong);background:var(--bg-deep);color:var(--ink)}
+.chip.on{background:var(--cyan);color:#062038;border-color:var(--cyan)}
+.chip.seen{border-color:var(--good)}
+.corpus{font-family:var(--f-mono);font-size:14px;line-height:1.8;color:var(--ink-dim);padding:12px 14px;border-radius:10px;background:var(--bg-deep);border:1px solid var(--line);max-height:200px;overflow:auto}
+.sentence-out{font-family:var(--f-mono);font-size:clamp(18px,3vw,24px);min-height:40px;padding:10px 14px;border-radius:10px;background:var(--bg-deep);border:1px solid var(--line)}
+.sentence-out .w{display:inline-block;animation:pop .3s}
+.cipher-text{font-family:var(--f-mono);font-size:clamp(18px,3.4vw,26px);letter-spacing:.12em;word-break:break-word}
+.pix{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;width:min(300px,100%);margin:0 auto}
+.pix div{aspect-ratio:1;display:grid;place-items:center;font-family:var(--f-mono);font-size:12px;border-radius:2px;max-width:100%}
+
+@media (max-width:760px){
+  .hero{grid-template-columns:1fr;text-align:center;padding:18px}
+  .hero .lead{margin-inline:auto}
+  .hero .robot-wrap{max-width:200px}
+  .missions,.side{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .two-col,.speed{grid-template-columns:1fr}
+  .real-grid{grid-template-columns:1fr}
+  .stage{padding:16px}
+  .xpbox{justify-content:flex-start;min-width:0}
+  .bubble{font-size:16px;padding:12px 14px}
+  .robot-sm{width:70px}
+  .xpbar{width:80px}
+}
+@media (max-width:480px){
+  .missions,.side{grid-template-columns:1fr}
+  .parts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mcard{min-height:0}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+<!--/PAGE-->
+</head>
+<body>
+<!--BODY-->
+<div id="app"></div>
+<div id="toast" aria-live="polite"></div>
+<canvas id="confetti"></canvas>
+<script>
+"use strict";
+/* ============================== Utilities ============================== */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const app = $('#app');
+const rnd = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const pad = n => String(n).padStart(2, '0');
+const fmt = (n, d = 0) => Number(n).toLocaleString('en-US', { maximumFractionDigits: d });
+const money = n => '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const reduceMotion = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
+const dayNum = s => Math.round(new Date(s + 'T12:00:00').getTime() / 864e5);
+function svgPt(svg, e) { const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
+function draggable(el, svg, onMove, onEnd) {
+  el.addEventListener('pointerdown', e => {
+    e.preventDefault(); el.setPointerCapture(e.pointerId);
+    const mv = ev => onMove(svgPt(svg, ev));
+    const up = () => { el.removeEventListener('pointermove', mv); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up); onEnd && onEnd(); };
+    el.addEventListener('pointermove', mv); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+  });
+}
+function bigWords(n) {
+  const a = Math.abs(n);
+  const units = [[1e12, 'trillion'], [1e9, 'billion'], [1e6, 'million']];
+  for (const [v, w] of units) if (a >= v) { const x = n / v; return (x >= 100 ? fmt(x, 0) : x >= 10 ? fmt(x, 1) : fmt(x, 2)) + ' ' + w; }
+  if (a >= 100) return fmt(Math.round(n));
+  if (a >= 1) return fmt(n, 1);
+  return fmt(n, 3);
+}
+function round2sig(n) { if (n === 0) return 0; const p = Math.pow(10, Math.floor(Math.log10(Math.abs(n))) - 1); return Math.round(n / p) * p; }
+let cleanups = [];
+function onCleanup(fn) { cleanups.push(fn); }
+function runCleanups() { cleanups.forEach(f => { try { f(); } catch (e) {} }); cleanups = []; }
+
+/* ============================== State ============================== */
+const KEY = 'botlab.v1';
+function defaults() {
+  return { name: '', robot: '', color: '#ff8a3d', xp: 0, missions: {}, sound: true, unlockAll: false,
+    streak: { last: '', count: 0 }, speedBest: 0, fermi: {}, fermiStars: 0,
+    stats: { problems: 0, correct: 0, sec: 0, days: {} }, cert: false };
+}
+let S = (() => { try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && typeof s === 'object') { const d = defaults(); return Object.assign(d, s, { stats: Object.assign(d.stats, s.stats || {}), streak: Object.assign(d.streak, s.streak || {}) }); } } catch (e) {} return defaults(); })();
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+const RANKS = [[0, 'Rookie'], [150, 'Apprentice'], [400, 'Analyst'], [800, 'Engineer'], [1300, 'Scientist'], [2000, 'AI Architect'], [3000, 'Chief AI Architect'], [5000, 'Legend']];
+function rankOf(xp) { let i = 0; RANKS.forEach((r, k) => { if (xp >= r[0]) i = k; }); return i; }
+function dayRec() { const t = today(); S.stats.days[t] = S.stats.days[t] || { sec: 0, problems: 0 }; return S.stats.days[t]; }
+function markActive() {
+  const t = today();
+  if (S.streak.last === t) return;
+  S.streak.count = (S.streak.last && dayNum(t) - dayNum(S.streak.last) === 1) ? S.streak.count + 1 : 1;
+  S.streak.last = t;
+}
+function addXP(n) {
+  if (!n) return;
+  const before = rankOf(S.xp);
+  S.xp += n; markActive(); save();
+  toast('+' + n + ' XP');
+  const after = rankOf(S.xp);
+  if (after > before) { setTimeout(() => { toast('RANK UP: ' + RANKS[after][1], 'rank'); Sound.level(); confetti(120); }, 500); }
+  const bar = $('.xpbar i'); if (bar) refreshTopbar();
+}
+function logProblem(correct) { S.stats.problems++; if (correct) S.stats.correct++; dayRec().problems++; save(); }
+function missionUnlocked(i) { return S.unlockAll || i === 0 || (S.missions[MISSIONS[i - 1].id] || {}).done; }
+function partsOn() { const p = {}; MISSIONS.forEach(m => { if ((S.missions[m.id] || {}).done) p[m.part] = true; }); return p; }
+/* active-time tracker: counts time while the page is visible and the player touched something in the last 90 s */
+let lastInteract = Date.now();
+['pointerdown', 'keydown'].forEach(ev => addEventListener(ev, () => { lastInteract = Date.now(); }, { passive: true }));
+setInterval(() => {
+  if (document.visibilityState === 'visible' && Date.now() - lastInteract < 90000 && S.name) { S.stats.sec += 10; dayRec().sec += 10; save(); }
+}, 10000);
+
+/* ============================== Sound + FX ============================== */
+const Sound = {
+  ctx: null,
+  ensure() { if (!S.sound) return null; try { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); if (this.ctx.state === 'suspended') this.ctx.resume(); } catch (e) { return null; } return this.ctx; },
+  tone(f, d = .12, type = 'sine', v = .08, delay = 0, slide) {
+    const c = this.ensure(); if (!c) return;
+    const t = c.currentTime + delay, o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t); if (slide) o.frequency.exponentialRampToValueAtTime(slide, t + d);
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(v, t + .012); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + d + .03);
+  },
+  click() { this.tone(720, .05, 'square', .025); },
+  good() { [523, 659, 784].forEach((f, i) => this.tone(f, .18, 'triangle', .09, i * .07)); },
+  bad() { this.tone(200, .25, 'sawtooth', .04, 0, 120); },
+  swish() { this.tone(300, .25, 'sine', .05, 0, 900); },
+  swoosh() { this.tone(900, .18, 'sine', .04, 0, 300); },
+  tick() { this.tone(1200, .03, 'square', .02); },
+  level() { [523, 659, 784, 1047, 1319].forEach((f, i) => this.tone(f, .3, 'triangle', .1, i * .09)); },
+  boot() { [220, 330, 440, 660].forEach((f, i) => this.tone(f, .2, 'square', .035, i * .1)); }
+};
+function toast(text, cls = '') { const t = document.createElement('div'); t.className = 'toast ' + cls; t.textContent = text; $('#toast').appendChild(t); setTimeout(() => t.remove(), 1900); }
+const cv = $('#confetti'), cx = cv.getContext('2d'); let parts = [], confettiOn = false;
+function confetti(n = 80) {
+  if (reduceMotion()) return;
+  cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio;
+  const cols = ['#ff8a3d', '#ffd166', '#5be3a8', '#7fd8ff', '#ffffff', '#ff6b7a'];
+  for (let i = 0; i < n; i++) parts.push({ x: innerWidth * (.2 + Math.random() * .6), y: innerHeight * .35, vx: (Math.random() - .5) * 14, vy: -Math.random() * 14 - 4, s: 5 + Math.random() * 6, r: Math.random() * 6, vr: (Math.random() - .5) * .4, c: pick(cols), life: 0 });
+  if (!confettiOn) { confettiOn = true; requestAnimationFrame(confettiLoop); }
+}
+function confettiLoop() {
+  cx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0); cx.clearRect(0, 0, innerWidth, innerHeight);
+  parts.forEach(p => { p.vy += .35; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life++; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c; cx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); cx.restore(); });
+  parts = parts.filter(p => p.y < innerHeight + 40 && p.life < 400);
+  if (parts.length) requestAnimationFrame(confettiLoop); else { confettiOn = false; cx.clearRect(0, 0, innerWidth, innerHeight); }
+}
+function starSVG(on) { return `<svg viewBox="0 0 24 24" class="${on ? 'on' : ''}"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z" fill="${on ? 'var(--gold)' : 'none'}" stroke="${on ? 'var(--gold)' : 'var(--ink-faint)'}" stroke-width="1.6" stroke-linejoin="round"/></svg>`; }
+function starsRow(n, cls = 'stars') { return `<span class="${cls}">${[1, 2, 3].map(k => starSVG(k <= n)).join('')}</span>`; }
+
+/* ============================== Robot ============================== */
+function shade(hex, amt) { const n = parseInt(hex.slice(1), 16); let r = n >> 16, g = (n >> 8) & 255, b = n & 255; r = clamp(Math.round(r * (1 + amt)), 0, 255); g = clamp(Math.round(g * (1 + amt)), 0, 255); b = clamp(Math.round(b * (1 + amt)), 0, 255); return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1); }
+function gearPath(cx, cy, r, teeth) { let d = ''; for (let i = 0; i < teeth * 2; i++) { const a = i * Math.PI / teeth, rr = i % 2 ? r * .78 : r; const a1 = a - Math.PI / teeth / 2, a2 = a + Math.PI / teeth / 2; d += (i ? 'L' : 'M') + (cx + rr * Math.cos(a1)).toFixed(1) + ' ' + (cy + rr * Math.sin(a1)).toFixed(1) + 'L' + (cx + rr * Math.cos(a2)).toFixed(1) + ' ' + (cy + rr * Math.sin(a2)).toFixed(1); } return d + 'Z'; }
+function robotSVG(p = {}, opts = {}) {
+  const col = opts.color || S.color || '#ff8a3d', dk = shade(col, -.35), lt = shade(col, .25);
+  const fresh = k => opts.fresh === k ? ' install' : '';
+  const happy = opts.mood === 'happy';
+  const eyeFill = p.chip ? '#9ff3ff' : '#2b4566';
+  const eye = (x) => happy
+    ? `<path d="M${x - 9} 78 q9 -12 18 0" stroke="${eyeFill}" stroke-width="5" fill="none" stroke-linecap="round"/>`
+    : `<g class="blink"><circle cx="${x}" cy="74" r="9" fill="${eyeFill}"/>${p.chip ? `<circle cx="${x + 3}" cy="71" r="3" fill="#fff"/>` : ''}</g>`;
+  return `<svg viewBox="-20 -20 240 270" role="img" aria-label="Robot">
+  <defs>
+    <radialGradient id="coreg" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff7c2"/><stop offset=".45" stop-color="#ffd166"/><stop offset="1" stop-color="#ff8a3d" stop-opacity="0"/></radialGradient>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+  ${p.shield ? `<g class="${fresh('shield')}"><circle class="spin-slow" cx="100" cy="122" r="118" fill="none" stroke="#7fd8ff" stroke-opacity=".55" stroke-width="2.5" stroke-dasharray="10 8"/><circle cx="100" cy="122" r="108" fill="rgba(127,216,255,.05)" stroke="none"/></g>` : ''}
+  <g class="${opts.still ? '' : 'bob'}">
+    <!-- antenna -->
+    ${p.voice ? `<g class="${fresh('voice')}"><line x1="100" y1="34" x2="100" y2="4" stroke="${dk}" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="2" r="9" fill="#ff6b7a"/><circle class="glow-pulse" cx="100" cy="2" r="15" fill="#ff6b7a" opacity=".35" filter="url(#soft)"/></g>`
+      : `<line x1="100" y1="34" x2="100" y2="22" stroke="${dk}" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="20" r="5" fill="${dk}"/>`}
+    <!-- brain dome -->
+    ${p.brain ? `<g class="${fresh('brain')}"><path d="M52 44 Q100 -14 148 44 Z" fill="rgba(127,216,255,.18)" stroke="#7fd8ff" stroke-width="2.5"/><path class="spin-slow" d="${gearPath(86, 30, 13, 8)}" fill="#ffd166"/><path class="spin-rev" d="${gearPath(112, 26, 10, 7)}" fill="#5be3a8"/><path class="spin-slow" d="${gearPath(126, 38, 6, 6)}" fill="#7fd8ff"/></g>` : ''}
+    <!-- ears -->
+    <rect x="28" y="62" width="14" height="30" rx="5" fill="${dk}"/><rect x="158" y="62" width="14" height="30" rx="5" fill="${dk}"/>
+    <!-- head -->
+    <rect x="38" y="34" width="124" height="90" rx="24" fill="${col}"/>
+    <rect x="38" y="34" width="124" height="22" rx="11" fill="${lt}" opacity=".45"/>
+    <rect x="52" y="48" width="96" height="62" rx="16" fill="#0a1a2e" stroke="${dk}" stroke-width="3"/>
+    ${p.lens ? `<g class="${fresh('lens')}"><circle cx="82" cy="74" r="15" fill="none" stroke="#7fd8ff" stroke-width="3"/><circle cx="118" cy="74" r="15" fill="none" stroke="#7fd8ff" stroke-width="3"/><line x1="97" y1="74" x2="103" y2="74" stroke="#7fd8ff" stroke-width="3"/></g>` : ''}
+    <g class="${fresh('chip')}">${eye(82)}${eye(118)}</g>
+    ${p.chip ? `<circle cx="82" cy="74" r="14" fill="#9ff3ff" opacity=".18" filter="url(#soft)"/><circle cx="118" cy="74" r="14" fill="#9ff3ff" opacity=".18" filter="url(#soft)"/>` : ''}
+    ${p.voice ? `<g class="${fresh('voice')}">${[0, 1, 2, 3, 4].map(i => `<rect class="talkbar" style="animation-delay:${i * .12}s" x="${84 + i * 7}" y="90" width="4" height="12" rx="2" fill="#5be3a8"/>`).join('')}</g>`
+      : `<rect x="86" y="96" width="28" height="4" rx="2" fill="#2b4566"/>`}
+    <!-- neck + body -->
+    <rect x="86" y="122" width="28" height="12" fill="${dk}"/>
+    <rect x="46" y="132" width="108" height="78" rx="18" fill="${col}"/>
+    <rect x="46" y="132" width="108" height="16" rx="8" fill="${lt}" opacity=".35"/>
+    <rect x="66" y="144" width="68" height="52" rx="10" fill="#0a1a2e" stroke="${dk}" stroke-width="3"/>
+    ${p.core ? `<g class="${fresh('core')}"><circle class="glow-pulse" cx="100" cy="170" r="22" fill="url(#coreg)"/><circle cx="100" cy="170" r="10" fill="#fff4c4"/></g>` : `<circle cx="100" cy="170" r="10" fill="#2b4566"/>`}
+    ${[0, 1, 2].map(i => `<rect x="${72 + i * 6}" y="150" width="3" height="8" rx="1" fill="${p.core ? '#5be3a8' : '#2b4566'}"/>`).join('')}
+    <!-- arms -->
+    <rect x="22" y="140" width="22" height="52" rx="10" fill="${dk}"/><circle cx="33" cy="198" r="11" fill="${col}" stroke="${dk}" stroke-width="3"/>
+    <rect x="156" y="140" width="22" height="52" rx="10" fill="${dk}"/><circle cx="167" cy="198" r="11" fill="${col}" stroke="${dk}" stroke-width="3"/>
+    <!-- treads -->
+    <rect x="52" y="208" width="96" height="26" rx="13" fill="#132a47" stroke="${dk}" stroke-width="3"/>
+    ${[0, 1, 2, 3].map(i => `<circle cx="${68 + i * 21}" cy="221" r="7" fill="${dk}"/>`).join('')}
+  </g>
+</svg>`;
+}
+
+/* ============================== Router ============================== */
+function go(screen, arg) {
+  runCleanups(); window.scrollTo(0, 0);
+  ({ onboarding: screenOnboarding, home: screenHome, mission: screenMission, complete: screenComplete, speed: screenSpeed, fermi: screenFermi, report: screenReport, cert: screenCert })[screen](arg);
+}
+function topbar() {
+  const r = rankOf(S.xp), lo = RANKS[r][0], hi = (RANKS[r + 1] || [S.xp + 1])[0];
+  const pct = clamp((S.xp - lo) / (hi - lo) * 100, 0, 100);
+  return `<header class="topbar">
+    <div class="brand"><svg class="brand-mark" viewBox="0 0 40 40"><rect x="4" y="8" width="32" height="26" rx="8" fill="var(--accent)"/><rect x="9" y="13" width="22" height="15" rx="5" fill="#0a1a2e"/><circle cx="15" cy="20.5" r="3" fill="#9ff3ff"/><circle cx="25" cy="20.5" r="3" fill="#9ff3ff"/><line x1="20" y1="8" x2="20" y2="3" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/></svg><h1>Bot Lab</h1></div>
+    <div class="xpbox">
+      ${S.streak.count ? `<div class="streak" title="Days in a row"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-5 3-6 0 2 1 3 2 3-1-3 0-6 1-9z" fill="var(--gold)"/></svg>${S.streak.count}</div>` : ''}
+      <div class="rank"><div class="r-name">${RANKS[r][1]}</div><div class="r-xp">${fmt(S.xp)} XP${RANKS[r + 1] ? ' / ' + fmt(hi) : ''}</div></div>
+      <div class="xpbar" aria-hidden="true"><i style="width:${pct}%"></i></div>
+    </div>
+  </header>`;
+}
+function refreshTopbar() { const t = $('.topbar'); if (t) t.outerHTML = topbar(); }
+
+/* ============================== Onboarding ============================== */
+function screenOnboarding() {
+  const colors = ['#ff8a3d', '#2ec4b6', '#ff6b7a', '#9b7bff', '#ffd166', '#5b8cff'];
+  let step = 0, name = S.name, robot = S.robot, color = S.color;
+  function render() {
+    app.innerHTML = `<div class="wrap"><div class="card onb">
+      <div class="robot-wrap">${robotSVG({}, { color })}</div>
+      ${step === 0 ? `
+        <span class="tag" style="text-align:center">Welcome to the lab</span>
+        <h2>Build a robot brain with math</h2>
+        <p>You're the new engineer at Bot Lab. Your robot's brain is empty. Each mission you finish teaches it a real AI skill, using the same math that powers sports analytics, secret codes, and chatbots.</p>
+        <div class="field"><label class="label" for="nm">What's your name, engineer?</label><input id="nm" maxlength="20" autocomplete="off" value="${esc(name)}" placeholder="Your name"></div>
+        <button class="btn primary lg" id="ok">Next</button>`
+      : `
+        <span class="tag" style="text-align:center">Robot setup</span>
+        <h2>Name your robot</h2>
+        <p>It'll talk to you on every mission.</p>
+        <div class="field"><label class="label" for="rb">Robot name</label><input id="rb" maxlength="16" autocomplete="off" value="${esc(robot)}" placeholder="e.g. Bolt, Pixel, Zeta"></div>
+        <div class="field"><span class="label" style="text-align:center">Paint color</span><div class="swatches">${colors.map(c => `<button class="swatch ${c === color ? 'on' : ''}" data-c="${c}" style="background:${c}" aria-label="Color ${c}"></button>`).join('')}</div></div>
+        <button class="btn primary lg" id="ok">Power on</button>`}
+    </div></div>`;
+    const inp = $('#nm') || $('#rb'); setTimeout(() => inp.focus(), 50);
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') $('#ok').click(); });
+    $$('.swatch').forEach(b => b.onclick = () => { robot = $('#rb').value; color = b.dataset.c; Sound.click(); render(); });
+    $('#ok').onclick = () => {
+      if (step === 0) { name = $('#nm').value.trim(); if (!name) { inp.classList.add('shake'); setTimeout(() => inp.classList.remove('shake'), 400); return; } step = 1; Sound.click(); render(); }
+      else { robot = $('#rb').value.trim() || 'Bolt'; S.name = name; S.robot = robot; S.color = color; markActive(); save(); Sound.boot(); go('home'); }
+    };
+  }
+  render();
+}
+
+/* ============================== Home ============================== */
+function screenHome() {
+  const p = partsOn();
+  const doneCount = MISSIONS.filter(m => (S.missions[m.id] || {}).done).length;
+  const nextIdx = MISSIONS.findIndex((m, i) => !(S.missions[m.id] || {}).done && missionUnlocked(i));
+  const fermiDone = S.fermi[today()];
+  const lines = [
+    `My brain is empty, ${esc(S.name)}. Teach me something!`,
+    `1 upgrade installed. I can make smart decisions now. More, please!`,
+    `2 upgrades! I feel powerful. What's next?`,
+    `Nobody can read our messages now. Let's keep going!`,
+    `I can SEE! Now teach me how to learn by myself.`,
+    `I can learn from my mistakes. One upgrade left: my voice!`,
+    `Fully built! Thanks to you, I know the core ideas of AI.`
+  ];
+  app.innerHTML = `<div class="wrap">${topbar()}
+    <section class="card hero">
+      <div class="robot-wrap">${robotSVG(p)}</div>
+      <div>
+        <span class="tag">Unit ${esc(S.robot)} · ${doneCount}/6 upgrades</span>
+        <h2>${doneCount === 6 ? `${esc(S.robot)} is fully built.` : doneCount ? `Keep building ${esc(S.robot)}.` : `Meet ${esc(S.robot)}.`}</h2>
+        <p class="lead">"${lines[doneCount]}"</p>
+        <div class="parts">${MISSIONS.map(m => `<div class="part ${p[m.part] ? 'on' : ''}"><span class="dot"></span><span>${m.partName}</span></div>`).join('')}</div>
+        <div class="row" style="margin-top:16px">
+          ${nextIdx >= 0 ? `<button class="btn primary" data-go="${MISSIONS[nextIdx].id}">${doneCount ? 'Next mission' : 'Start mission 1'}</button>` : `<button class="btn primary" id="cert">View certificate</button>`}
+        </div>
+      </div>
+    </section>
+    <div class="section-h"><h3>Missions</h3><span class="dim mono" style="font-size:13px">${MISSIONS.reduce((a, m) => a + ((S.missions[m.id] || {}).stars || 0), 0)}/18 stars</span></div>
+    <div class="missions">
+      ${MISSIONS.map((m, i) => { const st = S.missions[m.id] || {}; const un = missionUnlocked(i); return `
+        <button class="mcard ${un ? '' : 'locked'} ${i === nextIdx ? 'next' : ''}" ${un ? `data-go="${m.id}"` : 'disabled'} aria-label="Mission ${m.num}: ${m.title}">
+          <span class="num">MISSION ${pad(m.num)}</span>
+          <h4>${m.title}</h4>
+          <span class="topic">${m.topic}</span>
+          <p>${m.blurb}</p>
+          <span class="foot">${st.done ? starsRow(st.stars) : un ? `<span class="badge-new">${i === nextIdx ? 'UP NEXT' : 'OPEN'}</span>` : `<span class="dim mono" style="font-size:12px">LOCKED</span>`}<span class="dim mono" style="font-size:12px">${m.time}</span></span>
+        </button>`; }).join('')}
+    </div>
+    <div class="section-h" style="margin-top:26px"><h3>Daily training</h3></div>
+    <div class="side">
+      <button class="side-card" id="fermi"><span class="tag">Daily puzzle ${fermiDone ? '· done' : ''}</span><h4>Guess the Number</h4><p>One wild estimation question a day. How close can you get without looking it up?</p><span class="big">${fermiDone ? 'Today: ' + starsRow(fermiDone.stars) : `<span class="badge-new">NEW TODAY</span>`}</span></button>
+      <button class="side-card" id="speed"><span class="tag">Arcade</span><h4>Speed Round</h4><p>60 seconds of mental math. Build combos and beat your high score.</p><span class="big">Best: ${fmt(S.speedBest)}</span></button>
+      <button class="side-card" id="report"><span class="tag">For grown-ups</span><h4>Lab Report</h4><p>Time practiced, problems solved, accuracy, and settings.</p><span class="big">${Math.round(S.stats.sec / 60)} min · ${fmt(S.stats.problems)} problems</span></button>
+    </div>
+  </div>`;
+  $$('[data-go]').forEach(b => b.onclick = () => { Sound.click(); go('mission', b.dataset.go); });
+  $('#fermi').onclick = () => { Sound.click(); go('fermi'); };
+  $('#speed').onclick = () => { Sound.click(); go('speed'); };
+  $('#report').onclick = () => { Sound.click(); go('report'); };
+  const c = $('#cert'); if (c) c.onclick = () => go('cert');
+}
+
+/* ============================== Mission runner ============================== */
+function fill(t) { return String(t).replace(/\{name\}/g, esc(S.name)).replace(/\{robot\}/g, esc(S.robot)); }
+function screenMission(id) {
+  const M = MISSIONS.find(m => m.id === id);
+  const ctx = {}; let i = 0, mistakes = 0, earned = 0;
+  app.innerHTML = `<div class="wrap">
+    <header class="m-top">
+      <button class="btn ghost sm" id="back">← Lab</button>
+      <div class="m-title"><span class="tag">Mission ${pad(M.num)} · ${M.topic}</span><h1>${M.title}</h1></div>
+      <div class="pips" aria-hidden="true">${M.steps.map(() => '<i></i>').join('')}</div>
+    </header>
+    <section class="m-robot"><div class="robot-sm robot-wrap">${robotSVG(partsOn())}</div><div class="bubble" id="bubble" aria-live="polite"></div></section>
+    <section class="card stage" id="stage"></section>
+    <footer class="m-foot"><button class="btn primary lg" id="next" disabled>Continue</button></footer>
+  </div>`;
+  const stage = $('#stage'), next = $('#next'), bubble = $('#bubble');
+  $('#back').onclick = () => go('home');
+  function say(t) { bubble.innerHTML = `<span class="who">${esc(S.robot)}</span>${fill(t)}`; bubble.classList.remove('fresh'); void bubble.offsetWidth; bubble.classList.add('fresh'); }
+  function show() {
+    runCleanups();
+    const st = M.steps[i]; let done = false;
+    $$('.pips i').forEach((p, k) => { p.className = k < i ? 'done' : k === i ? 'cur' : ''; });
+    next.disabled = true; next.classList.remove('pulse');
+    next.textContent = i === M.steps.length - 1 ? 'Finish mission' : 'Continue';
+    say(st.say || '');
+    stage.innerHTML = ''; stage.classList.remove('stage-in'); void stage.offsetWidth; stage.classList.add('stage-in');
+    const api = {
+      ctx, say,
+      complete() { if (done) return; done = true; next.disabled = false; next.classList.add('pulse'); },
+      mistake() { mistakes++; },
+      xp(n) { earned += n; addXP(n); }
+    };
+    if (st.type === 'talk') { stage.innerHTML = st.html ? fill(st.html(ctx)) : ''; if (st.mount) st.mount(stage, api); api.complete(); }
+    else if (st.type === 'real') { stage.innerHTML = realHTML(st); api.complete(); }
+    else if (st.type === 'quiz') mountQuiz(stage, st, api);
+    else if (st.type === 'widget') { st.mount(stage, api); }
+    if (st.type === 'talk' || st.type === 'real') setTimeout(() => next.focus({ preventScroll: true }), 50);
+  }
+  next.onclick = () => {
+    Sound.click();
+    if (i < M.steps.length - 1) { i++; show(); window.scrollTo({ top: 0, behavior: reduceMotion() ? 'auto' : 'smooth' }); return; }
+    const stars = mistakes <= 1 ? 3 : mistakes <= 4 ? 2 : 1;
+    const prev = S.missions[M.id] || {};
+    const first = !prev.done;
+    const bonus = first ? 50 + 25 * stars : 15 * stars;
+    S.missions[M.id] = { done: true, stars: Math.max(prev.stars || 0, stars) };
+    save(); addXP(bonus);
+    go('complete', { id: M.id, stars, earned: earned + bonus, first });
+  };
+  show();
+}
+function realHTML(st) {
+  return `<span class="tag">Where this math shows up for real</span>
+    <h2 style="font-size:26px;margin-top:6px">${st.title || 'In the real world'}</h2>
+    <div class="real-grid">${st.cards.map(c => `<div class="real"><span class="tag">${c[0]}</span><h4>${c[1]}</h4><p>${c[2]}</p></div>`).join('')}</div>`;
+}
+
+/* ============================== Quiz engine ============================== */
+function parseNum(v) { const s = String(v).replace(/[,$%\s]/g, ''); if (/^-?\d*\.?\d+(\/\d+)?$/.test(s)) { if (s.includes('/')) { const [a, b] = s.split('/'); return +a / +b; } return +s; } return NaN; }
+function mountQuiz(el, st, api) {
+  const g = st.gen(api.ctx); let tries = 0, finished = false;
+  const kind = g.kind || 'num';
+  el.innerHTML = `<span class="tag">${g.prediction ? 'Make a prediction' : 'Your turn'}</span>
+    ${g.visual ? `<div style="margin:12px 0">${g.visual}</div>` : ''}
+    <p class="q-text" style="margin-top:8px">${g.q}</p>
+    ${kind === 'choice' ? `<div class="choices">${g.choices.map((c, k) => `<button class="choice" data-k="${k}">${c}</button>`).join('')}</div>`
+      : `<form class="ans-row" autocomplete="off">${g.pre ? `<span class="unit">${g.pre}</span>` : ''}<input class="ans" id="ans-${Math.random().toString(36).slice(2, 7)}" ${kind === 'letter' ? 'maxlength="1" inputmode="text" style="text-transform:uppercase;width:90px"' : 'inputmode="decimal"'} aria-label="Your answer" placeholder="?">${g.unit ? `<span class="unit">${g.unit}</span>` : ''}<button class="btn primary" type="submit">Check</button></form>`}
+    <div class="fb-slot"></div>`;
+  const slot = $('.fb-slot', el);
+  const fb = (cls, head, body) => { slot.innerHTML = `<div class="feedback ${cls}"><div class="fh">${head}</div><div>${body}</div></div>`; };
+  function finish(ok) {
+    finished = true;
+    $$('input,button.choice,form button', el).forEach(x => x.disabled = true);
+    api.complete();
+  }
+  function correct() {
+    Sound.good(); logProblem(true);
+    fb('ok', pick(['Correct!', 'Nailed it!', 'Yes!', 'Exactly right!', 'Boom!']), g.explain || '');
+    api.xp(tries === 0 ? 20 : 10); if (tries === 0) confetti(30);
+    finish(true);
+  }
+  function wrong(target) {
+    tries++; api.mistake(); Sound.bad(); logProblem(false);
+    if (target) { target.classList.add('shake'); setTimeout(() => target.classList.remove('shake'), 400); }
+    const maxTries = kind === 'choice' && g.choices.length <= 2 ? 1 : 2;
+    if (tries >= maxTries) { fb('reveal', 'Here\'s how it works', `The answer is <b>${g.answerText != null ? g.answerText : (g.pre || '') + fmt(g.a, 2) + (g.unit ? ' ' + g.unit : '')}</b>. ${g.explain || ''}`); api.xp(5); finish(false); }
+    else fb('hint', 'Not quite. Hint:', g.hint || 'Try again!');
+  }
+  if (kind === 'choice') {
+    $$('.choice', el).forEach(b => b.onclick = () => {
+      if (finished) return; const k = +b.dataset.k;
+      if (g.prediction) {
+        $$('.choice', el).forEach(x => x.classList.toggle('right', +x.dataset.k === g.a));
+        if (k !== g.a) b.classList.add('wrong');
+        if (k === g.a) { Sound.good(); api.xp(15); confetti(30); } else Sound.swoosh();
+        fb(k === g.a ? 'ok' : 'reveal', k === g.a ? 'Great instinct!' : 'Most people guess that!', g.explain);
+        finish(true); return;
+      }
+      if (k === g.a) { b.classList.add('right'); correct(); }
+      else { b.classList.add('wrong'); b.disabled = true; wrong(b); if (finished) $$('.choice', el)[g.a].classList.add('right'); }
+    });
+  } else {
+    const form = $('form', el), inp = $('input', el);
+    setTimeout(() => inp.focus({ preventScroll: true }), 80);
+    form.onsubmit = e => {
+      e.preventDefault(); if (finished) return;
+      const v = inp.value.trim(); if (!v) return;
+      let ok;
+      if (kind === 'letter') ok = v.toUpperCase() === g.a;
+      else { const n = parseNum(v); if (isNaN(n)) { fb('hint', 'Numbers only', 'Type a number, like 42 or 1.5.'); return; } ok = Math.abs(n - g.a) <= (g.tol != null ? g.tol : 1e-6); }
+      if (ok) { inp.style.borderColor = 'var(--good)'; correct(); } else { wrong(inp); inp.select(); }
+    };
+  }
+}
+
+/* ============================== Complete + certificate ============================== */
+function screenComplete({ id, stars, earned, first }) {
+  const M = MISSIONS.find(m => m.id === id);
+  const idx = MISSIONS.indexOf(M), nxt = MISSIONS[idx + 1];
+  const all = MISSIONS.every(m => (S.missions[m.id] || {}).done);
+  app.innerHTML = `<div class="wrap">${topbar()}<section class="card complete">
+    <span class="tag">Mission ${pad(M.num)} complete</span>
+    <div class="robot-wrap">${robotSVG(partsOn(), { fresh: first ? M.part : null, mood: 'happy' })}</div>
+    <h2>${pick(['Mission accomplished!', 'Upgrade complete!', 'You did it!'])}</h2>
+    <div class="bigstars">${[1, 2, 3].map(k => starSVG(k <= stars)).join('')}</div>
+    <p class="dim">${stars === 3 ? 'Perfect run. Three stars!' : stars === 2 ? 'Solid work! Replay any time to go for three stars.' : 'Mission done! Replay it later to earn more stars.'}</p>
+    <div class="upgrade">UPGRADE INSTALLED: ${M.partName.toUpperCase()}</div>
+    <p class="mono" style="color:var(--gold)">+${earned} XP this mission</p>
+    <p style="max-width:52ch">${fill(M.outro)}</p>
+    <div class="row" style="justify-content:center">
+      <button class="btn ghost" id="home">Back to lab</button>
+      ${all && first && idx === MISSIONS.length - 1 ? `<button class="btn primary lg" id="cert">Get your certificate</button>` : nxt && missionUnlocked(idx + 1) ? `<button class="btn primary lg" id="nxt">Next: ${nxt.title}</button>` : ''}
+    </div>
+  </section></div>`;
+  $$('.bigstars svg.on').forEach((s, k) => s.style.animationDelay = (.3 + k * .25) + 's');
+  setTimeout(() => { Sound.level(); confetti(160); }, 250);
+  $('#home').onclick = () => go('home');
+  const n = $('#nxt'); if (n) n.onclick = () => go('mission', nxt.id);
+  const c = $('#cert'); if (c) c.onclick = () => go('cert');
+}
+function screenCert() {
+  if (!S.cert) { S.cert = true; save(); }
+  const d = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  app.innerHTML = `<div class="wrap">${topbar()}<section class="card complete" style="border:2px solid var(--gold)">
+    <span class="tag" style="color:var(--gold)">Bot Lab · Certificate of AI Engineering</span>
+    <div class="robot-wrap">${robotSVG(partsOn(), { mood: 'happy' })}</div>
+    <p class="dim">This certifies that</p>
+    <h2 style="font-size:clamp(34px,7vw,56px)">${esc(S.name)}</h2>
+    <p style="max-width:56ch">built <b>${esc(S.robot)}</b> from an empty shell to a thinking, seeing, talking robot using expected value, exponents, modular arithmetic, classification, gradient descent, and probability. Those are the core ideas behind modern AI.</p>
+    <p class="mono dim">${d} · ${MISSIONS.reduce((a, m) => a + ((S.missions[m.id] || {}).stars || 0), 0)}/18 stars · ${fmt(S.xp)} XP</p>
+    <div class="row" style="justify-content:center"><button class="btn primary" id="home">Back to lab</button></div>
+    <p class="dim" style="font-size:15px">Keep training: daily puzzles and the Speed Round never run out.</p>
+  </section></div>`;
+  confetti(200); Sound.level();
+  $('#home').onclick = () => go('home');
+}
+
+/* ============================== MISSION 1 widgets: Smart Shots ============================== */
+const SPOTS = [
+  { k: 'Layup', x: 250, y: 82, p: .62, v: 2, lx: 250, ly: 118 },
+  { k: 'Mid-range', x: 345, y: 190, p: .41, v: 2, lx: 345, ly: 226 },
+  { k: 'Corner 3', x: 30, y: 52, p: .39, v: 3, lx: 34, ly: 90 }
+];
+function courtSVG(extra = '') {
+  return `<rect x="2" y="2" width="496" height="296" rx="8" class="court-floor"/>
+    <path d="M60 2 V102 A200 200 0 0 0 440 102 V2" class="court-line"/>
+    <rect x="190" y="2" width="120" height="170" class="court-line"/>
+    <path d="M210 172 A40 40 0 0 0 290 172" class="court-line"/>
+    <line x1="222" y1="26" x2="278" y2="26" stroke="#eaf4ff" stroke-width="4"/>
+    <circle cx="250" cy="40" r="10" fill="none" stroke="var(--accent)" stroke-width="3"/>${extra}`;
+}
+function wShotSim(el, api) {
+  const stats = SPOTS.map(() => ({ a: 0, m: 0 })); let sel = 0, busy = false, met = false;
+  el.innerHTML = `<div class="two-col">
+    <div><svg class="svgbox" viewBox="0 0 500 300" id="court">${courtSVG()}
+      ${SPOTS.map((s, k) => `<g class="spot" data-k="${k}" tabindex="0" role="button" aria-label="${s.k}"><circle class="ring" cx="${s.x}" cy="${s.y}" r="20"/><text x="${s.lx}" y="${s.ly}">${s.k}</text></g>`).join('')}
+      <g id="fx"></g><circle id="ball" r="8" fill="#ff8a3d" stroke="#2b1300" stroke-width="1.5" opacity="0"/></svg>
+      <div class="row" style="margin-top:12px"><button class="btn primary" id="s1">Shoot 1</button><button class="btn" id="s10">Shoot 10</button><span class="dim mono" id="selname" style="font-size:14px"></span></div>
+    </div>
+    <div class="stack">
+      <div class="scroll-x"><table class="tbl"><thead><tr><th>Spot</th><th>Shots</th><th>Makes</th><th>Points</th><th>Pts/shot</th></tr></thead><tbody id="tb"></tbody></table></div>
+      <div class="goal" id="goal"><span class="chk"></span><span>Take at least 20 shots from every spot</span></div>
+      <p class="dim" style="font-size:15px">Each spot has its own make chance, like a real player. Watch the <b>Pts/shot</b> column as the shots pile up.</p>
+    </div></div>`;
+  const svg = $('#court', el), ball = $('#ball', el), fx = $('#fx', el);
+  function update() {
+    $$('.spot', el).forEach(g => g.classList.toggle('sel', +g.dataset.k === sel));
+    $('#selname', el).textContent = 'Shooting from: ' + SPOTS[sel].k;
+    const pps = stats.map((s, k) => s.a ? s.m * SPOTS[k].v / s.a : -1), best = Math.max(...pps);
+    $('#tb', el).innerHTML = SPOTS.map((s, k) => `<tr class="${met && pps[k] === best ? 'best' : ''}"><td>${s.k} <span class="dim mono" style="font-size:12px">(${s.v}pt)</span></td><td>${stats[k].a}</td><td>${stats[k].m}</td><td>${stats[k].m * s.v}</td><td>${stats[k].a ? (stats[k].m * s.v / stats[k].a).toFixed(2) : '–'}</td></tr>`).join('');
+    if (!met && stats.every(s => s.a >= 20)) {
+      met = true; $('#goal', el).classList.add('met'); Sound.good(); api.xp(20); update();
+      const bestK = pps.indexOf(best);
+      api.say(`Look at Pts/shot! ${SPOTS[bestK].k} scored the most per shot in your test. Notice the <b>Corner 3</b> beats the Mid-range even though it goes in less often. Why? Let's find out.`);
+      api.complete();
+    }
+  }
+  function shot(made, dur, done) {
+    const s = SPOTS[sel], x0 = s.x, y0 = s.y, x1 = 250, y1 = 40, peak = Math.min(y0, y1) - 60;
+    const t0 = performance.now(); ball.setAttribute('opacity', 1);
+    const missDx = (Math.random() < .5 ? -1 : 1) * (14 + Math.random() * 10);
+    const step = now => {
+      const t = clamp((now - t0) / dur, 0, 1);
+      const ex = made ? x1 : x1 + missDx * .6, ey = made ? y1 : y1 - 6;
+      const x = x0 + (ex - x0) * t, y = (1 - t) * (1 - t) * y0 + 2 * (1 - t) * t * peak + t * t * ey;
+      ball.setAttribute('cx', x); ball.setAttribute('cy', y);
+      if (t < 1) requestAnimationFrame(step);
+      else {
+        const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        txt.setAttribute('x', made ? 250 : 250 + missDx); txt.setAttribute('y', 70); txt.setAttribute('text-anchor', 'middle');
+        txt.setAttribute('fill', made ? 'var(--good)' : 'var(--bad)'); txt.setAttribute('font-size', '18'); txt.setAttribute('font-weight', '700');
+        txt.textContent = made ? '+' + s.v : 'miss'; fx.appendChild(txt); setTimeout(() => txt.remove(), 500);
+        made ? Sound.tone(880, .07, 'triangle', .05) : Sound.tone(160, .07, 'square', .03);
+        ball.setAttribute('opacity', 0); done();
+      }
+    };
+    requestAnimationFrame(step);
+  }
+  function shoot(n) {
+    if (busy) return; busy = true; let k = 0;
+    const dur = reduceMotion() ? 30 : n > 1 ? 230 : 520;
+    const loop = () => {
+      if (k >= n) { busy = false; update(); return; }
+      const made = Math.random() < SPOTS[sel].p; stats[sel].a++; if (made) stats[sel].m++;
+      shot(made, dur, () => { k++; update(); loop(); });
+    };
+    loop();
+  }
+  $$('.spot', el).forEach(g => { const f = () => { if (busy) return; sel = +g.dataset.k; Sound.click(); update(); }; g.onclick = f; g.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); f(); } }; });
+  $('#s1', el).onclick = () => shoot(1); $('#s10', el).onclick = () => shoot(10);
+  update();
+}
+
+/* ============================== MISSION 2 widgets: Power-Up ============================== */
+function wPenny(el, api) {
+  let choice = null, day = 1, met = false;
+  el.innerHTML = `<span class="tag">Would you rather...</span>
+    <div class="choices" id="opts">
+      <button class="choice" data-c="A"><b style="font-family:var(--f-display);font-size:20px">Option A</b><br>Get <b>$1,000</b> every day for 30 days.</button>
+      <button class="choice" data-c="B"><b style="font-family:var(--f-display);font-size:20px">Option B</b><br>Get <b>1 penny</b> on day 1, and it <b>doubles</b> every day for 30 days.</button>
+    </div>
+    <div id="sim" hidden style="margin-top:18px">
+      <div class="kv"><div><span class="label">Day</span><div class="v" id="dd">1</div></div><div><span class="label">Option A total</span><div class="v" id="va" style="color:var(--cyan)"></div></div><div><span class="label">Option B total</span><div class="v" id="vb" style="color:var(--accent)"></div></div></div>
+      <svg class="svgbox" viewBox="0 0 520 240" id="ch" style="margin-top:12px"></svg>
+      <label class="label" for="dslider">Drag through the month</label>
+      <input type="range" id="dslider" min="1" max="30" value="1">
+      <div class="goal" id="goal" style="margin-top:8px"><span class="chk"></span><span>Get to day 30</span></div>
+    </div>`;
+  const A = d => 1000 * d, B = d => .01 * (Math.pow(2, d) - 1);
+  function draw() {
+    $('#dd', el).textContent = day; $('#va', el).textContent = money(A(day)); $('#vb', el).textContent = money(B(day));
+    const max = Math.max(A(day), B(day)) * 1.08, X = d => 50 + (d - 1) / 29 * 450, Y = v => 210 - v / max * 190;
+    const path = f => Array.from({ length: day }, (_, k) => `${k ? 'L' : 'M'}${X(k + 1).toFixed(1)} ${Y(f(k + 1)).toFixed(1)}`).join('');
+    $('#ch', el).innerHTML = `<g class="axis"><line x1="50" y1="210" x2="500" y2="210"/><line x1="50" y1="20" x2="50" y2="210"/>
+      ${[1, 10, 20, 30].map(d => `<text x="${X(d)}" y="228" text-anchor="middle">day ${d}</text>`).join('')}
+      <text x="44" y="24" text-anchor="end">${bigWords(max)}</text><text x="44" y="212" text-anchor="end">0</text></g>
+      <path d="${path(A)}" stroke="var(--cyan)" stroke-width="3" fill="none"/>
+      <path d="${path(B)}" stroke="var(--accent)" stroke-width="3.5" fill="none"/>
+      <circle cx="${X(day)}" cy="${Y(A(day))}" r="5" fill="var(--cyan)"/><circle cx="${X(day)}" cy="${Y(B(day))}" r="6" fill="var(--accent)"/>
+      <text x="${Math.min(X(day) + 8, 470)}" y="${Y(A(day)) - 8}" fill="var(--cyan)" font-size="12">A</text>
+      <text x="${Math.min(X(day) + 8, 470)}" y="${Y(B(day)) - 8}" fill="var(--accent)" font-size="12">B</text>`;
+    if (day === 22 && !met) api.say(`Day 22: the penny just passed the $1,000-a-day plan! Keep going...`);
+    if (day === 30 && !met) {
+      met = true; $('#goal', el).classList.add('met'); Sound.level(); confetti(100); api.xp(20);
+      api.say(choice === 'B' ? `You picked B. Smart! The penny ends at <b>$10,737,418.23</b>. Option A only gets $30,000. That's the power of doubling.` : `Surprise! Option A gets $30,000, but the penny ends at <b>$10,737,418.23</b>. Most people pick A. Now you know the secret of doubling.`);
+      api.complete();
+    }
+  }
+  $$('.choice', el).forEach(b => b.onclick = () => {
+    if (choice) return; choice = b.dataset.c; b.classList.add('right'); Sound.click();
+    $$('.choice', el).forEach(x => x.disabled = true);
+    $('#sim', el).hidden = false; api.say(`You picked Option ${choice}. Let's test it! Drag the slider through all 30 days.`); draw();
+  });
+  $('#dslider', el).oninput = e => { const d = +e.target.value; if (d !== day) { day = d; Sound.tick(); draw(); } };
+}
+const LANDMARKS = [
+  [0.0001, 'One sheet of paper'], [0.008, 'A phone'], [0.24, 'A basketball'], [1.5, 'You'], [10, 'A house'], [93, 'Statue of Liberty'],
+  [443, 'Empire State Building'], [8849, 'Mount Everest'], [408000, 'Space Station orbit'], [384400000, 'THE MOON']
+];
+function lenText(m) { if (m < .01) return fmt(m * 1000, 2) + ' mm'; if (m < 1) return fmt(m * 100, 1) + ' cm'; if (m < 1000) return fmt(m, 1) + ' m'; return bigWords(m / 1000) + ' km'; }
+function wPaper(el, api) {
+  let n = 0, met = false;
+  el.innerHTML = `<div class="two-col">
+    <div class="stack">
+      <div><span class="label">Folds</span><div class="big-num" id="nf">0</div></div>
+      <div><span class="label">Thickness of the stack</span><div class="big-num" style="color:var(--accent)" id="th"></div><div class="dim mono" id="eq" style="font-size:14px"></div></div>
+      <div class="row"><button class="btn" id="m1">− Unfold</button><button class="btn primary" id="p1">Fold it! +1</button></div>
+      <input type="range" id="fs" min="0" max="45" value="0" aria-label="Number of folds">
+      <div class="callout cyan" id="tall"></div>
+      <div class="goal" id="goal"><span class="chk"></span><span>Reach the Moon</span></div>
+    </div>
+    <svg class="svgbox" viewBox="0 0 300 420" id="lad"></svg></div>`;
+  const Y = m => 400 - (Math.log10(m) + 4) / 13 * 380;
+  function draw() {
+    const t = .0001 * Math.pow(2, n);
+    $('#nf', el).textContent = n; $('#th', el).textContent = lenText(t);
+    $('#eq', el).textContent = `0.1 mm × 2^${n} = 0.1 mm × ${fmt(Math.pow(2, n))}`;
+    const passed = LANDMARKS.filter(l => t >= l[0]); const top = passed[passed.length - 1];
+    const nextL = LANDMARKS.find(l => t < l[0]);
+    $('#tall', el).innerHTML = `Taller than: <b>${top[1]}</b>${nextL ? `<br><span class="dim">Next up: ${nextL[1]}</span>` : ''}`;
+    $('#lad', el).innerHTML = `<line x1="60" y1="20" x2="60" y2="400" stroke="var(--line-strong)" stroke-width="2"/>
+      <rect x="40" y="${Y(t)}" width="40" height="${400 - Y(t)}" fill="var(--accent)" opacity=".85" rx="3"/>
+      ${LANDMARKS.map(l => `<g><line x1="56" x2="100" y1="${Y(l[0])}" y2="${Y(l[0])}" stroke="${t >= l[0] ? 'var(--good)' : 'var(--ink-faint)'}" stroke-dasharray="3 3"/><text x="106" y="${Y(l[0]) + 4}" font-size="12" fill="${t >= l[0] ? 'var(--good)' : 'var(--ink-dim)'}">${l[1]}</text></g>`).join('')}
+      <text x="8" y="16" font-size="10" fill="var(--ink-faint)">log scale: each line ×10</text>`;
+    if (n >= 42 && !met) { met = true; $('#goal', el).classList.add('met'); Sound.level(); confetti(140); api.xp(20); api.say(`<b>42 folds</b> and the stack passes the Moon, 384,000 km away! Each fold only doubles it, but doubling 42 times multiplies by over 4 trillion.`); api.complete(); }
+    else if (!met) { if (n === 7) api.say('7 folds: thick as a phone. Real paper usually stops here!'); if (n === 14) api.say('14 folds: as tall as you!'); if (n === 27) api.say('27 folds: taller than Mount Everest!'); if (n === 32) api.say('32 folds: you\'re in space, past the Space Station!'); }
+    $('#fs', el).value = n;
+  }
+  const set = v => { const nn = clamp(v, 0, 45); if (nn !== n) { n = nn; Sound.tone(300 + n * 18, .06, 'triangle', .04); draw(); } };
+  $('#p1', el).onclick = () => set(n + 1); $('#m1', el).onclick = () => set(n - 1); $('#fs', el).oninput = e => set(+e.target.value);
+  draw();
+}
+
+/* ============================== MISSION 3 widgets: Secret Codes ============================== */
+const ABC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const shiftText = (t, k) => t.replace(/[A-Z]/gi, ch => { const up = ch === ch.toUpperCase(); const i = ABC.indexOf(ch.toUpperCase()); const c = ABC[((i + k) % 26 + 26) % 26]; return up ? c : c.toLowerCase(); });
+function wheelSVG() {
+  const R1 = 130, R2 = 98, th = 360 / 26;
+  const ring = (r, cls) => ABC.split('').map((c, i) => { const a = (i * th - 90) * Math.PI / 180; return `<text x="${150 + r * Math.cos(a)}" y="${150 + r * Math.sin(a) + 6}" text-anchor="middle" font-size="17" font-weight="700" class="${cls}" transform="rotate(${i * th} ${150 + r * Math.cos(a)} ${150 + r * Math.sin(a)})">${c}</text>`; }).join('');
+  return `<svg class="svgbox" viewBox="0 0 300 300" style="max-width:340px;margin:0 auto">
+    <circle cx="150" cy="150" r="146" fill="var(--bg-deep)" stroke="var(--line-strong)"/>
+    <circle cx="150" cy="150" r="114" fill="var(--panel)" stroke="var(--line-strong)"/>
+    <g fill="var(--ink)">${ring(R1, '')}</g>
+    <g id="inner" style="transition:transform .35s cubic-bezier(.3,1.4,.5,1);transform-origin:150px 150px"><circle cx="150" cy="150" r="82" fill="var(--panel-2)" stroke="var(--line-strong)"/><g fill="var(--accent)">${ring(R2, '')}</g></g>
+    <path d="M138 2 L162 2 L150 22 Z" fill="var(--gold)"/>
+    <text x="150" y="146" text-anchor="middle" font-size="12" fill="var(--ink-faint)">SHIFT</text>
+    <text x="150" y="176" text-anchor="middle" font-size="30" font-weight="700" fill="var(--ink)" id="shv">0</text></svg>`;
+}
+function wCipher(el, api) {
+  const msgs = ['MATH IS MY SUPERPOWER', 'ROBOTS LOVE PIZZA', 'MEET ME AT THE GYM', 'THE CODE IS CRACKED', 'NOTHING BUT NET'];
+  const plain = pick(msgs), secret = rnd(3, 11), cipher = shiftText(plain, secret);
+  let k = 0, met = false, rot = 0;
+  el.innerHTML = `<div class="two-col"><div>${wheelSVG()}
+    <div class="row" style="justify-content:center;margin-top:10px"><button class="btn" id="l">◀ Turn</button><button class="btn" id="r">Turn ▶</button></div>
+    <p class="dim" style="text-align:center;font-size:14px;margin-top:8px">Outer ring = real letter. Orange ring = secret letter.</p></div>
+    <div class="stack">
+      <div><span class="label">Secret message</span><div class="cipher-text" style="color:var(--accent)">${cipher}</div></div>
+      <div><span class="label">Decoded with shift <span id="kk">0</span></span><div class="cipher-text" id="dec"></div></div>
+      <div class="goal" id="goal"><span class="chk"></span><span>Crack the message</span></div>
+      <div style="margin-top:6px"><label class="label" for="own">Write your own secret (uses the same shift)</label>
+      <input id="own" class="ans" style="width:100%;font-size:18px;text-align:left" maxlength="40" placeholder="Type a message" autocomplete="off"><div class="cipher-text" id="ownout" style="font-size:18px;margin-top:6px;color:var(--accent)"></div></div>
+    </div></div>`;
+  const inner = $('#inner', el);
+  function draw() {
+    inner.style.transform = `rotate(${-rot * 360 / 26}deg)`;
+    $('#shv', el).textContent = k; $('#kk', el).textContent = k;
+    const d = shiftText(cipher, -k); $('#dec', el).textContent = d;
+    $('#ownout', el).textContent = shiftText(($('#own', el).value || '').toUpperCase(), k);
+    if (k === secret && !met) { met = true; $('#goal', el).classList.add('met'); $('#dec', el).style.color = 'var(--good)'; Sound.level(); confetti(80); api.xp(20); api.say(`Cracked it! The shift was <b>${secret}</b>. Every letter moved ${secret} places. "${plain}"`); api.complete(); }
+  }
+  const turn = d => { rot += d; k = ((rot % 26) + 26) % 26; Sound.tick(); draw(); };
+  $('#l', el).onclick = () => turn(-1); $('#r', el).onclick = () => turn(1);
+  $('#own', el).oninput = draw;
+  draw();
+}
+const FREQ_TEXT = 'every secret message has a weak spot. the letter e is the most common letter in english, so the letter that appears the most in a secret message is very likely to be an e. we can use that clue to break the code. detectives and spies have used this trick for more than a thousand years, and here you are using it too.';
+function wFreq(el, api) {
+  const secret = rnd(5, 20), cipher = shiftText(FREQ_TEXT, secret).toUpperCase();
+  const counts = ABC.split('').map(c => (cipher.match(new RegExp(c, 'g')) || []).length);
+  const maxC = Math.max(...counts); let sel = -1, met = false, tries = 0;
+  el.innerHTML = `<span class="label">Intercepted message</span>
+    <div class="corpus" style="letter-spacing:.06em" id="ct">${cipher}</div>
+    <div style="margin-top:14px"><span class="label">How many times each letter appears (tap a bar)</span>
+    <div class="scroll-x"><svg class="svgbox" viewBox="0 0 540 200" id="bars" style="min-width:420px;touch-action:auto"></svg></div></div>
+    <div class="callout" id="note" style="margin-top:10px">Tap the tallest bar. That letter is probably a secret <b>E</b>.</div>
+    <form class="ans-row" id="f" autocomplete="off"><span class="unit">Shift =</span><input class="ans" id="sh" inputmode="numeric" aria-label="Shift" placeholder="?"><button class="btn primary" type="submit">Decode</button></form>
+    <div class="goal" id="goal" style="margin-top:12px"><span class="chk"></span><span>Find the shift and decode the message</span></div>`;
+  function bars() {
+    $('#bars', el).innerHTML = counts.map((c, i) => { const h = c / maxC * 150, x = 6 + i * 20.5; return `<g data-i="${i}" style="cursor:pointer"><rect x="${x}" y="10" width="18" height="160" fill="transparent"/><rect x="${x}" y="${170 - h}" width="18" height="${h}" rx="3" fill="${i === sel ? 'var(--accent)' : 'var(--cyan)'}" opacity="${i === sel ? 1 : .75}"/><text x="${x + 9}" y="188" text-anchor="middle" font-size="12" fill="${i === sel ? 'var(--accent)' : 'var(--ink-dim)'}">${ABC[i]}</text>${c ? `<text x="${x + 9}" y="${165 - h}" text-anchor="middle" font-size="9" fill="var(--ink-faint)">${c}</text>` : ''}</g>`; }).join('');
+    $$('#bars g', el).forEach(g => g.onclick = () => {
+      sel = +g.dataset.i; Sound.click(); bars();
+      $('#note', el).innerHTML = counts[sel] === maxC
+        ? `<b>${ABC[sel]}</b> shows up the most (${counts[sel]} times). If ${ABC[sel]} is really E, count how many steps it is from E forward to ${ABC[sel]}. That's the shift!`
+        : `${ABC[sel]} appears ${counts[sel]} times. Is that the tallest bar? Look for the biggest one.`;
+    });
+  }
+  bars();
+  $('#f', el).onsubmit = e => {
+    e.preventDefault(); if (met) return;
+    const v = parseInt($('#sh', el).value, 10); if (isNaN(v)) return;
+    $('#ct', el).textContent = shiftText(cipher, -v);
+    if (((v % 26) + 26) % 26 === secret) {
+      met = true; $('#goal', el).classList.add('met'); $('#ct', el).style.color = 'var(--good)'; Sound.level(); confetti(100); api.xp(tries ? 15 : 30); logProblem(true);
+      api.say(`You cracked it using counting! ${ABC[(4 + secret) % 26]} was really E, so the shift was <b>${secret}</b>. That's called <b>frequency analysis</b>.`); api.complete();
+    } else {
+      tries++; api.mistake(); Sound.bad(); logProblem(false);
+      api.say(tries < 2 ? `Hmm, that's gibberish. Count the steps from E to the tallest letter: E, F, G, H... ` : `Hint: the tallest bar is <b>${ABC[(4 + secret) % 26]}</b>. Count from E to ${ABC[(4 + secret) % 26]}. If you pass Z, wrap around to A.`);
+    }
+  };
+}
+function clockSVG(h, k) {
+  const end = ((h + k - 1) % 12) + 1, P = (n, r) => { const a = (n * 30 - 90) * Math.PI / 180; return [100 + r * Math.cos(a), 100 + r * Math.sin(a)]; };
+  const [hx, hy] = P(h, 62), [ex, ey] = P(end, 62);
+  let arc = ''; for (let s = 0; s <= k * 10; s++) { const [x, y] = P(h + s / 10, 78); arc += (s ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1); }
+  return `<svg viewBox="0 0 200 200" style="width:200px;max-width:100%"><circle cx="100" cy="100" r="92" fill="var(--bg-deep)" stroke="var(--line-strong)" stroke-width="2"/>
+    ${Array.from({ length: 12 }, (_, i) => { const [x, y] = P(i + 1, 70); return `<text x="${x}" y="${y + 5}" text-anchor="middle" font-family="var(--f-mono)" font-size="14" fill="${i + 1 === h ? 'var(--cyan)' : i + 1 === end ? 'var(--accent)' : 'var(--ink-dim)'}" font-weight="700">${i + 1}</text>`; }).join('')}
+    <path d="${arc}" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>
+    <line x1="100" y1="100" x2="${(100 + ex) / 2 + (ex - 100) * .1}" y2="${(100 + ey) / 2 + (ey - 100) * .1}" stroke="var(--accent)" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="100" r="5" fill="var(--ink)"/></svg>`;
+}
+
+/* ============================== MISSION 4 widgets: Robot Vision ============================== */
+const ANIMALS = [
+  [7, 8.5, 1], [9, 7.5, 1], [10, 9, 1], [12, 8, 1], [8, 6.8, 1], [13, 7.7, 1], [11, 6.4, 1], [6, 7.8, 1],
+  [30, 4, 0], [45, 5, 0], [60, 3, 0], [21, 8.5, 0], [70, 7, 0], [15, 3, 0], [9, 2.5, 0], [12, 3.6, 0], [40, 8.5, 0], [25, 6, 0]
+];
+const TEST_ANIMALS = [[10, 8, 1], [7, 7, 1], [12, 6.9, 1], [35, 7, 0], [18, 2, 0], [55, 6, 0], [10, 3.2, 0], [17, 9, 0]];
+const VX = w => 50 + w / 80 * 440, VY = p => 290 - p / 10 * 270;
+const VXi = x => (x - 50) / 440 * 80, VYi = y => (290 - y) / 270 * 10;
+function plotFrame() {
+  return `<rect x="50" y="20" width="440" height="270" fill="var(--bg-deep)" stroke="var(--line)"/>
+    <g class="axis">${[0, 20, 40, 60, 80].map(w => `<text x="${VX(w)}" y="306" text-anchor="middle">${w}</text>`).join('')}
+    ${[0, 5, 10].map(p => `<text x="42" y="${VY(p) + 4}" text-anchor="end">${p}</text>`).join('')}
+    <text x="270" y="324" text-anchor="middle" fill="var(--ink-dim)">weight (pounds) →</text>
+    <text x="14" y="155" text-anchor="middle" fill="var(--ink-dim)" transform="rotate(-90 14 155)">ear pointiness →</text></g>`;
+}
+function animalMark(a, cls = '', extra = '') { return `<g class="${cls}"${extra}><text x="${VX(a[0])}" y="${VY(a[1]) + 7}" text-anchor="middle" font-size="20" style="font-family:system-ui">${a[2] ? '🐱' : '🐶'}</text></g>`; }
+function sideOf(A, B, px, py) { return Math.sign((B.x - A.x) * (py - A.y) - (B.y - A.y) * (px - A.x)); }
+function clipHalf(poly, A, B, s) {
+  const out = [], f = p => ((B.x - A.x) * (p[1] - A.y) - (B.y - A.y) * (p[0] - A.x)) * s;
+  for (let i = 0; i < poly.length; i++) {
+    const P = poly[i], Q = poly[(i + 1) % poly.length], fp = f(P), fq = f(Q);
+    if (fp >= 0) out.push(P);
+    if ((fp >= 0) !== (fq >= 0)) { const t = fp / (fp - fq); out.push([P[0] + (Q[0] - P[0]) * t, P[1] + (Q[1] - P[1]) * t]); }
+  }
+  return out;
+}
+function classify(A, B, data) {
+  let pos = 0, neg = 0; data.forEach(a => { const s = sideOf(A, B, VX(a[0]), VY(a[1])); if ((s > 0) === !!a[2]) pos++; if ((s < 0) === !!a[2]) neg++; });
+  const catSide = pos >= neg ? 1 : -1;
+  return { catSide, right: Math.max(pos, neg), wrong: data.filter(a => { const s = sideOf(A, B, VX(a[0]), VY(a[1])); return (s === catSide) !== !!a[2]; }) };
+}
+function regionsSVG(A, B, catSide) {
+  const dx = B.x - A.x, dy = B.y - A.y, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L;
+  const P1 = { x: A.x - ux * 2000, y: A.y - uy * 2000 }, P2 = { x: A.x + ux * 2000, y: A.y + uy * 2000 };
+  const rect = [[50, 20], [490, 20], [490, 290], [50, 290]];
+  const cat = clipHalf(rect, A, B, catSide), dog = clipHalf(rect, A, B, -catSide);
+  const pts = p => p.map(q => q[0].toFixed(1) + ',' + q[1].toFixed(1)).join(' ');
+  return `<polygon points="${pts(cat)}" fill="var(--cat)" opacity=".13"/><polygon points="${pts(dog)}" fill="var(--dog)" opacity=".13"/>
+    <clipPath id="pc"><rect x="50" y="20" width="440" height="270"/></clipPath>
+    <line clip-path="url(#pc)" x1="${P1.x}" y1="${P1.y}" x2="${P2.x}" y2="${P2.y}" stroke="var(--accent)" stroke-width="3"/>`;
+}
+function wDrawLine(el, api) {
+  let A = { x: VX(4), y: VY(5) }, B = { x: VX(76), y: VY(5) }, met = false;
+  el.innerHTML = `<svg class="svgbox" viewBox="0 0 500 330" id="pl"><g id="reg"></g><g id="pts"></g><g id="hd"></g></svg>
+    <div class="row" style="margin-top:10px"><div class="goal" id="goal" style="flex:1;min-width:220px"><span class="chk"></span><span>Sort all 18 animals correctly (<span id="acc"></span>)</span></div>
+    <span class="mono" style="font-size:14px"><span style="color:var(--cat)">■</span> cat side &nbsp; <span style="color:var(--dog)">■</span> dog side</span></div>`;
+  const svg = $('#pl', el);
+  function draw() {
+    const c = classify(A, B, ANIMALS);
+    $('#reg', el).innerHTML = plotFrame() + regionsSVG(A, B, c.catSide);
+    $('#pts', el).innerHTML = ANIMALS.map(a => { const bad = c.wrong.includes(a); return (bad ? `<circle cx="${VX(a[0])}" cy="${VY(a[1])}" r="15" fill="none" stroke="var(--bad)" stroke-width="3"/>` : '') + animalMark(a); }).join('');
+    const ha = $('#ha', el), hb = $('#hb', el);
+    ha.setAttribute('cx', A.x); ha.setAttribute('cy', A.y); hb.setAttribute('cx', B.x); hb.setAttribute('cy', B.y);
+    $('#acc', el).textContent = `${c.right}/18 = ${Math.round(c.right / 18 * 100)}%`;
+    api.ctx.line = { A, B, catSide: c.catSide };
+    return c;
+  }
+  $('#hd', el).innerHTML = `<circle class="handle" id="ha" r="13" aria-label="Line handle 1"/><circle class="handle" id="hb" r="13" aria-label="Line handle 2"/>`;
+  draggable($('#ha', el), svg, p => { A = { x: clamp(p.x, 50, 490), y: clamp(p.y, 20, 290) }; draw(); }, check);
+  draggable($('#hb', el), svg, p => { B = { x: clamp(p.x, 50, 490), y: clamp(p.y, 20, 290) }; draw(); }, check);
+  function check() {
+    const c = classify(A, B, ANIMALS);
+    if (c.right === 18 && !met) { met = true; $('#goal', el).classList.add('met'); Sound.level(); confetti(90); api.xp(25); api.say('Perfect sort! Your line is a <b>rule</b>: cat side or dog side. You just built a <b>classifier</b>, the most common kind of AI.'); api.complete(); }
+    else if (!met && c.right >= 15) api.say(`${c.right} out of 18. Close! The red circles are on the wrong side. Try tilting the line.`);
+  }
+  draw();
+}
+function wTest(el, api) {
+  const L = api.ctx.line || { A: { x: VX(18), y: VY(10) }, B: { x: VX(10), y: VY(5) }, catSide: 1 };
+  el.innerHTML = `<svg class="svgbox" viewBox="0 0 500 330"><g id="reg">${plotFrame()}${regionsSVG(L.A, L.B, L.catSide)}</g>
+    <g opacity=".25">${ANIMALS.map(a => animalMark(a)).join('')}</g><g id="tp"></g></svg>
+    <div class="kv" style="margin-top:10px"><div><span class="label">New animals checked</span><div class="v" id="n">0/8</div></div><div><span class="label">Correct</span><div class="v" id="ok" style="color:var(--good)">0</div></div><div><span class="label">Test accuracy</span><div class="v" id="ac">–</div></div></div>`;
+  let k = 0, ok = 0;
+  const tick = () => {
+    if (k >= TEST_ANIMALS.length) {
+      const pct = Math.round(ok / 8 * 100);
+      api.xp(15);
+      api.say(pct === 100 ? `100% on animals it's never seen! In real AI, this is called the <b>test set</b>. Passing it means your rule actually learned something.` : `${pct}% on brand-new animals. Pretty good! Real AI is almost never perfect on new data, so engineers always <b>test</b> before trusting it.`);
+      api.complete(); return;
+    }
+    const a = TEST_ANIMALS[k], s = sideOf(L.A, L.B, VX(a[0]), VY(a[1])), right = (s === L.catSide) === !!a[2];
+    if (right) ok++;
+    $('#tp', el).insertAdjacentHTML('beforeend', `<g class="install"><circle cx="${VX(a[0])}" cy="${VY(a[1])}" r="16" fill="none" stroke="${right ? 'var(--good)' : 'var(--bad)'}" stroke-width="3"/>${animalMark(a)}</g>`);
+    right ? Sound.tone(880, .08, 'triangle', .06) : Sound.tone(180, .12, 'square', .03);
+    k++; $('#n', el).textContent = k + '/8'; $('#ok', el).textContent = ok; $('#ac', el).textContent = Math.round(ok / k * 100) + '%';
+    const t = setTimeout(tick, reduceMotion() ? 50 : 650); onCleanup(() => clearTimeout(t));
+  };
+  const t0 = setTimeout(tick, 600); onCleanup(() => clearTimeout(t0));
+}
+function wPerceptron(el, api) {
+  const U = w => (w - 30) / 20, V = p => (p - 6) / 2.5;
+  let W = [0.6, 0.3, -0.5], steps = 0, met = false, auto = null, lastPt = null;
+  el.innerHTML = `<svg class="svgbox" viewBox="0 0 500 330" id="pl"><g id="reg"></g><g id="pts"></g></svg>
+    <div class="row" style="margin-top:10px"><button class="btn" id="one">Learn from 1 mistake</button><button class="btn primary" id="auto">Auto-learn</button><span class="spacer"></span>
+    <span class="mono" style="font-size:14px">Nudges: <b id="st">0</b> · Mistakes: <b id="mk"></b></span></div>
+    <div class="callout cyan" style="margin-top:10px;font-size:15px">My rule is 3 numbers (called <b>weights</b>): <span class="mono" id="wt"></span>. When I get an animal wrong, I add a little bit of that animal's numbers to my weights. That nudges the line toward fixing the mistake.</div>`;
+  const f = a => W[0] + W[1] * U(a[0]) + W[2] * V(a[1]);
+  const wrongs = () => ANIMALS.filter(a => (f(a) > 0) !== !!a[2]);
+  function linePts() {
+    if (Math.abs(W[2]) > Math.abs(W[1])) { const p = w => 6 + 2.5 * (-(W[0] + W[1] * U(w)) / W[2]); return [{ x: VX(-40), y: VY(p(-40)) }, { x: VX(120), y: VY(p(120)) }]; }
+    const w = p => 30 + 20 * (-(W[0] + W[2] * V(p)) / W[1]); return [{ x: VX(w(-10)), y: VY(-10) }, { x: VX(w(20)), y: VY(20) }];
+  }
+  function draw() {
+    const [A, B] = linePts(); const probe = { x: VX(10), y: VY(9) };
+    const s = sideOf(A, B, probe.x, probe.y), catSide = (W[0] + W[1] * U(10) + W[2] * V(9) > 0) ? s : -s;
+    $('#reg', el).innerHTML = plotFrame() + regionsSVG(A, B, catSide || 1);
+    const wr = wrongs();
+    $('#pts', el).innerHTML = ANIMALS.map(a => (wr.includes(a) ? `<circle cx="${VX(a[0])}" cy="${VY(a[1])}" r="15" fill="none" stroke="var(--bad)" stroke-width="3"/>` : '') + (a === lastPt ? `<circle cx="${VX(a[0])}" cy="${VY(a[1])}" r="22" fill="none" stroke="var(--gold)" stroke-width="2" stroke-dasharray="4 3"/>` : '') + animalMark(a)).join('');
+    $('#st', el).textContent = steps; $('#mk', el).textContent = wr.length;
+    $('#wt', el).textContent = '[' + W.map(w => w.toFixed(2)).join(', ') + ']';
+    if (!wr.length && !met) { met = true; stopAuto(); Sound.level(); confetti(100); api.xp(25); api.say(`I learned it myself in <b>${steps}</b> nudges! Nobody drew the line for me. I just fixed one mistake at a time. That's how machine learning works.`); api.complete(); $('#one', el).disabled = $('#auto', el).disabled = true; }
+  }
+  function learn() {
+    const wr = wrongs(); if (!wr.length) return false;
+    const a = pick(wr), y = a[2] ? 1 : -1, lr = .25;
+    W = [W[0] + lr * y, W[1] + lr * y * U(a[0]), W[2] + lr * y * V(a[1])]; steps++; lastPt = a; return true;
+  }
+  function stopAuto() { if (auto) { clearInterval(auto); auto = null; } $('#auto', el).textContent = 'Auto-learn'; }
+  $('#one', el).onclick = () => { if (learn()) { Sound.tick(); draw(); } };
+  $('#auto', el).onclick = () => {
+    if (auto) return stopAuto();
+    $('#auto', el).textContent = 'Pause';
+    auto = setInterval(() => { if (learn()) { Sound.tick(); draw(); } else stopAuto(); }, reduceMotion() ? 30 : 220);
+  };
+  onCleanup(stopAuto);
+  draw();
+}
+function pixelGrid() {
+  const rows = ['0036776300', '0589999850', '3899999983', '6919999196', '7999999997', '7929999297', '6992992996', '3899222983', '0589999850', '0036776300'];
+  return `<div class="pix" id="pix">${rows.join('').split('').map(c => `<div style="background:rgb(${Math.round(+c / 9 * 255)},${Math.round(+c / 9 * 210)},${Math.round(+c / 9 * 120)});color:${+c > 5 ? '#2b1300' : '#eaf4ff'}"><span class="pv" hidden>${c}</span></div>`).join('')}</div>
+    <div class="row" style="justify-content:center;margin-top:12px"><div class="seg"><button class="on" data-m="pic">Picture</button><button data-m="num">What the computer sees</button></div></div>`;
+}
+
+/* ============================== MISSION 5 widgets: Learn from Mistakes ============================== */
+const HITS = [[82, 302], [84, 332], [86, 324], [88, 362], [90, 335], [92, 365], [94, 379], [96, 360], [98, 404], [100, 396], [102, 428], [104, 410], [106, 433], [108, 432]];
+const FX = v => 60 + (v - 78) / 34 * 430, FY = d => 290 - (d - 250) / 250 * 270, FYi = y => 250 + (290 - y) / 270 * 250;
+function fitBest() { const n = HITS.length, mx = HITS.reduce((a, h) => a + h[0], 0) / n, my = HITS.reduce((a, h) => a + h[1], 0) / n; let sxy = 0, sxx = 0; HITS.forEach(h => { sxy += (h[0] - mx) * (h[1] - my); sxx += (h[0] - mx) ** 2; }); const m = sxy / sxx; return { m, b: my - m * mx }; }
+const mse = (m, b) => HITS.reduce((a, h) => a + (h[1] - (m * h[0] + b)) ** 2, 0) / HITS.length;
+function wFit(el, api) {
+  let yL = 300, yR = 300, met = false; const X1 = 80, X2 = 110;
+  const best = fitBest(), bestErr = mse(best.m, best.b), goalErr = bestErr * 1.5;
+  el.innerHTML = `<svg class="svgbox" viewBox="0 0 500 330" id="pl"></svg>
+    <div class="kv" style="margin-top:10px"><div><span class="label">Your line</span><div class="v mono" id="eqn" style="font-size:17px"></div></div><div><span class="label">Error score</span><div class="v" id="err"></div></div><div><span class="label">Target</span><div class="v" style="color:var(--good)">under ${fmt(goalErr)}</div></div></div>
+    <div class="row" style="margin-top:10px"><div class="goal" id="goal" style="flex:1;min-width:220px"><span class="chk"></span><span>Get the error score under ${fmt(goalErr)}</span></div><button class="btn" id="ai" hidden>Let the computer finish it</button></div>`;
+  const svg = $('#pl', el);
+  const mb = () => { const m = (yR - yL) / (X2 - X1); return { m, b: yL - m * X1 }; };
+  function draw() {
+    const { m, b } = mb(), e = mse(m, b);
+    let sq = '';
+    HITS.forEach(h => { const pred = m * h[0] + b, py = FY(h[1]), ly = FY(pred), side = Math.abs(ly - py); sq += `<rect x="${FX(h[0])}" y="${Math.min(py, ly)}" width="${Math.min(side, 490 - FX(h[0]))}" height="${side}" fill="var(--bad)" opacity=".16" stroke="var(--bad)" stroke-opacity=".5"/>`; });
+    $('#dyn', el).innerHTML = `<rect x="60" y="20" width="430" height="270" fill="var(--bg-deep)" stroke="var(--line)"/>
+      <g class="axis">${[80, 90, 100, 110].map(v => `<text x="${FX(v)}" y="306" text-anchor="middle">${v}</text>`).join('')}${[250, 300, 350, 400, 450, 500].map(d => `<text x="54" y="${FY(d) + 4}" text-anchor="end">${d}</text><line x1="60" x2="490" y1="${FY(d)}" y2="${FY(d)}" stroke-opacity=".25"/>`).join('')}
+      <text x="275" y="324" text-anchor="middle" fill="var(--ink-dim)">how hard it was hit (mph) →</text><text x="14" y="155" text-anchor="middle" fill="var(--ink-dim)" transform="rotate(-90 14 155)">distance (feet) →</text></g>
+      <clipPath id="fc"><rect x="60" y="20" width="430" height="270"/></clipPath><g clip-path="url(#fc)">${sq}
+      <line x1="${FX(76)}" y1="${FY(m * 76 + b)}" x2="${FX(114)}" y2="${FY(m * 114 + b)}" stroke="var(--accent)" stroke-width="3"/></g>
+      ${HITS.map(h => `<circle cx="${FX(h[0])}" cy="${FY(h[1])}" r="6" fill="#fff" stroke="#0a2240" stroke-width="2"/>`).join('')}`;
+    const hl = $('#hl', el), hr = $('#hr', el);
+    hl.setAttribute('cx', FX(X1)); hl.setAttribute('cy', FY(yL)); hr.setAttribute('cx', FX(X2)); hr.setAttribute('cy', FY(yR));
+    $('#eqn', el).textContent = `distance = ${m.toFixed(1)} × speed ${b < 0 ? '−' : '+'} ${fmt(Math.abs(b))}`;
+    $('#err', el).textContent = fmt(e); $('#err', el).style.color = e <= goalErr ? 'var(--good)' : e < goalErr * 4 ? 'var(--gold)' : 'var(--bad)';
+  }
+  svg.innerHTML = `<g id="dyn"></g><circle class="handle" id="hl" r="13" aria-label="Left end of line"/><circle class="handle" id="hr" r="13" aria-label="Right end of line"/>`;
+  draggable($('#hl', el), svg, p => { yL = clamp(FYi(p.y), 250, 500); draw(); }, check);
+  draggable($('#hr', el), svg, p => { yR = clamp(FYi(p.y), 250, 500); draw(); }, check);
+  function check() {
+    const { m, b } = mb();
+    if (!met && mse(m, b) <= goalErr) { met = true; $('#goal', el).classList.add('met'); $('#ai', el).hidden = false; Sound.level(); confetti(90); api.xp(25); api.say(`Great fit! Your line can now <b>predict</b> how far a ball will go. This is called <b>linear regression</b>. Want to see the computer find the very best line?`); api.complete(); }
+  }
+  $('#ai', el).onclick = () => {
+    const tL = best.m * X1 + best.b, tR = best.m * X2 + best.b, sL = yL, sR = yR, t0 = performance.now();
+    const an = now => { const t = clamp((now - t0) / 1200, 0, 1), e = 1 - Math.pow(1 - t, 3); yL = sL + (tL - sL) * e; yR = sR + (tR - sR) * e; draw(); if (t < 1) requestAnimationFrame(an); else api.say(`That's the best possible line. Error score: <b>${fmt(bestErr)}</b>. It's never zero, because real hits are messy (wind, launch angle...).`); };
+    requestAnimationFrame(an);
+  };
+  draw();
+}
+function wHill(el, api) {
+  const f = w => .5 * (w - 3) ** 2, g = w => w - 3;
+  const HX = w => 40 + (w + 4) / 14 * 440, HY = v => 290 - v / 26 * 260;
+  let w = -2, lr = .3, steps = 0, met = false, trail = [-2];
+  el.innerHTML = `<svg class="svgbox" viewBox="0 0 520 320" id="hs"></svg>
+    <div class="two-col" style="margin-top:8px">
+      <div><label class="label" for="lr">Step size (learning rate): <b id="lrv" class="mono"></b></label><input type="range" id="lr" min="0.05" max="2.2" step="0.05" value="0.3">
+        <div class="row"><button class="btn primary" id="go">Take a step</button><button class="btn ghost" id="rs">Start over</button></div></div>
+      <div class="stack"><div class="kv"><div><span class="label">Steps</span><div class="v" id="sc">0 / 6</div></div><div><span class="label">Distance to bottom</span><div class="v" id="dist"></div></div></div>
+      <div class="goal" id="goal"><span class="chk"></span><span>Reach the flag in 6 steps or fewer</span></div></div>
+    </div>`;
+  function draw(note) {
+    let curve = ''; for (let x = -4; x <= 10.001; x += .1) curve += (x > -4 ? 'L' : 'M') + HX(x).toFixed(1) + ' ' + HY(f(x)).toFixed(1);
+    const vis = clamp(w, -4, 10), off = w < -4 || w > 10, by = HY(Math.min(f(vis), 26)) - 11;
+    const sl = g(w), ax = HX(vis), ay = by;
+    $('#hs', el).innerHTML = `<rect x="40" y="20" width="440" height="270" fill="var(--bg-deep)" stroke="var(--line)"/>
+      <path d="${curve} L${HX(10)} 290 L${HX(-4)} 290 Z" fill="rgba(127,216,255,.08)"/><path d="${curve}" fill="none" stroke="var(--cyan)" stroke-width="3"/>
+      <g class="axis"><text x="260" y="310" text-anchor="middle" fill="var(--ink-dim)">the robot's setting (a number it can change) →</text><text x="20" y="155" text-anchor="middle" fill="var(--ink-dim)" transform="rotate(-90 20 155)">error ↑</text></g>
+      <line x1="${HX(3)}" y1="290" x2="${HX(3)}" y2="262" stroke="var(--good)" stroke-width="2"/><path d="M${HX(3)} 262 l14 5 l-14 5z" fill="var(--good)"/>
+      ${trail.slice(0, -1).map(t => `<circle cx="${HX(clamp(t, -4, 10))}" cy="${HY(Math.min(f(t), 26)) - 11}" r="5" fill="var(--ink-faint)"/>`).join('')}
+      ${!off ? `<line x1="${ax}" y1="${ay}" x2="${ax - Math.sign(sl) * 36}" y2="${ay}" stroke="var(--gold)" stroke-width="3" marker-end="url(#ah)"/>` : ''}
+      <defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8z" fill="var(--gold)"/></marker></defs>
+      <circle cx="${ax}" cy="${off ? 30 : by}" r="11" fill="var(--accent)" stroke="#fff" stroke-width="2"/>
+      ${off ? `<text x="${ax}" y="58" text-anchor="middle" fill="var(--bad)" font-size="13">off the chart!</text>` : ''}`;
+    $('#sc', el).textContent = steps + ' / 6'; $('#dist', el).textContent = Math.abs(w - 3) > 1e4 ? 'huge!' : fmt(Math.abs(w - 3), 2);
+    $('#lrv', el).textContent = lr.toFixed(2);
+    if (note) api.say(note);
+  }
+  $('#lr', el).oninput = e => { lr = +e.target.value; draw(); };
+  $('#rs', el).onclick = () => { w = -2; steps = 0; trail = [-2]; Sound.click(); draw('Back to the start. Pick a step size and try again.'); };
+  $('#go', el).onclick = () => {
+    if (met) return;
+    const sl = g(w), nw = w - lr * sl; steps++; w = nw; trail.push(w); Sound.swish();
+    const d = Math.abs(w - 3);
+    if (d < .15 && steps <= 6) { met = true; draw(`Made it in <b>${steps}</b> steps! Each step was <b>step size × slope</b>, so you moved fast when the hill was steep and slowed down near the bottom. That's <b>gradient descent</b>.`); $('#goal', el).classList.add('met'); Sound.level(); confetti(100); api.xp(25); api.complete(); return; }
+    let note;
+    if (d > 9) note = `Whoa! The step was too BIG. I jumped right over the valley and went flying. Lower the step size and start over.`;
+    else if (steps >= 6) note = lr < .4 ? `6 steps and I'm still not there. Tiny steps are safe but SLOW. Try a bigger step size, then start over.` : `6 steps used. Steps that are too big make me bounce back and forth. Start over and try a step size in between.`;
+    else if (Math.sign(w - 3) !== Math.sign(trail[trail.length - 2] - 3)) note = `I overshot the bottom and landed on the other side. A step size that's a bit smaller might help.`;
+    else note = `Slope here is ${fmt(sl, 2)}. Step = step size × slope = ${fmt(lr * Math.abs(sl), 2)}. Keep going!`;
+    draw(note);
+  };
+  draw();
+}
+
+/* ============================== MISSION 6 widgets: Robot Talk ============================== */
+const CORPUS = ['the robot likes pizza', 'the robot likes math', 'the robot kicks the ball', 'the dog likes the ball', 'the dog eats pizza', 'my robot can dance', 'my dog can run', 'the ball goes in the net', 'the team wins the game', 'my team wins the game'];
+function bigrams(corpus) {
+  const t = {}, starts = {};
+  corpus.forEach(s => { const w = s.split(' ').concat('.'); starts[w[0]] = (starts[w[0]] || 0) + 1; for (let i = 0; i < w.length - 1; i++) { t[w[i]] = t[w[i]] || {}; t[w[i]][w[i + 1]] = (t[w[i]][w[i + 1]] || 0) + 1; } });
+  return { t, starts };
+}
+function nextTable(map) { const tot = Object.values(map).reduce((a, b) => a + b, 0); return Object.entries(map).sort((a, b) => b[1] - a[1]).map(([w, c]) => ({ w, c, tot, p: c / tot })); }
+function wCount(el, api) {
+  const { t } = bigrams(CORPUS), words = Object.keys(t); const seen = new Set(); let met = false;
+  el.innerHTML = `<span class="label">My training data (10 sentences)</span>
+    <div class="corpus">${CORPUS.map(s => s + ' .').join('<br>')}</div>
+    <div style="margin-top:14px"><span class="label">Tap a word to see what comes next</span><div class="row" style="margin-top:6px" id="chips">${words.map(w => `<button class="chip" data-w="${w}">${w}</button>`).join('')}</div></div>
+    <div id="tbl" style="margin-top:14px"></div>
+    <div class="goal" id="goal" style="margin-top:12px"><span class="chk"></span><span>Look at 3 different words (<span id="cnt">0</span>/3)</span></div>`;
+  $$('.chip', el).forEach(b => b.onclick = () => {
+    const w = b.dataset.w; seen.add(w); Sound.click();
+    $$('.chip', el).forEach(x => { x.classList.toggle('on', x === b); x.classList.toggle('seen', seen.has(x.dataset.w)); });
+    const rows = nextTable(t[w]);
+    $('#tbl', el).innerHTML = `<div class="scroll-x"><table class="tbl"><thead><tr><th>After "${w}" comes...</th><th>Times</th><th>Fraction</th><th>Chance</th><th style="width:30%"></th></tr></thead><tbody>${rows.map(r => `<tr><td>${r.w === '.' ? '<span class="dim">(end of sentence)</span>' : r.w}</td><td>${r.c}</td><td>${r.c}/${r.tot}</td><td>${Math.round(r.p * 100)}%</td><td><div style="height:10px;border-radius:5px;background:var(--accent);width:${r.p * 100}%"></div></td></tr>`).join('')}</tbody></table></div>`;
+    $('#cnt', el).textContent = Math.min(seen.size, 3);
+    if (seen.size >= 3 && !met) { met = true; $('#goal', el).classList.add('met'); Sound.good(); api.xp(15); api.say('See it? For every word, I keep a count of what came next. Turn counts into fractions, and you get <b>probabilities</b>. That\'s my whole brain for talking!'); api.complete(); }
+  });
+}
+function wSpinner(el, api) {
+  let corpus = CORPUS.slice(), model = bigrams(corpus), cur = null, sentence = [], done = [], spinning = false, rot = 0, met = false;
+  const COLS = ['#ff8a3d', '#7fd8ff', '#5be3a8', '#ffd166', '#ff6b7a', '#9b7bff', '#5b8cff', '#2ec4b6'];
+  el.innerHTML = `<div class="two-col"><div>
+      <svg class="svgbox" viewBox="0 0 260 270" style="max-width:320px;margin:0 auto"><g id="wheel" style="transform-origin:130px 140px"></g><path d="M118 4 L142 4 L130 26 Z" fill="#fff"/></svg>
+      <div class="row" style="justify-content:center;margin-top:8px" id="ctrl"></div></div>
+    <div class="stack"><div><span class="label">Sentence so far</span><div class="sentence-out" id="out"></div></div>
+      <div id="probs"></div>
+      <div><span class="label">Sentences I wrote</span><div id="done" class="mono" style="font-size:15px;color:var(--ink-dim)"></div></div>
+      <div class="goal" id="goal"><span class="chk"></span><span>Write 2 sentences (<span id="dc">0</span>/2)</span></div>
+      <form id="teach" class="stack" style="gap:6px" autocomplete="off"><label class="label" for="ts">Teach me a new sentence (changes my counts!)</label><div class="row"><input id="ts" class="ans" style="flex:1;min-width:0;width:auto;font-size:17px;text-align:left" maxlength="60" placeholder="e.g. the dog plays basketball"><button class="btn sm" type="submit">Teach</button></div></form>
+    </div></div>`;
+  const wheel = $('#wheel', el);
+  function drawWheel(rows) {
+    let a0 = 0, html = '';
+    const P = (a, r) => [130 + r * Math.sin(a * Math.PI / 180), 140 - r * Math.cos(a * Math.PI / 180)];
+    if (rows.length === 1) html = `<circle cx="130" cy="140" r="110" fill="${COLS[0]}"/><text x="130" y="100" text-anchor="middle" font-size="18" font-weight="700" fill="#0a1a2e">${rows[0].w === '.' ? 'END' : rows[0].w}</text>`;
+    else rows.forEach((r, i) => {
+      const a1 = a0 + r.p * 360, [x0, y0] = P(a0, 110), [x1, y1] = P(a1, 110), mid = (a0 + a1) / 2, [tx, ty] = P(mid, 72);
+      html += `<path d="M130 140 L${x0} ${y0} A110 110 0 ${r.p > .5 ? 1 : 0} 1 ${x1} ${y1} Z" fill="${COLS[i % COLS.length]}" stroke="#0a1a2e" stroke-width="2"/>`;
+      if (r.p * 360 >= 22) html += `<text x="${tx}" y="${ty + 5}" text-anchor="middle" font-size="${r.p * 360 > 50 ? 15 : 12}" font-weight="700" fill="#0a1a2e" transform="rotate(${mid} ${tx} ${ty})">${r.w === '.' ? 'END' : r.w}</text>`;
+      r.mid = mid; a0 = a1;
+    });
+    wheel.innerHTML = html + `<circle cx="130" cy="140" r="16" fill="#0a1a2e" stroke="#fff" stroke-width="2"/>`;
+  }
+  function render() {
+    $('#out', el).innerHTML = sentence.length ? sentence.map(w => `<span class="w">${w}</span>`).join(' ') : '<span class="dim">Pick a first word</span>';
+    $('#done', el).innerHTML = done.map(s => `“${s}.”`).join('<br>') || '<span class="dim">None yet</span>';
+    $('#dc', el).textContent = Math.min(done.length, 2);
+    if (!cur) {
+      const st = nextTable(model.starts);
+      $('#ctrl', el).innerHTML = st.map(r => `<button class="btn sm" data-s="${r.w}">Start with "${r.w}"</button>`).join('');
+      $$('[data-s]', el).forEach(b => b.onclick = () => { cur = b.dataset.s; sentence = [cur]; Sound.click(); render(); });
+      wheel.style.transition = 'none'; drawWheel([{ w: '?', p: 1 }]); $('#probs', el).innerHTML = ''; return;
+    }
+    const rows = nextTable(model.t[cur] || { '.': 1 });
+    wheel.style.transition = 'none'; wheel.style.transform = `rotate(${rot}deg)`; drawWheel(rows);
+    $('#probs', el).innerHTML = `<span class="label">After "${cur}"</span><div class="mono" style="font-size:14px;line-height:1.7">${rows.map(r => `${r.w === '.' ? 'END' : r.w}: ${r.c}/${r.tot} = ${Math.round(r.p * 100)}%`).join('<br>')}</div>`;
+    $('#ctrl', el).innerHTML = `<button class="btn primary" id="spin">Spin for the next word</button>`;
+    $('#spin', el).onclick = () => spin(rows);
+  }
+  function spin(rows) {
+    if (spinning) return; spinning = true; $('#spin', el).disabled = true;
+    let r = Math.random(), choice = rows[rows.length - 1]; for (const row of rows) { if (r < row.p) { choice = row; break; } r -= row.p; }
+    const mid = rows.length === 1 ? 0 : choice.mid;
+    const base = rot - (((rot % 360) + 360) % 360);
+    rot = base + 360 * 4 + ((360 - mid) % 360);
+    wheel.style.transition = reduceMotion() ? 'none' : 'transform 1.6s cubic-bezier(.15,.8,.25,1)';
+    void wheel.getBoundingClientRect();
+    wheel.style.transform = `rotate(${rot}deg)`; Sound.swish();
+    const t = setTimeout(() => {
+      spinning = false; Sound.tone(660, .1, 'triangle', .06);
+      if (choice.w === '.' || sentence.length >= 14) {
+        done.push(sentence.join(' ')); cur = null; sentence = [];
+        if (done.length >= 2 && !met) { met = true; $('#goal', el).classList.add('met'); Sound.level(); confetti(90); api.xp(20); api.say('I\'m talking! Some sentences are silly, because I only look back ONE word. Bigger models look back at thousands of words, so they make more sense.'); api.complete(); }
+      } else { sentence.push(choice.w); cur = choice.w; }
+      render();
+    }, reduceMotion() ? 50 : 1700);
+    onCleanup(() => clearTimeout(t));
+  }
+  $('#teach', el).onsubmit = e => {
+    e.preventDefault(); const v = $('#ts', el).value.toLowerCase().replace(/[^a-z' ]/g, ' ').replace(/\s+/g, ' ').trim();
+    if (!v || v.split(' ').length < 2) { api.say('Give me a sentence with at least two words!'); return; }
+    corpus.push(v); model = bigrams(corpus); $('#ts', el).value = ''; Sound.good();
+    api.say(`Learned it! "${esc(v)}" is now in my training data. My counts changed, so I might use your words when I spin.`);
+    if (!spinning) render();
+  };
+  render();
+}
+
+/* ============================== Real-world block + diagrams ============================== */
+function bigPictureHTML() {
+  const items = [['01', 'Smart Shots', 'Expected value', 'AI picks the choice with the best average outcome'], ['02', 'Power-Up', 'Exponents', 'Computers and AI grow exponentially more powerful'], ['03', 'Secret Codes', 'Modular math', 'Keeps your data and messages safe'], ['04', 'Robot Vision', 'Classifiers', 'Stack millions of these lines = a neural network'], ['05', 'Learn from Mistakes', 'Gradient descent', 'How every modern AI is trained'], ['06', 'Robot Talk', 'Probability', 'Chatbots pick the next word by chance']];
+  return `<span class="tag">The big picture</span><h2 style="font-size:26px;margin:6px 0 12px">You've built a mini-AI</h2>
+    <div class="scroll-x"><table class="tbl"><thead><tr><th>Mission</th><th style="text-align:left">Math</th><th style="text-align:left">What it does in real AI</th></tr></thead><tbody>
+    ${items.map(r => `<tr><td><span class="mono" style="color:var(--accent)">${r[0]}</span> ${r[1]}</td><td style="text-align:left;color:var(--cyan)">${r[2]}</td><td style="text-align:left;font-family:var(--f-body)">${r[3]}</td></tr>`).join('')}</tbody></table></div>`;
+}
+
+/* ============================== Mission data ============================== */
+const PLAYERS = ['Jayden', 'Maya', 'Leo', 'Ava', 'Marcus', 'Sofia', 'Eli', 'Nora', 'Cam', 'Zoe'];
+const MISSIONS = [
+{
+  id: 'shots', num: 1, title: 'Smart Shots', topic: 'Percents · Expected value', part: 'chip', partName: 'Decision Chip', time: '~12 min',
+  blurb: 'Which shot should your team take? Use the math NBA teams use to decide.',
+  outro: '{robot} can now make smart decisions using expected value. Next up: the most powerful idea in math.',
+  steps: [
+    { type: 'talk', say: 'Hi {name}! I\'m {robot}. My brain is empty right now. Each mission you finish installs a new upgrade. First up: a <b>Decision Chip</b>.',
+      html: () => `<span class="tag">Case file 01</span><h2 style="font-size:28px;margin:6px 0 10px">Coach's question</h2>
+        <p class="q-text">Our team can shoot from three spots. Some shots go in more often. Some are worth more points. <b>Which shot should we take the most?</b></p>
+        <svg class="svgbox" viewBox="0 0 500 300" style="max-width:520px;margin:16px auto 0">${courtSVG(SPOTS.map(s => `<circle cx="${s.x}" cy="${s.y}" r="18" fill="rgba(255,138,61,.25)" stroke="var(--accent)" stroke-width="2"/><text x="${s.lx}" y="${s.ly}" text-anchor="middle" font-size="13" fill="var(--ink)" font-family="var(--f-mono)">${s.k}</text>`).join(''))}</svg>` },
+    { type: 'widget', say: 'Let\'s collect data like real analysts. Tap a spot, then shoot. Get at least <b>20 shots from every spot</b>.', mount: wShotSim },
+    { type: 'talk', say: 'Here\'s the trick pros use. It\'s called <b>expected value</b>: how many points a shot is worth <b>on average</b>.',
+      html: () => `<span class="tag">The math</span>
+        <div class="formula" style="margin:12px 0"><span class="hi">points per shot</span> = <span class="hi2">chance it goes in</span> × points</div>
+        <div class="scroll-x"><table class="tbl"><thead><tr><th>Shot</th><th>Chance</th><th>× Points</th><th>= Pts per shot</th></tr></thead><tbody>
+        ${SPOTS.map(s => `<tr class="${s.k === 'Layup' ? 'best' : ''}"><td>${s.k}</td><td>${Math.round(s.p * 100)}% = ${s.p}</td><td>× ${s.v}</td><td>${(s.p * s.v).toFixed(2)}</td></tr>`).join('')}</tbody></table></div>
+        <div class="callout" style="margin-top:14px">The corner 3 goes in <b>less often</b> than the mid-range shot (39% vs 41%), but it's worth <b>way more</b> on average: 1.17 points vs 0.82. Your shooting test showed the same thing. The more shots you take, the closer you get to these numbers.</div>` },
+    { type: 'quiz', say: 'Your turn. Coaches turn makes and attempts into percents all the time.', gen: () => {
+      const att = pick([10, 20, 25, 50]), made = rnd(Math.ceil(att * .3), Math.floor(att * .85)), pct = made / att * 100, p = pick(PLAYERS);
+      return { q: `${p} made <span class="em">${made}</span> out of <span class="em">${att}</span> free throws. What percent is that?`, a: pct, unit: '%', tol: .5,
+        hint: `Divide makes by attempts, then multiply by 100. ${made} ÷ ${att} = ?`, explain: `${made} ÷ ${att} = ${made / att} → ${fmt(pct, 1)}%.` }; } },
+    { type: 'quiz', say: 'Now expected value. Multiply the chance by the points.', gen: () => {
+      const p = pick([30, 35, 40, 45, 50, 55, 60, 65]), v = pick([2, 3]), a = p * v / 100;
+      return { q: `A shot goes in <span class="em">${p}%</span> of the time and is worth <span class="em">${v} points</span>. How many points is it worth per shot, on average?`, a, tol: .011, unit: 'pts',
+        hint: `${p}% is the same as ${p / 100}. Multiply that by ${v}.`, explain: `${p / 100} × ${v} = ${fmt(a, 2)} points per shot. Take 100 shots like that and you'd score about ${p * v} points.` }; } },
+    { type: 'quiz', say: 'Settle a playground argument with math.', gen: () => {
+      let p2, p3; do { p2 = pick([40, 45, 50, 55, 60]); p3 = pick([28, 30, 33, 35, 38, 40, 42]); } while (Math.abs(p2 * 2 - p3 * 3) < 8);
+      const e2 = p2 * 2 / 100, e3 = p3 * 3 / 100;
+      return { kind: 'choice', q: `Which shot is better for the team?`, choices: [`A 2-pointer that goes in ${p2}% of the time`, `A 3-pointer that goes in ${p3}% of the time`], a: e3 > e2 ? 1 : 0,
+        explain: `2-pointer: ${p2 / 100} × 2 = <b>${fmt(e2, 2)}</b> pts per shot. 3-pointer: ${p3 / 100} × 3 = <b>${fmt(e3, 2)}</b> pts per shot. ${e3 > e2 ? 'The three wins!' : 'This time the two wins! The three has to go in often enough to be worth it.'}` }; } },
+    { type: 'quiz', say: 'Championship game. We\'re <b>down by 2</b> with 5 seconds left. This is where math wins titles.', gen: ctx => {
+      const p2 = pick([50, 60, 70]); ctx.p2 = p2; const w = p2 / 2; ctx.win2 = w;
+      return { q: `<b>Option A:</b> Shoot a 2 to tie. It goes in <span class="em">${p2}%</span> of the time. Then we go to overtime, where we win <span class="em">50%</span> of the time.<br><br>What's our chance of winning with Option A?`, a: w, unit: '%', tol: .5,
+        hint: `Both things have to happen: make the shot AND win overtime. Multiply: ${p2 / 100} × 0.5`, explain: `${p2 / 100} × 0.5 = ${w / 100}, so <b>${w}%</b>. When two things both have to happen, you multiply their chances, and the result gets smaller.` }; } },
+    { type: 'quiz', say: 'So... do we go for the tie or the win?', gen: ctx => {
+      const w = ctx.win2 || 25, p3 = w >= 35 ? 30 : pick([32, 35, 38]);
+      return { kind: 'choice', q: `<b>Option B:</b> Shoot a 3 to win right now. It goes in <span class="em">${p3}%</span> of the time.<br>Option A wins <span class="em">${w}%</span> of the time. Which should we pick?`, choices: ['Option A: go for 2 and overtime', 'Option B: go for 3 and the win'], a: p3 > w ? 1 : 0,
+        explain: p3 > w ? `${p3}% beats ${w}%. Lots of coaches go for the tie because it <i>feels</i> safer, but the math says the three gives a better chance to win.` : `${w}% beats ${p3}%. With a ${ctx.p2}% two-pointer, going for the tie is the smart call. Math doesn't always say "shoot threes." It says "compare the numbers."` }; } },
+    { type: 'real', say: 'This isn\'t just a game. Pro teams pay people to do exactly what you just did.', cards: [
+      ['NBA', 'The three-point revolution', 'Around 2010, NBA teams took about 18 threes a game. Then analysts did the same expected-value math you just did. Now teams take about 37 a game, more than double.'],
+      ['Baseball', 'Moneyball', 'In 2002 the Oakland A\'s had one of the smallest budgets in baseball. They used stats to find players other teams overlooked, won 103 games, and had a 20-game win streak.'],
+      ['Football', 'Going for it on 4th down', 'NFL teams go for it on fourth down far more than they did 20 years ago, because expected-value math showed punting was often the worse choice.'],
+      ['AI', 'How game-playing AI decides', 'AlphaGo, the AI that beat one of the best Go players in the world in 2016, picks each move by estimating which one gives the best chance of winning. That\'s expected value at super speed.']] }
+  ]
+},
+{
+  id: 'growth', num: 2, title: 'Power-Up', topic: 'Doubling · Exponents', part: 'core', partName: 'Power Core', time: '~10 min',
+  blurb: 'A penny that doubles every day. Paper folded to the Moon. Meet exponential growth.',
+  outro: '{robot}\'s Power Core is online. Exponential growth is why AI got so powerful so fast. Next: keeping secrets.',
+  steps: [
+    { type: 'talk', say: 'Upgrade #2 is my <b>Power Core</b>. To build it, you need the most powerful idea in math: <b>doubling</b>.',
+      html: () => `<span class="tag">Doubling</span><div class="formula" style="margin:12px 0">1 → 2 → 4 → 8 → 16 → 32 → 64 → <span class="hi">128</span> → <span class="hi">256</span> → <span class="hi">512</span> → <span class="hi">1,024</span></div>
+        <p class="q-text">It starts slow, then explodes. Mathematicians write "1 doubled 10 times" as <span class="mono" style="color:var(--accent)">2<sup>10</sup></span>. That little 10 is called an <b>exponent</b>.</p>` },
+    { type: 'widget', say: 'Quick! Would you rather... Pick one. No calculators!', mount: wPenny },
+    { type: 'quiz', say: 'Doubling gets big fast. Try it in your head:', gen: () => {
+      const n = rnd(6, 10), chain = Array.from({ length: n + 1 }, (_, k) => fmt(2 ** k)).join(' → ');
+      return { q: `Start with 1 and double it <span class="em">${n} times</span>. What number do you get?`, a: 2 ** n, hint: 'Write the chain: 1, 2, 4, 8, 16, 32, ... Count how many times you doubled.', explain: `${chain}. That's 2<sup>${n}</sup> = ${fmt(2 ** n)}.` }; } },
+    { type: 'quiz', say: 'Here\'s a famous one. Make a guess first!', gen: () => ({ kind: 'choice', prediction: true,
+      q: 'A sheet of paper is 0.1 mm thick. If you could fold it in half again and again, how many folds would it take to make a stack that reaches the <b>Moon</b>?',
+      choices: ['About 42 folds', 'About 1,000 folds', 'About 1 million folds', 'About 1 billion folds'], a: 0,
+      explain: 'Only about <b>42</b>! Sounds impossible, right? Let\'s fold it and see.' }) },
+    { type: 'widget', say: 'Keep folding! Each fold <b>doubles</b> the thickness. Watch what it passes.', mount: wPaper },
+    { type: 'quiz', say: 'Doubling isn\'t the only kind of exponent. Things can triple, too. Like a viral video:', gen: () => {
+      const b = pick([2, 3, 3]), r = b === 2 ? rnd(6, 8) : rnd(4, 5);
+      return { q: `A video starts with 1 person. Each round, everyone who just saw it shares it with <span class="em">${b}</span> new people. Round 1: ${b} people see it. Round 2: ${b * b}. How many new people see it in <span class="em">round ${r}</span>?`, a: b ** r,
+        hint: `Each round multiplies by ${b}: ${b}, ${b * b}, ${b ** 3}...`, explain: `${Array.from({ length: r }, (_, k) => fmt(b ** (k + 1))).join(' → ')}. That's ${b}<sup>${r}</sup> = ${fmt(b ** r)}.` }; } },
+    { type: 'quiz', say: 'Exponents can make YOU rich, too. Banks pay you for saving money.', gen: () => {
+      const P = pick([100, 200, 1000]), r = pick([10, 20, 50]), y1 = P * (1 + r / 100), y2 = y1 * (1 + r / 100);
+      return { q: `You put <span class="em">$${fmt(P)}</span> in a savings account that grows <span class="em">${r}%</span> every year. The growth earns growth, too! How much do you have after <b>2 years</b>?`, a: y2, pre: '$', tol: .5,
+        hint: `Year 1: ${r}% of $${fmt(P)} is $${fmt(P * r / 100)}, so you have $${fmt(y1)}. Now take ${r}% of THAT.`, explain: `Year 1: $${fmt(P)} + $${fmt(P * r / 100)} = $${fmt(y1)}. Year 2: $${fmt(y1)} + $${fmt(y1 * r / 100)} = <b>$${fmt(y2)}</b>. Growth on top of growth is called <b>compound interest</b>.` }; } },
+    { type: 'real', say: 'Exponential growth is everywhere, and it\'s the reason AI exploded.', cards: [
+      ['AI', 'AI\'s exponential engine', 'The computing power used to train the biggest AI models has grown about 4 to 5 times every single year since 2010. That\'s why AI went from barely recognizing cats to writing essays in about ten years.'],
+      ['Chips', 'Moore\'s Law', 'For about 50 years, the number of tiny switches (transistors) on a computer chip doubled about every two years. A modern phone chip has around 20 billion of them.'],
+      ['Money', 'Compound interest', '$1,000 that grows 7% a year turns into about $15,000 after 40 years, without adding a single penny. Starting early is a superpower.'],
+      ['Nature', 'Bacteria', 'Some bacteria split in two every 20 minutes. Starting from just one, that\'s over 4 billion in under 11 hours (if they have enough food). That\'s why washing your hands matters!']] }
+  ]
+},
+{
+  id: 'codes', num: 3, title: 'Secret Codes', topic: 'Clock math · Frequency', part: 'shield', partName: 'Encryption Shield', time: '~12 min',
+  blurb: 'Crack secret messages with a cipher wheel, then break a code using counting.',
+  outro: '{robot}\'s Encryption Shield is up. Next mission: teaching {robot} to SEE.',
+  steps: [
+    { type: 'talk', say: 'Upgrade #3: an <b>Encryption Shield</b>, so nobody can read our messages. Over 2,000 years ago, Julius Caesar hid messages by shifting every letter down the alphabet.',
+      html: () => `<span class="tag">The Caesar cipher</span><div class="formula" style="margin:12px 0">shift = 3: &nbsp; A → <span class="hi">D</span> &nbsp; B → <span class="hi">E</span> &nbsp; C → <span class="hi">F</span> &nbsp; ... &nbsp; Z → <span class="hi">C</span></div>
+        <div class="kv"><div><span class="label">Real message</span><div class="v">HELLO</div></div><div><span class="label">Secret message</span><div class="v" style="color:var(--accent)">KHOOR</div></div></div>
+        <p class="dim" style="margin-top:12px">Only someone who knows the shift can turn it back.</p>` },
+    { type: 'widget', say: 'I sent you a secret message, but I forgot the shift! Turn the wheel until the message makes sense.', mount: wCipher },
+    { type: 'talk', say: 'Did you notice? After Z, the wheel wraps back around to A. Clocks do the exact same thing.',
+      html: () => `<div class="two-col" style="align-items:center"><div style="text-align:center">${clockSVG(10, 5)}</div><div class="stack">
+        <span class="tag">Clock math</span><p class="q-text">10 o'clock + 5 hours = <b style="color:var(--accent)">3 o'clock</b>, not 15!</p>
+        <p class="dim">When you go past 12, you wrap around. Mathematicians call this <b>modular arithmetic</b> ("mod" for short). Letters work the same way, on a 26-letter clock.</p></div></div>` },
+    { type: 'quiz', say: 'Clock math warm-up.', gen: () => {
+      const h = rnd(7, 12), k = rnd(4, 11), a = ((h + k - 1) % 12) + 1;
+      return { q: `It's <span class="em">${h} o'clock</span>. What time will it be in <span class="em">${k} hours</span>?`, a, unit: "o'clock", visual: '', hint: `${h} + ${k} = ${h + k}. That's past 12, so subtract 12.`, explain: `${h} + ${k} = ${h + k}, and ${h + k} − 12 = <b>${a}</b>.` }; } },
+    { type: 'quiz', say: 'Now on the letter clock. Remember: after Z comes A again.', gen: () => {
+      const i = rnd(20, 25), k = rnd(3, 8), a = ABC[(i + k) % 26];
+      const path = Array.from({ length: k }, (_, j) => ABC[(i + j + 1) % 26]).join(', ');
+      return { kind: 'letter', q: `Shift the letter <span class="em">${ABC[i]}</span> forward by <span class="em">${k}</span>. What letter do you get?`, a, answerText: a, hint: `Count forward ${k} letters from ${ABC[i]}. After Z, go back to A.`, explain: `${ABC[i]} → ${path}. You land on <b>${a}</b>.` }; } },
+    { type: 'widget', say: 'Real spies don\'t try every shift by hand. They use a clever counting trick. The most common letter in English is <b>E</b>...', mount: wFreq },
+    { type: 'real', say: 'Codes aren\'t just for spies. You use them every day without knowing it.', cards: [
+      ['History', 'Alan Turing', 'During World War II, Alan Turing and his team used math and early computers to crack Germany\'s Enigma code. In 1950, Turing asked: "Can machines think?" That question started the field of AI.'],
+      ['Every day', 'The lock in your browser', 'When you see the lock icon on a website, your data is scrambled with clock math that uses numbers hundreds of digits long. Even supercomputers can\'t unscramble it without the key.'],
+      ['Passwords', 'Why long passwords win', 'A 4-digit PIN has 10,000 possibilities. An 8-letter password using lowercase letters has 26<sup>8</sup>, about 209 billion. Exponents protect you!'],
+      ['History', 'Frequency analysis', 'The counting trick you just used was first written down by the scholar Al-Kindi over 1,100 years ago. It broke codes for centuries.']] }
+  ]
+},
+{
+  id: 'vision', num: 4, title: 'Robot Vision', topic: 'Graphs · Classification', part: 'lens', partName: 'Camera Eyes', time: '~14 min',
+  blurb: 'Teach a robot to tell cats from dogs by drawing a line. Then watch it learn by itself.',
+  outro: '{robot} can see and sort things now! That\'s called a classifier. Next: learning from mistakes.',
+  steps: [
+    { type: 'talk', say: 'Upgrade #4: <b>Camera Eyes</b>. Here\'s a secret: to a computer, a picture is just a grid of <b>numbers</b>. Tap the button below to see what I see.',
+      html: () => `<span class="tag">Pixels are numbers</span><div style="margin-top:12px">${pixelGrid()}</div><p class="dim" style="text-align:center;margin-top:10px">0 = dark, 9 = bright. A phone photo has about 12 million of these numbers.</p>`,
+      mount: el => { $$('.seg button', el).forEach(b => b.onclick = () => { $$('.seg button', el).forEach(x => x.classList.toggle('on', x === b)); const num = b.dataset.m === 'num'; $$('.pv', el).forEach(p => p.hidden = !num); $$('#pix div', el).forEach(d => { d.style.filter = num ? 'saturate(0) brightness(.55)' : ''; d.style.color = num ? '#fff' : ''; }); Sound.click(); }); } },
+    { type: 'talk', say: 'Let\'s start simple. I\'ll describe each animal with just <b>two numbers</b>: its weight, and how pointy its ears are (0 to 10).',
+      html: () => `<span class="tag">The data</span><svg class="svgbox" viewBox="0 0 500 330" style="margin-top:8px">${plotFrame()}${ANIMALS.map(a => animalMark(a)).join('')}</svg>
+        <p class="dim" style="margin-top:8px">Each animal is a dot on a graph. Cats are light with pointy ears. Dogs are usually heavier... but some small dogs are tricky!</p>` },
+    { type: 'widget', say: 'Drag the two orange handles to draw a line with every cat on one side and every dog on the other.', mount: wDrawLine },
+    { type: 'widget', say: 'Now the real test: <b>new animals</b> I\'ve never seen. Does your line still work?', mount: wTest },
+    { type: 'quiz', say: 'AI engineers measure how good a model is with <b>accuracy</b>.', gen: () => {
+      const tot = pick([20, 25, 50]), right = rnd(Math.ceil(tot * .7), tot - 1), a = right / tot * 100;
+      return { q: `A robot labeled <span class="em">${tot}</span> photos and got <span class="em">${right}</span> right. What's its accuracy, as a percent?`, a, unit: '%', tol: .5, hint: `Accuracy = right ÷ total × 100. ${right} ÷ ${tot} = ?`, explain: `${right} ÷ ${tot} = ${right / tot}, so <b>${fmt(a, 1)}%</b>.` }; } },
+    { type: 'quiz', say: 'Lines have equations. AI uses them to decide which side a point is on.', gen: () => {
+      const m = rnd(1, 3), b = rnd(0, 4), x = rnd(1, 4), on = m * x + b, above = Math.random() < .5, y = on + (above ? 1 : -1) * rnd(1, 3);
+      return { kind: 'choice', q: `The line is <span class="mono em">y = ${m}x + ${b}</span>. Is the point <span class="mono em">(${x}, ${y})</span> above or below the line?`, choices: ['Above the line', 'Below the line'], a: above ? 0 : 1,
+        explain: `Plug in x = ${x}: the line is at y = ${m} × ${x} + ${b} = <b>${on}</b>. The point's y is ${y}, which is ${above ? 'bigger' : 'smaller'}, so it's <b>${above ? 'above' : 'below'}</b>.` }; } },
+    { type: 'widget', say: 'You drew the line for me. Now watch me <b>learn it by myself</b>. Every time I get an animal wrong, I nudge my line a tiny bit.', mount: wPerceptron },
+    { type: 'real', say: 'Sorting things with lines is one of the most-used ideas in AI.', cards: [
+      ['Phones', 'Face unlock', 'Your phone measures your face as a list of numbers and checks which side of its rule you land on: "owner" or "not owner."'],
+      ['Cars', 'Self-driving cars', 'Self-driving cars sort every object they see, many times a second: car, bike, person, stop sign. Getting it right is life or death, so they\'re tested on millions of examples.'],
+      ['Medicine', 'AI helping doctors', 'AI can spot signs of eye disease in scans of the eye, helping doctors catch problems earlier. Doctors still check its work.'],
+      ['The big idea', 'Neural networks', 'Real AI uses millions of numbers per picture (one per pixel) and stacks millions of these line-rules on top of each other. That stack is called a <b>neural network</b>.']] }
+  ]
+},
+{
+  id: 'learn', num: 5, title: 'Learn from Mistakes', topic: 'Lines · Gradient descent', part: 'brain', partName: 'Learning Brain', time: '~12 min',
+  blurb: 'Predict how far a home run flies. Then discover the trick every AI uses to learn.',
+  outro: '{robot} has a Learning Brain. Gradient descent is how every modern AI is trained. One upgrade left!',
+  steps: [
+    { type: 'talk', say: 'Upgrade #5: a <b>Learning Brain</b>. Coach wants me to <b>predict</b> how far a hit will fly from how hard it\'s hit. If I find a line that fits the data, I can use it to predict!',
+      html: () => `<span class="tag">The data</span><p class="q-text" style="margin-top:6px">Each dot is a real-style hit: how fast the ball came off the bat (exit velocity, in mph) and how far it flew (in feet).</p>
+        <div class="formula" style="margin-top:14px">a line: &nbsp;<span class="hi">distance</span> = m × <span class="hi2">speed</span> + b</div>
+        <p class="dim" style="margin-top:10px"><span class="mono">m</span> is the slope (how steep the line is). <span class="mono">b</span> moves the line up or down.</p>` },
+    { type: 'widget', say: 'Drag the handles to fit the line. Each red square shows how wrong the line is for one hit. <b>Make the squares as small as you can!</b>', mount: wFit },
+    { type: 'quiz', say: 'Let\'s use a line to predict.', gen: () => {
+      const m = pick([4, 5, 6]), b = m === 4 ? -20 : m === 5 ? -100 : -180, x = rnd(90, 108), a = m * x + b;
+      return { q: `The line says: <span class="mono em">distance = ${m} × speed − ${-b}</span>. A ball is hit at <span class="em">${x} mph</span>. How far does it fly?`, a, unit: 'feet', hint: `First ${m} × ${x}, then subtract ${-b}.`, explain: `${m} × ${x} = ${m * x}, then ${m * x} − ${-b} = <b>${a} feet</b>.` }; } },
+    { type: 'quiz', say: 'Now let\'s measure a mistake, like AI does. AI <b>squares</b> each error (multiplies it by itself), so big mistakes count a LOT more.', gen: () => {
+      const pred = rnd(34, 42) * 10, diff = rnd(4, 15) * (Math.random() < .5 ? 1 : -1), act = pred + diff;
+      return { q: `The line predicted <span class="em">${pred} feet</span>. The ball actually flew <span class="em">${act} feet</span>. What is the <b>squared error</b>?`, a: diff * diff, hint: `The error is ${act} − ${pred} = ${diff}. Now multiply it by itself.`, explain: `Error = ${act} − ${pred} = ${diff}. Squared: ${diff} × ${diff} = <b>${diff * diff}</b>. The red squares in the graph were exactly these!` }; } },
+    { type: 'talk', say: 'Dragging lines by hand works for 2 numbers. Real AI has to adjust <b>billions</b>. So it uses a trick called <b>gradient descent</b>.',
+      html: () => `<span class="tag">Gradient descent</span><p class="q-text" style="margin-top:6px">Imagine you're on a hill in thick fog, and you want to get to the bottom. You can't see, but you can feel the ground.</p>
+        <div class="kv" style="margin-top:14px"><div><span class="label">Step 1</span><div class="v" style="font-size:18px">Feel the slope</div></div><div><span class="label">Step 2</span><div class="v" style="font-size:18px">Step downhill</div></div><div><span class="label">Step 3</span><div class="v" style="font-size:18px">Repeat</div></div></div>
+        <div class="callout cyan" style="margin-top:14px">For AI, the "hill" is the <b>error score</b>. Getting to the bottom means making the fewest mistakes. How big each step is is called the <b>learning rate</b>.</div>` },
+    { type: 'widget', say: 'Get the ball to the flag at the bottom in <b>6 steps or fewer</b>. Choose a step size, then press "Take a step."', mount: wHill },
+    { type: 'real', say: 'You just learned the most important trick in all of modern AI.', cards: [
+      ['AI', 'How chatbots learned', 'Models like ChatGPT and Claude learned by taking billions of tiny downhill steps, adjusting billions of numbers at once to make their mistakes a little smaller each time.'],
+      ['Baseball', 'Statcast', 'MLB tracks the speed and angle of every batted ball. Teams fit models to that data to learn which swings turn into home runs.'],
+      ['Weather', 'Forecasts', 'Weather forecasts use math models fit to huge amounts of past data, and they\'re tested every day against what really happens.'],
+      ['Your apps', 'Recommendations', 'YouTube and Netflix predict what you\'ll want to watch next with models trained the same way: guess, measure the error, step downhill, repeat.']] }
+  ]
+},
+{
+  id: 'talk', num: 6, title: 'Robot Talk', topic: 'Fractions · Probability', part: 'voice', partName: 'Voice Box', time: '~12 min',
+  blurb: 'Build a mini chatbot from word counts and probability. Then make it talk.',
+  outro: '{robot} can talk! You\'ve now used every core idea behind real AI. Amazing work, {name}.',
+  steps: [
+    { type: 'talk', say: 'Last upgrade: my <b>Voice Box</b>! Here\'s a secret about chatbots: they write <b>one word at a time</b> by predicting which word comes next.',
+      html: () => `<span class="tag">Next-word prediction</span><div class="formula" style="margin:12px 0;text-align:left">The dog chased the <span class="hi">___</span></div>
+        <div class="kv"><div><span class="label">ball</span><div class="v">45%</div></div><div><span class="label">cat</span><div class="v">30%</div></div><div><span class="label">car</span><div class="v">20%</div></div><div><span class="label">pizza</span><div class="v">5%</div></div></div>
+        <p class="dim" style="margin-top:12px">A chatbot gives every possible next word a probability, picks one, then does it again. And again. That's it! Let's build one.</p>` },
+    { type: 'widget', say: 'Here\'s my training data. Tap a word to see which words came right after it.', mount: wCount },
+    { type: 'quiz', say: 'Turn counts into a probability.', gen: () => {
+      const { t } = bigrams(CORPUS); const [w, nx] = pick([['the', 'robot'], ['the', 'ball'], ['the', 'dog']]); const rows = nextTable(t[w]), r = rows.find(x => x.w === nx);
+      return { q: `In my training data, "<b>${w}</b>" shows up <span class="em">${r.tot}</span> times. It's followed by "<b>${nx}</b>" <span class="em">${r.c}</span> of those times. What's the chance the next word is "${nx}"? (Give a percent.)`, a: r.p * 100, unit: '%', tol: 1,
+        hint: `Chance = ${r.c} ÷ ${r.tot}, then × 100.`, explain: `${r.c}/${r.tot} = ${fmt(r.p, 3)} → about <b>${fmt(r.p * 100, 1)}%</b>.` }; } },
+    { type: 'quiz', say: 'One more. Which word wins?', gen: () => {
+      const { t } = bigrams(CORPUS); const rows = nextTable(t['robot']);
+      return { kind: 'choice', q: `After "<b>robot</b>", I saw: ${rows.map(r => `"${r.w}" ${r.c} time${r.c > 1 ? 's' : ''}`).join(', ')}. What's the chance the next word is "likes"?`, choices: ['25%', '33%', '50%', '75%'], a: 2,
+        explain: `"robot" appeared ${rows[0].tot} times, and "likes" came next ${rows[0].c} of them. ${rows[0].c}/${rows[0].tot} = 1/2 = <b>50%</b>.` }; } },
+    { type: 'widget', say: 'Time to TALK! Pick a first word, then spin for each next word. Bigger slices are more likely. Make <b>2 sentences</b>.', mount: wSpinner },
+    { type: 'talk', say: 'That\'s really how it works! Real chatbots just do it with way more data, and they look back at the whole conversation instead of one word.', html: () => bigPictureHTML() },
+    { type: 'real', say: 'One last look at the real world.', cards: [
+      ['Scale', 'How much do AIs read?', 'Big AI models train on about 15 trillion word-pieces. If you read nonstop, day and night, it would take you over 100,000 years to read that much.'],
+      ['Your phone', 'Autocomplete', 'The word suggestions above your phone keyboard use this same next-word idea, trained on how people usually type.'],
+      ['Careful', 'Chatbots can be wrong', 'Chatbots pick <i>likely</i> words, not guaranteed-true ones. Sometimes they say things that sound right but aren\'t. Good thinkers (like you) check the math.'],
+      ['Your future', 'Who builds this?', 'The people who build AI are mostly people who loved math: probability, lines, exponents, and lots of practice. You just did a mini version of their job.']] }
+  ]
+}
+];
+
+/* ============================== Speed Round ============================== */
+const SPEED_GENS = {
+  base: [() => { const a = rnd(3, 12), b = rnd(3, 12); return { q: `${a} × ${b}`, a: a * b }; }, () => { const a = rnd(12, 89), b = rnd(11, 59); return { q: `${a} + ${b}`, a: a + b }; }, () => { const b = rnd(3, 12), a = b * rnd(2, 12); return { q: `${a} ÷ ${b}`, a: a / b }; }, () => { const a = rnd(40, 99), b = rnd(11, 39); return { q: `${a} − ${b}`, a: a - b }; }],
+  shots: [() => { const p = pick([10, 20, 25, 50, 75]), n = pick([20, 40, 60, 80, 100, 200]); return { q: `${p}% of ${n}`, a: p * n / 100 }; }, () => { const m = rnd(2, 9), n = pick([10, 20, 25, 50]); return { q: `${m} out of ${n} = ?%`, a: m / n * 100 }; }, () => { const p = pick([30, 40, 50, 60]), v = pick([2, 3]); return { q: `${p}% × ${v} pts`, a: p * v / 100 }; }],
+  growth: [() => { const n = rnd(2, 10); return { q: `2<sup>${n}</sup>`, a: 2 ** n }; }, () => { const a = rnd(13, 49); return { q: `Double ${a}`, a: 2 * a }; }, () => { const n = rnd(2, 4), b = rnd(3, 5); return { q: `${b}<sup>${n}</sup>`, a: b ** n }; }],
+  codes: [() => { const h = rnd(7, 12), k = rnd(3, 11); return { q: `${h} o'clock + ${k} hrs`, a: ((h + k - 1) % 12) + 1 }; }, () => { const n = pick([3, 4, 5, 7, 10]), a = rnd(11, 40); return { q: `Remainder of ${a} ÷ ${n}`, a: a % n }; }],
+  vision: [() => { const m = rnd(2, 5), b = rnd(1, 9), x = rnd(2, 9); return { q: `y = ${m}x + ${b}<br><small>when x = ${x}</small>`, a: m * x + b }; }],
+  learn: [() => { const a = rnd(4, 15); return { q: `${a}²`, a: a * a }; }, () => { const a = rnd(2, 9) * 10, b = a + rnd(-9, 9); return { q: `Error: ${b} − ${a}`, a: b - a }; }],
+  talk: [() => { const [k, n] = pick([[1, 2], [1, 4], [3, 4], [1, 5], [2, 5], [3, 10], [7, 10], [1, 10], [9, 20], [3, 20]]); return { q: `${k}/${n} = ?%`, a: k / n * 100 }; }]
+};
+function speedProblem() {
+  const pools = ['base', 'base'].concat(MISSIONS.filter(m => (S.missions[m.id] || {}).done).map(m => m.id));
+  return pick(SPEED_GENS[pick(pools)])();
+}
+function screenSpeed() {
+  let state = 'ready', score = 0, combo = 1, right = 0, wrongN = 0, ans = '', prob = null, left = 60, timer = null;
+  function render() {
+    app.innerHTML = `<div class="wrap">${topbar()}<header class="m-top"><button class="btn ghost sm" id="back">← Lab</button><div class="m-title"><span class="tag">Arcade</span><h1>Speed Round</h1></div></header>
+      <div id="body"></div></div>`;
+    $('#back').onclick = () => go('home');
+    body();
+  }
+  function body() {
+    const b = $('#body');
+    if (state === 'ready') {
+      const unlocked = MISSIONS.filter(m => (S.missions[m.id] || {}).done).map(m => m.title);
+      b.innerHTML = `<section class="card complete"><div class="robot-wrap" style="width:150px">${robotSVG(partsOn())}</div><h2>60 seconds. Go fast.</h2>
+        <p class="dim" style="max-width:50ch">Every right answer builds your combo (up to ×5). A wrong answer resets it. Problems come from basic math${unlocked.length ? ' plus your finished missions: ' + unlocked.join(', ') : '. Finish missions to add new problem types'}.</p>
+        <p class="mono" style="color:var(--gold)">High score: ${fmt(S.speedBest)}</p><button class="btn primary lg" id="start">Start</button></section>`;
+      $('#start').onclick = start;
+    } else if (state === 'play') {
+      b.innerHTML = `<div class="speed"><section class="card" style="padding:18px">
+          <div class="sp-hud"><span class="tag">Score <b class="mono" id="sc" style="font-size:20px;color:var(--ink)">${score}</b></span><span class="combo" id="cb">×${combo}</span><span class="mono" id="tl" style="font-size:20px">${left}s</span></div>
+          <div class="timer"><i id="tb" style="width:${left / 60 * 100}%"></i></div>
+          <div class="sp-problem" id="pr">${prob.q}</div><div class="sp-answer" id="an">${ans || '&nbsp;'}</div></section>
+        <div class="keypad">${['7', '8', '9', '4', '5', '6', '1', '2', '3', '−', '0', '⌫'].map(k => `<button data-k="${k}">${k}</button>`).join('')}<button class="enter" data-k="enter">Enter</button></div></div>`;
+      $$('.keypad button').forEach(x => x.onclick = () => key(x.dataset.k));
+    } else {
+      const best = score > S.speedBest; if (best) { S.speedBest = score; save(); }
+      const xp = Math.round(score / 10) + right * 2;
+      b.innerHTML = `<section class="card complete"><span class="tag">Time!</span><h2>${best ? 'New high score!' : 'Nice run!'}</h2><div class="big-num" style="color:var(--gold)">${fmt(score)}</div>
+        <div class="kv" style="width:min(460px,100%)"><div><span class="label">Correct</span><div class="v" style="color:var(--good)">${right}</div></div><div><span class="label">Missed</span><div class="v" style="color:var(--bad)">${wrongN}</div></div><div><span class="label">Best</span><div class="v">${fmt(S.speedBest)}</div></div></div>
+        <div class="row" style="justify-content:center"><button class="btn ghost" id="home">Back to lab</button><button class="btn primary lg" id="again">Play again</button></div></section>`;
+      $('#home').onclick = () => go('home'); $('#again').onclick = () => { state = 'ready'; start(); };
+      addXP(xp); if (best && score > 0) { Sound.level(); confetti(140); }
+    }
+  }
+  function start() {
+    state = 'play'; score = 0; combo = 1; right = 0; wrongN = 0; ans = ''; left = 60; prob = speedProblem(); body(); Sound.boot();
+    timer = setInterval(() => { left--; const tl = $('#tl'), tb = $('#tb'); if (tl) { tl.textContent = left + 's'; tb.style.width = (left / 60 * 100) + '%'; if (left <= 5) Sound.tick(); } if (left <= 0) { clearInterval(timer); state = 'done'; body(); } }, 1000);
+    onCleanup(() => clearInterval(timer));
+  }
+  function key(k) {
+    if (state !== 'play') return;
+    if (k === '⌫') ans = ans.slice(0, -1);
+    else if (k === '−') ans = ans.startsWith('-') ? ans.slice(1) : '-' + ans;
+    else if (k === '.') { if (!ans.includes('.')) ans += '.'; }
+    else if (k === 'enter') return submit();
+    else if (ans.length < 7) ans += k;
+    $('#an').innerHTML = ans || '&nbsp;';
+  }
+  function submit() {
+    if (!ans || ans === '-') return;
+    const ok = Math.abs(parseFloat(ans) - prob.a) < 1e-6;
+    if (ok) { score += 10 * combo; right++; combo = Math.min(5, combo + 1); Sound.tone(500 + combo * 120, .1, 'triangle', .07); logProblem(true); }
+    else { combo = 1; wrongN++; Sound.bad(); logProblem(false); const an = $('#an'); an.innerHTML = `<span style="color:var(--bad);font-size:22px">${fmt(prob.a, 2)}</span>`; }
+    ans = ''; prob = speedProblem();
+    const delay = ok ? 0 : 650;
+    setTimeout(() => { if (state !== 'play') return; $('#pr').innerHTML = prob.q; $('#an').innerHTML = '&nbsp;'; $('#sc').textContent = score; $('#cb').textContent = '×' + combo; if (ok) { const p = $('#pr'); p.classList.remove('flash-ok'); void p.offsetWidth; } }, delay);
+    if (ok) { $('#sc').textContent = score; $('#cb').textContent = '×' + combo; }
+  }
+  const kd = e => {
+    if (state !== 'play') return;
+    if (/^[0-9]$/.test(e.key)) key(e.key); else if (e.key === 'Backspace') key('⌫'); else if (e.key === '-') key('−'); else if (e.key === '.') key('.'); else if (e.key === 'Enter') { e.preventDefault(); key('enter'); }
+  };
+  addEventListener('keydown', kd); onCleanup(() => removeEventListener('keydown', kd));
+  render();
+}
+
+/* ============================== Fermi: Guess the Number ============================== */
+const FERMI = [
+  ['How many seconds are in one day?', 86400, '24 hours × 60 minutes × 60 seconds = 86,400.'],
+  ['How many times does your heart beat in one day?', 100000, 'About 70 beats a minute × 60 minutes × 24 hours ≈ 100,000.'],
+  ['How many hours old is an 11-year-old?', 96000, '11 years × 365 days × 24 hours ≈ 96,000.'],
+  ['How many breaths do you take in a day?', 20000, 'About 14 breaths a minute × 1,440 minutes ≈ 20,000.'],
+  ['How many people live in the United States?', 340000000, 'About 340 million. A good anchor: about 1 in 24 people on Earth.'],
+  ['How many people live on Earth?', 8200000000, 'About 8.2 billion, and it took until about 1800 to reach the first billion.'],
+  ['How many miles away is the Moon?', 239000, 'About 239,000 miles, roughly 30 Earths lined up side by side.'],
+  ['How tall is Mount Everest, in feet?', 29032, '29,032 feet, about 5.5 miles. Jets cruise only a bit higher.'],
+  ['How many pennies would you stack to match a 5-foot kid?', 1000, 'A penny is about 1.5 mm thick. 5 feet ≈ 1,524 mm, so about 1,000 pennies.'],
+  ['How many seats are in Fenway Park?', 37700, 'About 37,700, one of the smallest ballparks in MLB (and the oldest, from 1912).'],
+  ['How many players are on NBA rosters, across the whole league?', 450, '30 teams × 15 roster spots = 450.'],
+  ['How many steps does it take to walk a mile?', 2000, 'A kid\'s step is about 2.5 feet. 5,280 feet ÷ 2.5 ≈ 2,100. About 2,000.'],
+  ['How many word-pieces did a big 2024 AI model train on?', 15000000000000, 'Meta\'s Llama 3 trained on about 15 trillion. You\'d need over 100,000 years to read that.'],
+  ['How many minutes of school are in one school year?', 70200, '180 days × 6.5 hours × 60 minutes = 70,200.'],
+  ['How many hairs are on a typical person\'s head?', 100000, 'About 100,000. Roughly 1,000 per square inch... and you lose 50-100 a day.'],
+  ['How many bones are in an adult human body?', 206, '206. Babies start with closer to 300, and some fuse together as you grow.'],
+  ['How many miles is it around the Earth at the equator?', 24901, 'About 24,901 miles. A plane flying nonstop would take about 2 days.'],
+  ['How many miles does light travel in one second?', 186000, 'About 186,000 miles. That\'s 7.5 trips around the Earth in one second.'],
+  ['How many days are in 100 years?', 36525, '100 × 365 = 36,500, plus about 25 leap days = 36,525.'],
+  ['How many basketballs, lined up, would stretch the length of an NBA court?', 120, 'The court is 94 feet = 1,128 inches. A ball is about 9.4 inches wide. 1,128 ÷ 9.4 = 120.'],
+  ['How many times does a 95 mph fastball spin before it reaches the catcher?', 16, 'It spins about 2,300 times a minute and takes about 0.43 seconds to arrive: 2,300 ÷ 60 × 0.43 ≈ 16.'],
+  ['How many different 4-digit PIN codes are possible?', 10000, '10 choices × 10 × 10 × 10 = 10,000 (0000 through 9999).'],
+  ['How many gallons of water fill an Olympic swimming pool?', 660000, '50 m × 25 m × 2 m = 2,500 cubic meters ≈ 660,000 gallons.'],
+  ['How many tiny switches (transistors) are on the iPhone 15 Pro\'s chip?', 19000000000, 'About 19 billion, all on a chip smaller than your fingernail.'],
+  ['How many miles does Earth travel around the Sun in one year?', 584000000, 'The orbit is a circle about 93 million miles from the Sun: 2 × π × 93 million ≈ 584 million.'],
+  ['How many times do you blink in a day?', 15000, 'About 15 blinks a minute × 60 × about 16 waking hours ≈ 15,000.'],
+  ['How many words are in the first Harry Potter book (US edition)?', 77000, 'About 77,000 words. The whole 7-book series is about 1.1 million.'],
+  ['How much does a typical car weigh, in pounds?', 4000, 'About 4,000 pounds. That\'s about 2 tons, or roughly 30 grown-ups.']
+];
+function screenFermi(opt = {}) {
+  const t = today(), daily = !opt.bonus;
+  const idx = daily ? ((dayNum(t) % FERMI.length) + FERMI.length) % FERMI.length : opt.idx;
+  const [q, ans, how] = FERMI[idx];
+  const prior = daily ? S.fermi[t] : null;
+  let v = 3, locked = !!prior;
+  if (prior) v = Math.log10(prior.guess);
+  app.innerHTML = `<div class="wrap">${topbar()}<header class="m-top"><button class="btn ghost sm" id="back">← Lab</button><div class="m-title"><span class="tag">${daily ? 'Daily puzzle · ' + new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) : 'Bonus puzzle'}</span><h1>Guess the Number</h1></div></header>
+    <section class="card stage">
+      <span class="tag">No looking it up. Estimate!</span>
+      <p class="q-text" style="margin-top:8px;font-size:clamp(22px,3.4vw,30px);font-family:var(--f-display);font-weight:700">${q}</p>
+      <div style="margin-top:22px"><div class="guess-readout" id="gr"></div><div class="guess-words" id="gw"></div>
+      <input type="range" id="gs" min="0" max="14" step="0.01" value="${v}" aria-label="Your guess" ${locked ? 'disabled' : ''}>
+      <div class="row mono dim" style="justify-content:space-between;font-size:12px"><span>1</span><span>1,000</span><span>1 million</span><span>1 billion</span><span>1 trillion</span><span>100T</span></div>
+      <div class="row" style="justify-content:center;margin-top:8px"><button class="btn sm" id="dn">÷2</button><button class="btn sm" id="up">×2</button></div></div>
+      <div class="row" style="justify-content:center;margin-top:16px"><button class="btn primary lg" id="lock" ${locked ? 'hidden' : ''}>Lock in my guess</button></div>
+      <div id="res"></div>
+    </section></div>`;
+  $('#back').onclick = () => go('home');
+  const show = () => { const g = round2sig(Math.pow(10, v)); $('#gr').textContent = fmt(g); $('#gw').textContent = g >= 1e6 ? bigWords(g) : ' '; };
+  $('#gs').oninput = e => { v = +e.target.value; show(); };
+  $('#up').onclick = () => { if (locked) return; v = clamp(v + Math.log10(2), 0, 14); $('#gs').value = v; show(); };
+  $('#dn').onclick = () => { if (locked) return; v = clamp(v - Math.log10(2), 0, 14); $('#gs').value = v; show(); };
+  function reveal(guess, fresh) {
+    const ratio = Math.max(guess / ans, ans / guess), stars = ratio <= 1.5 ? 3 : ratio <= 3 ? 2 : ratio <= 10 ? 1 : 0;
+    const verdict = ['More than 10× off. Big numbers are tricky! Check the reasoning below.', 'Within 10×: right order of magnitude!', 'Within 3×. Really good estimating!', 'Within 1.5×. Bullseye!'][stars];
+    const X = n => 20 + clamp(Math.log10(n), 0, 14) / 14 * 460;
+    $('#res').innerHTML = `<div class="feedback ${stars >= 2 ? 'ok' : 'reveal'}" style="margin-top:20px">
+      <div class="row" style="justify-content:space-between"><div><span class="label">The real answer</span><div class="big-num" style="color:var(--good)">${fmt(ans)}</div><div class="mono dim">${ans >= 1e6 ? bigWords(ans) : ''}</div></div>${starsRow(stars, 'bigstars')}</div>
+      <svg class="svgbox" viewBox="0 0 500 70" style="margin-top:8px"><line x1="20" y1="35" x2="480" y2="35" stroke="var(--line-strong)" stroke-width="2"/>
+        ${[0, 3, 6, 9, 12].map(e => `<line x1="${X(10 ** e)}" x2="${X(10 ** e)}" y1="29" y2="41" stroke="var(--line-strong)"/>`).join('')}
+        <circle cx="${X(guess)}" cy="35" r="8" fill="var(--accent)"/><text x="${X(guess)}" y="18" text-anchor="middle" font-size="11" fill="var(--accent)">you</text>
+        <circle cx="${X(ans)}" cy="35" r="8" fill="var(--good)"/><text x="${X(ans)}" y="62" text-anchor="middle" font-size="11" fill="var(--good)">answer</text></svg>
+      <p class="fh" style="margin-top:8px">${verdict}</p><p><b>How to figure it out:</b> ${how}</p></div>
+      <div class="row" style="justify-content:center;margin-top:16px"><button class="btn ghost" id="home2">Back to lab</button><button class="btn" id="bonus">Try a bonus puzzle</button></div>`;
+    $('#home2').onclick = () => go('home');
+    $('#bonus').onclick = () => { let k; do { k = rnd(0, FERMI.length - 1); } while (k === idx); go('fermi', { bonus: true, idx: k }); };
+    if (fresh) {
+      if (stars >= 2) { Sound.level(); confetti(stars === 3 ? 140 : 60); } else Sound.swoosh();
+      if (daily) { S.fermi[t] = { guess, stars }; S.fermiStars += stars; }
+      addXP(daily ? 15 + stars * 10 : 5 + stars * 5); logProblem(stars >= 1);
+    }
+  }
+  $('#lock').onclick = () => { locked = true; $('#gs').disabled = true; $('#lock').hidden = true; reveal(round2sig(Math.pow(10, v)), true); };
+  show(); if (prior) reveal(prior.guess, false);
+}
+
+/* ============================== Lab Report (parents) ============================== */
+function screenReport() {
+  const days = Array.from({ length: 14 }, (_, k) => { const d = new Date(); d.setDate(d.getDate() - (13 - k)); const key = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); return { key, lbl: d.toLocaleDateString('en-US', { weekday: 'narrow' }), sec: (S.stats.days[key] || {}).sec || 0, prob: (S.stats.days[key] || {}).problems || 0 }; });
+  const maxS = Math.max(60, ...days.map(d => d.sec));
+  const acc = S.stats.problems ? Math.round(S.stats.correct / S.stats.problems * 100) : 0;
+  const totalStars = MISSIONS.reduce((a, m) => a + ((S.missions[m.id] || {}).stars || 0), 0);
+  let confirmReset = false;
+  app.innerHTML = `<div class="wrap">${topbar()}<header class="m-top"><button class="btn ghost sm" id="back">← Lab</button><div class="m-title"><span class="tag">For grown-ups</span><h1>Lab Report: ${esc(S.name)}</h1></div></header>
+    <div class="stack">
+      <section class="card stage"><div class="kv">
+        <div><span class="label">Time practicing</span><div class="v">${Math.round(S.stats.sec / 60)} min</div></div>
+        <div><span class="label">Problems solved</span><div class="v">${fmt(S.stats.problems)}</div></div>
+        <div><span class="label">Accuracy</span><div class="v">${acc}%</div></div>
+        <div><span class="label">Missions</span><div class="v">${MISSIONS.filter(m => (S.missions[m.id] || {}).done).length}/6 · ${totalStars}★</div></div>
+        <div><span class="label">Day streak</span><div class="v">${S.streak.count}</div></div>
+        <div><span class="label">Speed best</span><div class="v">${fmt(S.speedBest)}</div></div>
+      </div>
+      <div style="margin-top:18px"><span class="label">Minutes per day, last 14 days</span><div class="bars">${days.map(d => `<div class="b" title="${d.key}: ${Math.round(d.sec / 60)} min, ${d.prob} problems"><span>${d.sec >= 60 ? Math.round(d.sec / 60) : ''}</span><i style="height:${d.sec / maxS * 85}%"></i><span>${d.lbl}</span></div>`).join('')}</div></div>
+      <p class="dim" style="font-size:14px;margin-top:10px">Time counts only while the game is open and being used. Progress is saved on this device only.</p></section>
+      <section class="card stage"><span class="tag">What each mission teaches</span>
+        <div class="scroll-x" style="margin-top:10px"><table class="tbl"><thead><tr><th>Mission</th><th style="text-align:left">Math skills</th><th>Stars</th></tr></thead><tbody>
+        ${MISSIONS.map(m => `<tr><td>${m.num}. ${m.title}</td><td style="text-align:left;font-family:var(--f-body)">${({ shots: 'Percents, decimals, multiplying probabilities, expected value', growth: 'Powers and exponents, percent growth, compound interest, log scales', codes: 'Modular (clock) arithmetic, counting, frequency analysis', vision: 'Coordinate graphs, accuracy %, y = mx + b, classification', learn: 'Lines and slope, prediction, squaring, error, gradient descent', talk: 'Fractions to percents, probability, sampling' })[m.id]}</td><td>${(S.missions[m.id] || {}).done ? starsRow(S.missions[m.id].stars) : '–'}</td></tr>`).join('')}
+        </tbody></table></div>
+        <p class="dim" style="font-size:14px;margin-top:10px">Good conversation starters: "Why do NBA teams shoot so many threes now?", "How many folds to reach the Moon?", "How does a chatbot pick its next word?"</p></section>
+      <section class="card stage"><span class="tag">Settings</span>
+        <div class="stack" style="margin-top:12px">
+          <div class="row"><span style="flex:1">Sound effects</span><button class="btn sm" id="snd">${S.sound ? 'On' : 'Off'}</button></div>
+          <div class="row"><span style="flex:1">Unlock every mission (lets a grown-up preview)</span><button class="btn sm" id="unl">${S.unlockAll ? 'Unlocked' : 'Unlock all'}</button></div>
+          <div class="row"><label for="rn" style="flex:1">Robot name</label><input id="rn" class="ans" style="width:180px;font-size:17px" maxlength="16" value="${esc(S.robot)}"><button class="btn sm" id="rnb">Save</button></div>
+          <div class="row"><span style="flex:1">Erase all progress on this device</span><button class="btn sm ghost" id="rst" style="color:var(--bad);border-color:var(--bad)">Reset</button></div>
+        </div></section>
+    </div></div>`;
+  $('#back').onclick = () => go('home');
+  $('#snd').onclick = () => { S.sound = !S.sound; save(); go('report'); };
+  $('#unl').onclick = () => { S.unlockAll = !S.unlockAll; save(); go('report'); };
+  $('#rnb').onclick = () => { const v = $('#rn').value.trim(); if (v) { S.robot = v; save(); toast('Saved'); } };
+  $('#rst').onclick = () => { if (!confirmReset) { confirmReset = true; $('#rst').textContent = 'Tap again to erase'; return; } S = defaults(); save(); go('onboarding'); };
+}
+
+/* ============================== Boot ============================== */
+go(S.name ? 'home' : 'onboarding');
+</script>
+<!--SW--><script>if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});</script><!--/SW-->
+<!--/BODY-->
+</body>
+</html>
